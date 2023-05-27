@@ -1,0 +1,31 @@
+﻿@model Municipio
+
+<h2>Editar Municipio</h2>
+
+<form asp-action="Edit" asp-route-id="@Model.IdMunicipio">
+    <div class="form-group">
+        <label asp-for="IdMunicipio" style="display: none;"></label>
+        <input asp-for="IdMunicipio" class="form-control" hidden />
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="Municipio1" class="control-label">Nombre Municipio</label>
+        <input asp-for="Municipio1" class="form-control" />
+        <span asp-validation-for="Municipio1" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="IdDepto" class="control-label">Rol</label>
+        <select asp-for="IdDepto" class="form-control">
+            <option value="">Seleccione un rol</option>
+            @foreach (Departamento departamento in ViewBag.Departamentos)
+            {
+                <option value="@departamento.IdDepto" selected="@(departamento.IdDepto == Model.IdDepto ? "selected" : null)">@departamento.Departamento1</option>
+            }
+        </select>
+        <span asp-validation-for="IdDepto" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <input type="submit" value="Guardar" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>

@@ -1,0 +1,98 @@
+﻿@model Usuario
+
+<h2>Crear usuario</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="form-group mb-1">
+        <label asp-for="Nombre" class="control-label">Nombre</label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="Apellido" class="control-label">Apellido</label>
+        <input asp-for="Apellido" class="form-control" />
+        <span asp-validation-for="Apellido" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="Edad" class="control-label">Edad</label>
+        <input asp-for="Edad" class="form-control" min="18" />
+        <span asp-validation-for="Edad" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="Correo" class="control-label">Correo</label>
+        <input asp-for="Correo" class="form-control" />
+        <span asp-validation-for="Correo" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="Password" class="control-label">Contraseña</label>
+        <input class="form-control" autocomplete="current-password" aria-required="true" type="password" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="Password" class="control-label">Confirmar Contraseña</label>
+        <input class="form-control" autocomplete="current-password" aria-required="true" type="password" data-val="true" data-val-required="The Confirm Password field is required." id="ConfirmPassword" name="ConfirmPassword" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-1">
+        <div class="form-check form-switch">
+            <input class="form-check-input ml-2" type="checkbox" id="Estado" name="Estado" checked="@Model.Estado">
+            <label class="form-check-label" for="Estado">Estado</label>
+        </div>
+        <div class="form-check form-switch">
+            <input class="form-check-input ml-2" type="checkbox" id="UsuarioEmprendedor" name="UsuarioEmprendedor" checked="@Model.UsuarioEmprendedor">
+            <label class="form-check-label" for="UsuarioEmprendedor">Usuario Emprendedor</label>
+        </div>
+        <div class="form-check form-switch">
+            <input class="form-check-input ml-2" type="checkbox" id="CuentaCompletada" name="CuentaCompletada" checked="@Model.CuentaCompletada">
+            <label class="form-check-label" for="CuentaCompletada">Cuenta Completada</label>
+        </div>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="IdRol" class="control-label">Rol</label>
+        <select asp-for="IdRol" class="form-control">
+            <option value="">Seleccione un rol</option>
+            @foreach (Rol rol in ViewBag.Roles)
+            {
+                <option value="@rol.IdRol">@rol.NombreRol</option>
+            }
+        </select>
+        <span asp-validation-for="IdRol" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="Imagen" class="control-label">Imagen</label>
+        <input type="file" name="imagenArchivo" class="form-control" />
+        <span asp-validation-for="Imagen" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var checkbox = document.getElementById('Estado');
+        var estadoInput = document.querySelector('input[name="Estado"]');
+
+        checkbox.addEventListener('change', function () {
+            estadoInput.value = checkbox.checked;
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        var checkbox2 = document.getElementById('UsuarioEmprendedor');
+        var estadoInput2 = document.querySelector('input[name="UsuarioEmprendedor"]');
+
+        checkbox2.addEventListener('change', function () {
+            estadoInput2.value = checkbox2.checked;
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        var checkbox3 = document.getElementById('CuentaCompletada');
+        var estadoInput3 = document.querySelector('input[name="CuentaCompletada"]');
+
+        checkbox3.addEventListener('change', function () {
+            estadoInput3.value = checkbox3.checked;
+        });
+    });
+</script>

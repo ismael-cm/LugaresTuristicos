@@ -1,0 +1,39 @@
+﻿@model Rol
+
+<h2>Edit Rol</h2>
+
+<form asp-action="Edit" asp-controller="Rol">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label asp-for="IdRol" style="display: none;"></label>
+        <input asp-for="IdRol" class="form-control" hidden />
+    </div>
+    <div class="form-group">
+        <label asp-for="NombreRol"></label>
+        <input asp-for="NombreRol" class="form-control" />
+        <span asp-validation-for="NombreRol" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="Estado" checked="@Model.Estado">
+            <label class="form-check-label" for="Estado">Estado</label>
+            <input type="hidden" asp-for="Estado" />
+        </div>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="Index" asp-controller="Rol" class="btn btn-secondary">Volver a la lista</a>
+    </div>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var checkbox = document.getElementById('Estado');
+        var estadoInput = document.querySelector('input[name="Estado"]');
+
+        checkbox.addEventListener('change', function () {
+            estadoInput.value = checkbox.checked;
+        });
+    });
+</script>

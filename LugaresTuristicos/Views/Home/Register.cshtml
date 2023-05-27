@@ -1,0 +1,59 @@
+﻿@model Usuario
+
+<form asp-action="Register" method="post">
+    <h2>Register</h2>
+    <hr />
+    <div class="form-group mb-1">
+        <label class="form-label" for="Nombre">First Name</label>
+        <input class="form-control" autocomplete="off" aria-required="true" type="text" data-val="true" data-val-required="The First Name field is required." id="Nombre" name="Nombre" />
+        <span class="text-danger field-validation-valid" data-valmsg-for="Nombre" data-valmsg-replace="true"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label class="form-label" for="Apellido">Last Name</label>
+        <input class="form-control" autocomplete="off" aria-required="true" type="text" data-val="true" data-val-required="The Last Name field is required." id="Apellido" name="Apellido" />
+        <span class="text-danger field-validation-valid" data-valmsg-for="Apellido" data-valmsg-replace="true"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label class="form-label" for="Correo">Email</label>
+        <input class="form-control" autocomplete="username" aria-required="true" type="email" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Correo" name="Correo" value="" />
+        <span class="text-danger field-validation-valid" data-valmsg-for="Correo" data-valmsg-replace="true"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label class="form-label" for="Password">Password</label>
+        <input class="form-control" autocomplete="current-password" aria-required="true" type="password" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" />
+        <span class="text-danger field-validation-valid" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label class="form-label" for="ConfirmPassword">Confirm Password</label>
+        <input class="form-control" autocomplete="current-password" aria-required="true" type="password" data-val="true" data-val-required="The Confirm Password field is required." id="ConfirmPassword" name="ConfirmPassword" />
+        <span class="text-danger field-validation-valid" data-valmsg-for="ConfirmPassword" data-valmsg-replace="true"></span>
+    </div>
+    <div id="error-message" style="display:none" class="alert alert-danger">Passwords do not match.</div>
+    <div class="col-12">
+        <button id="register-submit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+    </div>
+</form>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            if ('@ViewBag.ErrorMessage' !== '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@ViewBag.ErrorMessage',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.ErrorMessagePassword' !== '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@ViewBag.ErrorMessagePassword',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+        });
+    </script>
+}

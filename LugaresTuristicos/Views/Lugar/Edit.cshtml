@@ -1,0 +1,74 @@
+﻿@model Lugare
+
+<h2>Editar Lugar</h2>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="IdLugar" />
+
+    <div class="form-group">
+        <label asp-for="NombreLugar" class="control-label"></label>
+        <input asp-for="NombreLugar" class="form-control" />
+        <span asp-validation-for="NombreLugar" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Descripcion" class="control-label"></label>
+        <input asp-for="Descripcion" class="form-control" />
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IdCategoria" class="control-label"></label>
+        <select asp-for="IdCategoria" class="form-control">
+            @foreach (Categoria categoria in ViewBag.Categorias)
+            {
+                <option value="@categoria.IdCategoria">@categoria.NombreCategoria</option>
+            }
+        </select>
+        <span asp-validation-for="IdCategoria" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IdMunicipio" class="control-label"></label>
+        <select asp-for="IdMunicipio" class="form-control">
+            @foreach (Municipio municipio in ViewBag.Municipios)
+            {
+                <option value="@municipio.IdMunicipio">@municipio.Municipio1</option>
+            }
+        </select>
+        <span asp-validation-for="IdMunicipio" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Precio" class="control-label"></label>
+        <input asp-for="Precio" class="form-control" />
+        <span asp-validation-for="Precio" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="Estado" checked="@Model.Estado">
+            <label class="form-check-label" for="Estado">Estado</label>
+            <input type="hidden" asp-for="Estado" />
+        </div>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="Imagen" class="control-label">Imagen</label>
+        <input type="file" name="imagenArchivo" class="form-control" accept="image/jpeg, image/png, image/gif" multiple />
+        <span asp-validation-for="Imagen" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Guardar" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var checkbox = document.getElementById('Estado');
+        var estadoInput = document.querySelector('input[name="Estado"]');
+
+        checkbox.addEventListener('change', function () {
+            estadoInput.value = checkbox.checked;
+        });
+    });
+</script>

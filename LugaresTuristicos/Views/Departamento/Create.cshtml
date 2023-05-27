@@ -1,0 +1,17 @@
+﻿@model Departamento
+
+<h2>Crear Departamento</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="form-group mb-1">
+        <label asp-for="Departamento1" class="control-label">Nombre del Departamento</label>
+        <input asp-for="Departamento1" class="form-control" />
+        <span asp-validation-for="Departamento1" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+

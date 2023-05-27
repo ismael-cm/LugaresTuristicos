@@ -1,0 +1,21 @@
+﻿@model Departamento
+
+<h2>Edit Departamento</h2>
+
+<form asp-action="Edit" asp-controller="Departamento">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label asp-for="IdDepto" style="display: none;"></label>
+        <input asp-for="IdDepto" class="form-control" hidden />
+    </div>
+    <div class="form-group">
+        <label asp-for="Departamento1"></label>
+        <input asp-for="Departamento1" class="form-control" />
+        <span asp-validation-for="Departamento1" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="Index" asp-controller="Departamento" class="btn btn-secondary">Volver a la lista</a>
+    </div>
+</form>

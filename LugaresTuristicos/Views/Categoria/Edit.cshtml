@@ -1,0 +1,39 @@
+﻿@model Categoria
+
+<h2>Edit Categoria</h2>
+
+<form asp-action="Edit" asp-controller="Categoria">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label asp-for="IdCategoria" style="display: none;"></label>
+        <input asp-for="IdCategoria" class="form-control" hidden />
+    </div>
+    <div class="form-group">
+        <label asp-for="NombreCategoria"></label>
+        <input asp-for="NombreCategoria" class="form-control" />
+        <span asp-validation-for="NombreCategoria" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="Estado" checked="@Model.Estado">
+            <label class="form-check-label" for="Estado">Estado</label>
+            <input type="hidden" asp-for="Estado" />
+        </div>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="Index" asp-controller="Categoria" class="btn btn-secondary">Volver a la lista</a>
+    </div>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var checkbox = document.getElementById('Estado');
+        var estadoInput = document.querySelector('input[name="Estado"]');
+
+        checkbox.addEventListener('change', function () {
+            estadoInput.value = checkbox.checked;
+        });
+    });
+</script>

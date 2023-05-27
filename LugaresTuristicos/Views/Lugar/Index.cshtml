@@ -1,0 +1,93 @@
+﻿@model List<Lugare>
+
+<h2>Publicaciones</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Crear Nuevo</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id Lugar</th>
+            <th>Nombre Lugar</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Municipio</th>
+            <th>Precio</th>
+            <th>Estado</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IdLugar</td>
+                <td>@item.NombreLugar</td>
+                <td>@item.Descripcion</td>
+                <td>@item.IdCategoriaNavigation.NombreCategoria</td>
+                <td>@item.IdMunicipioNavigation.Municipio1</td>
+                <td>@item.Precio</td>
+                <td>
+                    <div class="form-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="Estado" checked="@item.Estado" disabled>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-controller="Lugar" asp-route-id="@item.IdLugar">Editar</a>
+                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-controller="Lugar" asp-route-id="@item.IdLugar">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            if ('@ViewBag.ErrorMessage' !== '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@ViewBag.ErrorMessage',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.MessageCorrect' !== '') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Publicacion Registrada',
+                    text: '@ViewBag.MessageCorrect',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.MessageCorrectEdit' !== '') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Publicacion Actualizada',
+                    text: '@ViewBag.MessageCorrectEdit',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.MessageCorrectDelete' !== '') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Publicacion Eliminada',
+                    text: '@ViewBag.MessageCorrectDelete',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.ErrorMessageDelete' !== '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@ViewBag.ErrorMessageDelete',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+        });
+    </script>
+}

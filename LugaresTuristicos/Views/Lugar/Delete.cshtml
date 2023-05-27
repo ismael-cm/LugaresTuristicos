@@ -1,0 +1,49 @@
+﻿@model Lugare
+
+<h2>Eliminar Publicacion</h2>
+
+<p>¿Estás seguro de que quieres eliminar este usuario?</p>
+
+<table class="table">
+    <tr>
+        <th>ID Usuario</th>
+        <td>@Model.IdUsuario</td>
+    </tr>
+    <tr>
+        <th>Id Categoria</th>
+        <td>@Model.IdCategoria</td>
+    </tr>
+    <tr>
+        <th>Nombre Lugar</th>
+        <td>@Model.NombreLugar</td>
+    </tr>
+    <tr>
+        <th>Descripcion</th>
+        <td>@Model.Descripcion</td>
+    </tr>
+    <tr>
+        <th>Id Municipio</th>
+        <td>@Model.IdMunicipioNavigation.Municipio1</td>
+    </tr>
+    <tr>
+        <th>Precio</th>
+        <td>@Model.Precio</td>
+    </tr>
+    <tr>
+        <th>Estado</th>
+        <td>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="Estado" checked="@Model.Estado" disabled>
+                <input type="hidden" asp-for="Estado" />
+            </div>
+        </td>
+    </tr>
+</table>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="IdLugar" />
+    <div class="form-group">
+        <input type="submit" value="Eliminar" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>

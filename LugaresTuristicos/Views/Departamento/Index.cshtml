@@ -1,0 +1,78 @@
+﻿@model List<Departamento>
+
+<h2>Departamentos</h2>
+
+<p>
+    <a class="btn btn-primary btn-sm" asp-action="Create" asp-controller="Departamento">Crear Nuevo</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre Departamento</th>
+            <th>Estado</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var departamento in Model)
+        {
+            <tr>
+                <td>
+                    @departamento.Departamento1
+                </td>
+                <td>
+                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-controller="Departamento" asp-route-id="@departamento.IdDepto">Editar</a>
+                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-controller="Departamento" asp-route-id="@departamento.IdDepto">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            if ('@ViewBag.ErrorMessage' !== '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@ViewBag.ErrorMessage',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.MessageCorrect' !== '') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Departamento Registrado',
+                    text: '@ViewBag.MessageCorrect',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.MessageCorrectEdit' !== '') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Departamento Actualizado',
+                    text: '@ViewBag.MessageCorrectEdit',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.MessageCorrectDelete' !== '') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Departamento Eliminado',
+                    text: '@ViewBag.MessageCorrectDelete',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.ErrorMessageDelete' !== '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@ViewBag.ErrorMessageDelete',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+        });
+    </script>
+}

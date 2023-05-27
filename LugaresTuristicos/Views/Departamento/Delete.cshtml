@@ -1,0 +1,25 @@
+﻿@model Departamento
+
+<h2>Delete Departamento</h2>
+
+<p>¿Estás seguro de que deseas eliminar este departamento?</p>
+
+<table class="table">
+    <tr>
+        <th>ID Departamento</th>
+        <td>@Model.IdDepto</td>
+    </tr>
+    <tr>
+        <th>Nombre Departamento</th>
+        <td>@Model.Departamento1</td>
+    </tr>
+</table>
+
+<form asp-action="Delete" asp-controller="Departamento">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a asp-action="Index" asp-controller="Departamento" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>

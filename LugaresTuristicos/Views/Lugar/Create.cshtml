@@ -1,0 +1,70 @@
+﻿@model Lugare
+
+<h2>Crear Publicacion</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="form-group mb-1">
+        <label asp-for="IdCategoria" class="control-label">Categoria</label>
+        <select asp-for="IdCategoria" class="form-control">
+            <option value="">Seleccione una categoria</option>
+            @foreach (Categoria item in ViewBag.Categorias)
+            {
+                <option value="@item.IdCategoria">@item.NombreCategoria</option>
+            }
+        </select>
+        <span asp-validation-for="IdCategoria" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="NombreLugar" class="control-label">Nombre del Establecimiento</label>
+        <input asp-for="NombreLugar" class="form-control" />
+        <span asp-validation-for="NombreLugar" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="Descripcion" class="control-label">Descripcion</label>
+        <textarea asp-for="Descripcion" class="form-control"></textarea>
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="IdMunicipio" class="control-label">Municipio</label>
+        <select asp-for="IdMunicipio" class="form-control">
+            <option value="">Seleccione un municipio</option>
+            @foreach (Municipio item in ViewBag.Municipios)
+            {
+                <option value="@item.IdMunicipio">@item.Municipio1</option>
+            }
+        </select>
+        <span asp-validation-for="IdMunicipio" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="Precio" class="control-label">Precio</label>
+        <input asp-for="Precio" class="form-control" />
+        <span asp-validation-for="Precio" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-1">
+        <div class="form-check form-switch">
+            <input class="form-check-input ml-2" type="checkbox" id="Estado" name="Estado" checked="@Model.Estado">
+            <label class="form-check-label" for="Estado">Estado</label>
+        </div>
+    </div>
+    <div class="form-group mb-1">
+        <label asp-for="Imagen" class="control-label">Imagen</label>
+        <input type="file" name="imagenArchivo" class="form-control" accept="image/jpeg, image/png, image/gif" multiple />
+        <span asp-validation-for="Imagen" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var checkbox = document.getElementById('Estado');
+        var estadoInput = document.querySelector('input[name="Estado"]');
+
+        checkbox.addEventListener('change', function () {
+            estadoInput.value = checkbox.checked;
+        });
+    });
+</script>
