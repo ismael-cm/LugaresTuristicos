@@ -59,7 +59,6 @@ namespace LugaresTuristicos.Areas.Admin.Controllers
                     if (categoria.Estado == null)
                         categoria.Estado = false;
 
-                    categoria.FechaCreacion = DateTime.Now;
 
                     // Lógica para guardar el usuario en la base de datos o realizar otras acciones necesarias
                     var existing = _dbContext.Categorias.FirstOrDefault(s => s.NombreCategoria.Equals(categoria.NombreCategoria));

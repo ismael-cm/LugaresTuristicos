@@ -57,8 +57,6 @@ namespace LugaresTuristicos.Areas.Admin.Controllers
                     if (rol.Estado == null)
                         rol.Estado = false;
 
-                    rol.FechaCreacion = DateTime.Now;
-
                     // Lógica para guardar el usuario en la base de datos o realizar otras acciones necesarias
                     var existing = _dbContext.Rols.FirstOrDefault(s => s.NombreRol.Equals(rol.NombreRol));
 

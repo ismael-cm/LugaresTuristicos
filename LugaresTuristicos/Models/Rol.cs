@@ -10,7 +10,6 @@ public partial class Rol
     public string? NombreRol { get; set; }
 
     public bool? Estado { get; set; }
-    public DateTime? FechaCreacion { get; set; }
 
     public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }

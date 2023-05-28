@@ -261,7 +261,6 @@ public partial class SitesContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("password");
-            entity.Property(e => e.UsuarioEmprendedor).HasColumnName("usuarioEmprendedor");
 
             entity.HasOne(d => d.IdRolNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.IdRol)

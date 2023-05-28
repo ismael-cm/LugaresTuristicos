@@ -10,7 +10,6 @@ public partial class Categoria
     public string? NombreCategoria { get; set; }
 
     public bool? Estado { get; set; }
-    public DateTime? FechaCreacion { get; set; }
 
     public virtual ICollection<Lugare> Lugares { get; set; } = new List<Lugare>();
 }

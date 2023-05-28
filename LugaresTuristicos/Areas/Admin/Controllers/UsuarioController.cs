@@ -138,7 +138,6 @@ namespace LugaresTuristicos.Areas.Admin.Controllers
                             Correo = model.Correo,
                             Password = encryptedResult,
                             Estado = model.Estado,
-                            UsuarioEmprendedor = model.UsuarioEmprendedor,
                             CuentaCompletada = model.CuentaCompletada,
                             IdRol = model.IdRol,
                             Imagen = model.Imagen,
@@ -262,7 +261,6 @@ namespace LugaresTuristicos.Areas.Admin.Controllers
                     existing.Correo = model.Correo;
                     existing.Password = model.Password;
                     existing.Estado = model.Estado;
-                    existing.UsuarioEmprendedor = model.UsuarioEmprendedor;
                     existing.CuentaCompletada = model.CuentaCompletada;
                     existing.IdRol = model.IdRol;
                     existing.Imagen = model.Imagen;

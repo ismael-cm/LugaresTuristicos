@@ -21,6 +21,11 @@ namespace LugaresTuristicos.Controllers
             return View();
         }
 
+        public IActionResult Register()
+        {
+            return View();
+        }
+
         public IActionResult Index()
         {
             // Verificar si el usuario ha iniciado sesión
