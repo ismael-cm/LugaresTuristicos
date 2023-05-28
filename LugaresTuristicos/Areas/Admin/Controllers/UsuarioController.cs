@@ -13,8 +13,10 @@ using LugaresTuristicos.Commod;
 using System.Text;
 using System.Security.Cryptography;
 
-namespace LugaresTuristicos.Controllers
+namespace LugaresTuristicos.Areas.Admin.Controllers
 {
+    [Area("admin")]
+    [Route("admin/[controller]/[action]")]
     public class UsuarioController : Controller
     {
         private readonly ILogger<UsuarioController> _logger;

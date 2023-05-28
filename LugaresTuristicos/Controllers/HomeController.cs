@@ -14,15 +14,17 @@ namespace LugaresTuristicos.Controllers
         private SitesContext _dbContext = new SitesContext();
         private ValidationClass validationClass = new ValidationClass();
 
-        public HomeController(ILogger<HomeController> logger)
+        public IActionResult Login()
         {
-            _logger = logger;
+            if (!string.IsNullOrEmpty(TempData["MessageCorrectAdd"] as string))
+                @ViewBag.MessageCorrect = "Inicia sesion para continuar.";
+            return View();
         }
 
         public IActionResult Index()
         {
             // Verificar si el usuario ha iniciado sesión
-            if (String.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
             {
                 // Si no ha iniciado sesión, redirigir al inicio de sesión
                 return RedirectToAction("Login"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
@@ -31,24 +33,12 @@ namespace LugaresTuristicos.Controllers
             return View();
         }
 
-        public IActionResult Login()
-        {
-            if (!string.IsNullOrEmpty(TempData["MessageCorrectAdd"] as string))
-                @ViewBag.MessageCorrect = "Inicia sesion para continuar.";
-            return View();
-        }
-
-        public IActionResult Register()
-        {
-            return View();
-        }
-
         public IActionResult Dashboard()
         {
             try
             {
                 // Verificar si el usuario ha iniciado sesión
-                if (String.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
+                if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
                 {
                     // Si no ha iniciado sesión, redirigir al inicio de sesión
                     return RedirectToAction("Login"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
@@ -210,7 +200,7 @@ namespace LugaresTuristicos.Controllers
                 // Buscar un usuario en la base de datos con el correo especificado
                 var usuario = _dbContext.Usuarios.FirstOrDefault(u => u.Correo == correo);
 
-                if (usuario == null) 
+                if (usuario == null)
                     return false;
 
                 /***********************Decryption**********************************************/

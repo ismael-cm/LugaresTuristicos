@@ -4,8 +4,10 @@ using LugaresTuristicos.Models;
 using LugaresTuristicos.Commod;
 using System.Text;
 
-namespace LugaresTuristicos.Controllers
+namespace LugaresTuristicos.Areas.Admin.Controllers
 {
+    [Area("admin")]
+    [Route("admin/[controller]/[action]")]
     public class LugarController : Controller
     {
         private readonly ILogger<LugarController> _logger;
@@ -20,10 +22,11 @@ namespace LugaresTuristicos.Controllers
         public IActionResult Index()
         {
             // Verificar si el usuario ha iniciado sesión
-            if (String.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
             {
                 // Si no ha iniciado sesión, redirigir al inicio de sesión
-                return RedirectToAction("Login", "Home"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
+                //return RedirectToAction("Login", "Home"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
+                return RedirectToAction("Login", "Home", new { area = "" });
             }
 
             var lugares = _dbContext.Lugares.Include(l => l.IdCategoriaNavigation)

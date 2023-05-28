@@ -1,0 +1,115 @@
+﻿@model List<Usuario>
+
+<h2>Usuarios</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Crear nuevo usuario</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Edad</th>
+            <th>Correo</th>
+            <th>Estado</th>
+            <th>Usuario Emprendedor</th>
+            <th>Cuenta Completada</th>
+            <th>Imagen</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var usuario in Model)
+        {
+            <tr>
+                <td>@usuario.Nombre</td>
+                <td>@usuario.Apellido</td>
+                <td>@usuario.Edad</td>
+                <td>@usuario.Correo</td>
+                <td>
+                    <div class="form-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="Estado" checked="@usuario.Estado" disabled>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="Estado" checked="@usuario.UsuarioEmprendedor" disabled>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="Estado" checked="@usuario.CuentaCompletada" disabled>
+                        </div>
+                    </div>
+                </td>
+                <td><img src="data:image;base64,@Convert.ToBase64String(usuario.Imagen)" alt="Imagen" style="width: 40px; height: 40px;" /></td>
+                <td>
+                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-controller="Usuario" asp-route-id="@usuario.IdUsuario">Editar</a>
+                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-controller="Usuario" asp-route-id="@usuario.IdUsuario">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            if ('@ViewBag.ErrorMessage' !== '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@ViewBag.ErrorMessage',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.MessageCorrect' !== '') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Usuario Registrado',
+                    text: '@ViewBag.MessageCorrect',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.MessageCorrectEdit' !== '') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Usuario Actualizado',
+                    text: '@ViewBag.MessageCorrectEdit',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.ErrorMessagePassword' !== '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@ViewBag.ErrorMessagePassword',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.MessageCorrectDelete' !== '') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Usuario Eliminado',
+                    text: '@ViewBag.MessageCorrectDelete',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+            if ('@ViewBag.ErrorMessageDelete' !== '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@ViewBag.ErrorMessageDelete',
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+        });
+    </script>
+}
