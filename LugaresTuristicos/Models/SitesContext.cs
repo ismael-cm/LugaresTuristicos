@@ -112,9 +112,6 @@ public partial class SitesContext : DbContext
                 .HasForeignKey(d => d.IdBlacklist)
                 .HasConstraintName("FK_CO_BLACKLIST");
 
-            entity.HasOne(d => d.IdComentarioNavigation).WithMany(p => p.ComentarioOfensivos)
-                .HasForeignKey(d => d.IdComentario)
-                .HasConstraintName("FK_CO_COMENTARIO");
         });
 
         modelBuilder.Entity<Departamento>(entity =>
@@ -248,7 +245,6 @@ public partial class SitesContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("correo");
-            entity.Property(e => e.CuentaCompletada).HasColumnName("cuentaCompletada");
             entity.Property(e => e.Edad).HasColumnName("edad");
             entity.Property(e => e.Estado).HasColumnName("estado");
             entity.Property(e => e.IdRol).HasColumnName("id_rol");

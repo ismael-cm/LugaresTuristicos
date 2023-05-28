@@ -21,8 +21,6 @@ public partial class Usuario
 
     public bool Estado { get; set; }
 
-    public bool CuentaCompletada { get; set; }
-
     public byte[]? Imagen { get; set; }
     public DateTime? FechaCreacion { get; set; }
 

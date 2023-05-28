@@ -15,8 +15,9 @@ public partial class Comentario
 
     public DateTime? Fecha { get; set; }
 
-    public virtual ICollection<ComentarioOfensivo> ComentarioOfensivos { get; set; } = new List<ComentarioOfensivo>();
+    public bool? Estado { get; set; }
 
+    public string? Revision { get; set; }
     public virtual Lugare? IdLugarNavigation { get; set; }
 
     public virtual Usuario? IdUsuarioNavigation { get; set; }
