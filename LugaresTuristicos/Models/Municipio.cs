@@ -10,6 +10,7 @@ public partial class Municipio
     public int? IdDepto { get; set; }
 
     public string? Municipio1 { get; set; }
+    public bool? Estado { get; set; }
 
     public virtual Departamento? IdDeptoNavigation { get; set; }
 
