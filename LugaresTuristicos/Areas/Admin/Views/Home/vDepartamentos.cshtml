@@ -1,0 +1,271 @@
+﻿@model Departamento
+
+
+<h3>Mantenimiento de Departamento</h3>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
+</div>
+<br />
+
+<div id="container ">
+    <div class="row">
+        <div class="col-md-6 offset-md-3" id="contenido">
+        </div>
+    </div>
+</div>
+
+<!-- Modal agregar -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregando Departamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form id="Form1">
+                    <div class="form-group mb-1">
+                        <label asp-for="Departamento1" class="control-label">Nombre Departamento</label>
+                        <input asp-for="Departamento1" class="form-control" />
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCerrar" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" id="btnGuardar" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal actualizar -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mofificar Departamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form id="Form2">
+                    <input id="IdDepto2" class="form-control" placeholder="IdDepto" />
+                    <div class="form-group mb-1">
+                        <label class="control-label">Nombre del departamento</label>
+                        <input id="Departamento2" class="form-control" />
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCerrar2" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" id="btnActualizar" class="btn btn-primary">Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    <script>
+        function cargarTabla() {
+            $.ajax({
+                url: '/admin/Home/getTablaDepartamento',
+                type: 'post',
+                dataType: 'json',
+                cache: false
+            }).done(function (resp) {
+                console.log(resp);
+                var div = $("#contenido");
+                var tabla = "<table id='tabla' class='table table-striped table-hover'><thead class='table-dark'><tr><th>Departamento ID</th><th>Departamento</th><th>Acciones</th></tr></thead><tbody>";
+                $.each(resp, function (index, departamento) {
+                    tabla += "<tr>";
+                    tabla += "<td>" + departamento.idDepto + "</td>";
+                    tabla += "<td>" + departamento.departamento1 + "</td>";
+
+                    var texto = departamento.departamento1;
+                    var textoModificado = texto.replace(/ /g, "-");
+                    //console.log(textoModificado);
+
+                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='btn btn-light' onclick=cargarUpt('" + departamento.idDepto + "," + textoModificado + "') >Editar</a> | <a class='btn btn-danger' href=\"javascript:cargarDel('" + departamento.idDepto + "')\">Eliminar</a></td>";
+                    tabla += "</tr>";
+                });
+                tabla += "</tbody></table>";
+                div.empty();
+                div.append(tabla);
+            }).fail();
+
+        }
+
+        function cargarDel(IdDepto) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger me-4'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Estas seguro?',
+                text: "Una vez eliminado se pierde definitivamente!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("EliminarDepartamento", "Home")',
+                        type: 'post',
+                        dataType: 'json',
+                        cache: false,
+                        data: { id: IdDepto }
+                    }).done(function (resp) {
+                        if (resp) {
+                            swalWithBootstrapButtons.fire(
+                                'Eliminado!',
+                                'Tu registro ha sido elimando.',
+                                'success'
+                            )
+                            cargarTabla();
+                        } else {
+                            swalWithBootstrapButtons.fire(
+                                'Cancelado',
+                                'Se omitieron los datos',
+                                'error'
+                            )
+                        }
+                    }).fail();
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelado',
+                        'Se han omitido los datos',
+                        'error'
+                    )
+                }
+            })
+        }
+
+        function cargarUpt(valor) {
+
+            var obj = valor.split(',');
+            var textoModificado = obj[1];
+            var textoOriginal = textoModificado.replace(/-/g, " ");
+
+            document.getElementById("IdDepto2").value = obj[0];
+            document.getElementById("Departamento2").value = textoOriginal;
+
+        }
+
+        $(document).ready(function () {
+
+            cargarTabla();
+
+            $("#btnGuardar").click(function () {
+                if ($("#Departamento1").val() != "") {
+
+                    var formulario = $("#Form1").serialize();
+
+                    $.ajax({
+                        url: '@Url.Action("guardarDepartamento","Home")',
+                        type: 'post',
+                        cache: false,
+                        dataType: 'json',
+                        data: formulario
+                    }).done(function (resp) {
+                        if (resp) {
+                            Swal.fire({
+                                title: 'El registro ha sido agregado correctamente',
+                                icon: 'success',
+                                confirmButtonText: 'Continuar'
+                            })
+                            cargarTabla();
+                            $("#btnCerrar").click();
+                        } else {
+                            Swal.fire({
+                                title: 'Hubo un error al momento de agregar el dato',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        }
+                    }).fail(function () {
+                        Swal.fire({
+                            title: 'Hubo un error al momento de agregar el dato',
+                            icon: 'error',
+                            confirmButtonText: 'Continuar'
+                        })
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Todos los campos son obligatorios',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            });
+
+
+
+            $("#btnActualizar").click(function () {
+                //console.log(1);
+                if ($("#IdDepto2").val() != "" && $("#Departamento2").val() != "") {
+
+                    var formulario = $("#Form2").serialize();
+
+                    var obj1 = document.getElementById("IdDepto2").value;
+                    var obj2 = document.getElementById("Departamento2").value;
+
+                    console.log(obj1);
+                    console.log(obj2);
+
+                    $.ajax({
+                        url: '@Url.Action("ActualizarDepartamento","Home")',
+                        type: 'post',
+                        cache: false,
+                        dataType: 'json',
+                        data: { idDepto: obj1, departamento: obj2 }
+                    }).done(function (resp) {
+                        if (resp) {
+                            Swal.fire({
+                                title: 'El registro ha sido modificado correctamente',
+                                icon: 'success',
+                                confirmButtonText: 'Continuar'
+                            })
+                            cargarTabla();
+                            $("#btnCerrar2").click();
+                        } else {
+                            Swal.fire({
+                                title: 'Hubo un error al momento de actualizar el dato',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        }
+                    }).fail(function () {
+                        Swal.fire({
+                            title: 'Hubo un error al momento de actualizar el dato',
+                            icon: 'error',
+                            confirmButtonText: 'Continuar'
+                        })
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Todos los campos son obligatorios',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            });
+        });
+    </script>
+
+}
