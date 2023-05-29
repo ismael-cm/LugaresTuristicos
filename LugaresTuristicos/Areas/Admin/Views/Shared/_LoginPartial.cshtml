@@ -1,8 +1,12 @@
-﻿<ul class="navbar-nav">
-    @if (TempData["IsLoggedIn"] != null && (bool)TempData["IsLoggedIn"])
+﻿@using Microsoft.AspNetCore.Identity
+
+<ul class="navbar-nav">
+
+
+    @if (User.Identity.IsAuthenticated)
     {
         <li class="nav-item">
-            <span class="nav-link text-dark">Bienvenido, @TempData["NameUser"]!</span>
+            <span class="nav-link text-dark">Bienvenido, @User.Identity.Name</span>
         </li>
         <li class="nav-item">
             <form id="logout-form" asp-action="Logout" asp-controller="Home" method="post">
@@ -15,8 +19,6 @@
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Register">Register</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">Login</a>
-        </li>
+
     }
 </ul>

@@ -1,10 +1,15 @@
 ﻿using LugaresTuristicos.Commod;
 using LugaresTuristicos.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LugaresTuristicos.Controllers
 {
@@ -18,46 +23,46 @@ namespace LugaresTuristicos.Controllers
         {
             if (!string.IsNullOrEmpty(TempData["MessageCorrectAdd"] as string))
                 @ViewBag.MessageCorrect = "Inicia sesion para continuar.";
-            return View();
-        }
 
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        public IActionResult Index()
-        {
-            // Verificar si el usuario ha iniciado sesión
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
+            ClaimsPrincipal claimUser = HttpContext.User;
+            if (claimUser.Identity.IsAuthenticated)
             {
-                // Si no ha iniciado sesión, redirigir al inicio de sesión
-                return RedirectToAction("Login"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
+                if(claimUser.IsInRole("ADMINISTRADOR"))
+                {
+                    return RedirectToAction("Dashboard", "Home", new { area = "Admin" });
+                }
+
+                return RedirectToAction("Index", "Home");
             }
 
             return View();
         }
 
+        public IActionResult Register()
+        {
+            ClaimsPrincipal claimUser = HttpContext.User;
+            bool isdws = claimUser.Identity.IsAuthenticated;
+            string name = claimUser.Identity.Name;
+           
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [Authorize]
         public IActionResult Dashboard()
         {
             try
             {
-                // Verificar si el usuario ha iniciado sesión
-                if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
-                {
-                    // Si no ha iniciado sesión, redirigir al inicio de sesión
-                    return RedirectToAction("Login"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
-                }
-
-                if (TempData["IsLoggedIn"] != null && (bool)TempData["IsLoggedIn"])
-                    TempData["NameUser"] = TempData["IsLoggedInNameUser"];
-
                 List<Lugare> lista = _dbContext.Lugares.Include(l => l.Comentarios)
                                                        .Include(l => l.IdMunicipioNavigation)
                                                        .Include(l => l.IdCategoriaNavigation)
                                                        .Include(l => l.IdUsuarioNavigation)
                                                        .ToList();
-
                 return View(lista);
             }
             catch (Exception ex)
@@ -67,14 +72,15 @@ namespace LugaresTuristicos.Controllers
             }
         }
 
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
-            return View("Login");
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            TempData["error"] = "";
+            return RedirectToAction("Login", "Home");
         }
 
         [HttpPost]
-        public IActionResult Login(Usuario usuario)
+        public async Task<IActionResult> Login(Usuario usuario)
         {
             try
             {
@@ -85,35 +91,49 @@ namespace LugaresTuristicos.Controllers
                     {
                         // Iniciar sesión exitosamente
                         // Guardar información del usuario en la sesión, establecer cookies, etc.
-                        var user = _dbContext.Usuarios.FirstOrDefault(s => s.Correo.Equals(usuario.Correo));
+                        var user = _dbContext.Usuarios
+                            .Include(u => u.Rol)
+                            .FirstOrDefault(s => s.Correo.Equals(usuario.Correo));
 
-                        string username = user.Nombre + " " + user.Apellido;
+                        List<Claim> claims = new List<Claim>()
+                        {
+                            new Claim(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
+                            new Claim(ClaimTypes.Name, user.Nombre),
+                            new Claim("Correo", usuario.Correo),
+                            //Agregar Roles.
+                            new Claim(ClaimTypes.Role, user.Rol.NombreRol)
+                        };
 
-                        TempData["IsLoggedIn"] = true;
-                        TempData["IsLoggedInNameUser"] = username;
+                        
 
-                        // Almacenar datos en la sesión
-                        HttpContext.Session.SetString("Username", username);
-                        HttpContext.Session.SetString("IdUser", user.IdUsuario.ToString());
 
-                        return RedirectToAction("Dashboard"); // Redirigir a la página de inicio del usuario autenticado
+                        ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
+                            CookieAuthenticationDefaults.AuthenticationScheme);
+
+                        AuthenticationProperties properties = new AuthenticationProperties()
+                        {
+                            AllowRefresh = true,
+                            IsPersistent = false
+                        };
+
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(claimsIdentity), properties);
+                        return RedirectToAction("Login", "Home");
                     }
                     else
                     {
                         // Credenciales inválidas
-                        @ViewBag.ErrorMessage = "Credenciales invalidas. Por favor, intenta de nuevo.";
-                        return View(usuario);
+                        TempData["ErrorMessage"] = "Credenciales invalidas. Por favor, intenta de nuevo.";
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception exe)
             {
                 // Credenciales inválidas
-                @ViewBag.ErrorMessage = "Credenciales invalidas. Por favor, intenta de nuevo.";
-                return View(usuario);
+                TempData["ErrorMessage"] = "Credenciales invalidas. Por favor, intenta de nuevo.  ";
             }
 
-            return View(usuario);
+            return RedirectToAction("Login");
         }
 
         [HttpPost]
@@ -261,6 +281,12 @@ namespace LugaresTuristicos.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        
+
+        public IActionResult Privacity()
+        {
+            return View();
         }
     }
 }

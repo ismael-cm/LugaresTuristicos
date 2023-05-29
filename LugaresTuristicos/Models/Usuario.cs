@@ -26,7 +26,7 @@ public partial class Usuario
 
     public virtual ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
 
-    public virtual Rol? IdRolNavigation { get; set; }
+    public virtual Rol? Rol { get; set; }
 
     public virtual ICollection<Lugare> Lugares { get; set; } = new List<Lugare>();
 

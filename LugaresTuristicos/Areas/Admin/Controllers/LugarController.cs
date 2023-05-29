@@ -3,11 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using LugaresTuristicos.Models;
 using LugaresTuristicos.Commod;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LugaresTuristicos.Areas.Admin.Controllers
 {
     [Area("admin")]
     [Route("admin/[controller]/[action]")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class LugarController : Controller
     {
         private readonly ILogger<LugarController> _logger;
@@ -21,13 +23,6 @@ namespace LugaresTuristicos.Areas.Admin.Controllers
         // GET: Lugar
         public IActionResult Index()
         {
-            // Verificar si el usuario ha iniciado sesión
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
-            {
-                // Si no ha iniciado sesión, redirigir al inicio de sesión
-                //return RedirectToAction("Login", "Home"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
-                return RedirectToAction("Login", "Home", new { area = "" });
-            }
 
             var lugares = _dbContext.Lugares.Include(l => l.IdCategoriaNavigation)
                                            .Include(l => l.IdMunicipioNavigation)

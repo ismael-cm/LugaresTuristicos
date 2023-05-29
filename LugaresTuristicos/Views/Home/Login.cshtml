@@ -1,31 +1,33 @@
 ﻿@model Usuario
 
 <form asp-action="Login" method="post">
-    <h2>Log in</h2>
-    <hr />
-    <div class="form-group mb-1">
-        <label class="form-label" for="Correo">Email</label>
-        <input class="form-control" autocomplete="username" aria-required="true" type="email" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Correo" name="Correo" value="" />
-        <span class="text-danger field-validation-valid" data-valmsg-for="Correo" data-valmsg-replace="true"></span>
-    </div>
-    <div class="form-group mb-1">
-        <label class="form-label" for="Password">Password</label>
-        <input class="form-control" autocomplete="current-password" aria-required="true" type="password" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" />
-        <span class="text-danger field-validation-valid" data-valmsg-for="Password" data-valmsg-replace="true"></span>
-    </div>
-    <div class="col-12">
-        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+    <div style="margin-left:30%; margin-right:30%">
+        <h2>Log in</h2>
+        <hr />
+        <div class="form-group mb-1">
+            <label class="form-label" for="Correo">Email</label>
+            <input class="form-control" autocomplete="username" aria-required="true" type="email" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Correo" name="Correo" value="" />
+            <span class="text-danger field-validation-valid" data-valmsg-for="Correo" data-valmsg-replace="true"></span>
+        </div>
+        <div class="form-group mb-1">
+            <label class="form-label" for="Password">Password</label>
+            <input class="form-control" autocomplete="current-password" aria-required="true" type="password" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" />
+            <span class="text-danger field-validation-valid" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+        </div>
+        <div class="col-12 mt-3">
+            <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+        </div>
     </div>
 </form>
 
 @section Scripts {
     <script>
         $(document).ready(function () {
-            if ('@ViewBag.ErrorMessage' !== '') {
+            if ('@TempData["ErrorMessage"]' !== '') {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: '@ViewBag.ErrorMessage',
+                    text: '@TempData["ErrorMessage"]',
                     confirmButtonText: 'Cerrar'
                 });
             }

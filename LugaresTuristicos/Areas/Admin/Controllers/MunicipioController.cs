@@ -1,4 +1,5 @@
 ﻿using LugaresTuristicos.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 namespace LugaresTuristicos.Areas.Admin.Controllers {
     [Area("admin")]
     [Route("admin/[controller]/[action]")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class MunicipioController : Controller
     {
         private readonly ILogger<MunicipioController> _logger;

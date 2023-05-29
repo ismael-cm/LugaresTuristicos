@@ -20,12 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Views\Home\" />
-    <Folder Include="wwwroot\Images\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\Images\DefaultUser.png" />
+    <None Include="wwwroot\Images\Logo.png" />
   </ItemGroup>
 
   <ItemGroup>

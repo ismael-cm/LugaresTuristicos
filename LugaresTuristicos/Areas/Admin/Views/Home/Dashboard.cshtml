@@ -1,0 +1,207 @@
+﻿@model List<Lugare>
+
+<style>
+    .tweet {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .tweet-header {
+        display: flex;
+        align-items: center;
+    }
+
+    .profile-picture {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .username {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .tweet-body {
+        margin-top: 10px;
+    }
+
+    .tweet-content {
+        font-size: 16px;
+    }
+
+    .tweet-footer {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #777;
+    }
+
+    .timestamp,
+    .like-count,
+    .comment-count {
+        margin-right: 10px;
+    }
+</style>
+
+<div class="container">
+    <div id="contenedor-datos">
+        @if (Model.Count > 0)
+        {
+            foreach (var item in Model)
+            {
+                DateTime fechaPublicacion = Convert.ToDateTime(item.FechaPublicacion);
+                TimeSpan diferencia = DateTime.Now - fechaPublicacion;
+
+                string formatoFecha;
+
+                if (diferencia.TotalDays >= 7)
+                {
+                    formatoFecha = fechaPublicacion.ToString("dd/MM/yyyy");
+                }
+                else if (diferencia.TotalDays >= 2)
+                {
+                    formatoFecha = $"{(int)diferencia.TotalDays} días atrás";
+                }
+                else if (diferencia.TotalDays >= 1)
+                {
+                    formatoFecha = "Ayer";
+                }
+                else
+                {
+                    formatoFecha = "Hoy";
+                }
+                <div class="tweet">
+                    <div class="tweet-header">
+                        <div class="form-group">
+                            <label asp-for="@item.IdLugar" style="display: none;"></label>
+                            <input asp-for="@item.IdLugar" class="form-control" hidden />
+                        </div>
+                        <img src="data:image;base64,@Convert.ToBase64String(item.Imagen)" alt="Foto de perfil" class="profile-picture">
+                        <h4 class="username">@item.NombreLugar</h4>
+                    </div>
+                    <div class="tweet-body">
+                        <p class="tweet-content">@item.Descripcion</p>
+                    </div>
+                    <div class="tweet-footer">
+                        <span class="timestamp">Fecha de publicación: @formatoFecha</span>
+                        <span class="like-count">10 likes</span>
+                        <span class="comment-count">
+                            <a href="#" data-toggle="modal" data-target="#modalDetalles-@item.IdLugar" style="text-decoration: none;">
+                                <img src="/Images/Coment.png" alt="Comentarios">
+                                <span style="text-decoration: none;">Comentarios</span>
+                            </a>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Modal para visualizacion detallada de una publicacion -->
+                <div class="modal fade" id="modalDetalles-@item.IdLugar" tabindex="-1" role="dialog" aria-labelledby="modalDetallesLabel-@item.IdLugar" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <!-- <h5 class="modal-title" id="modalDetallesLabel-@item.IdLugar">Detalles de la publicación</h5> -->
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                @*<img src="data:image;base64,@Convert.ToBase64String(item.Imagen)" alt="Foto de perfil" class="profile-picture">
+                        <h4 class="username">@item.NombreLugar</h4>
+                        <p class="tweet-content">@item.Descripcion</p>
+                        <p class="tweet-info">Fecha de publicación: @formatoFecha</p>*@
+
+                                <div class="container" style="padding-bottom:5px;">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            @*<h5 class="card-title">Comentario1</h5>*@
+                                            <form asp-action="CreateComentario" method="post" enctype="multipart/form-data">
+                                                <div class="form-group">
+                                                    <label asp-for="@item.IdLugar" style="display: none;"></label>
+                                                    <input asp-for="@item.IdLugar" id="IdLugar" name="IdLugar" class="form-control" hidden />
+                                                </div>
+                                                <div class="input-group mb-3">
+                                                    <input type="text" class="form-control" placeholder="Comentario" id="Comentario" name="Comentario" />
+                                                    <button type="submit" class="btn btn-outline-light btn-icon">
+                                                        <img src="/Images/ArrowComent.png" alt="Enviar" class="btn-icon-image" style="padding-left:5px;" width="20" height="20" />
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="comentarios">
+                                    @if (item.Comentarios.Any())
+                                    {
+                                        <!-- <h6>Comentarios:</h6> -->
+                                        @foreach (var comentario in item.Comentarios)
+                                        {
+                                            <div class="tweet">
+                                                <div class="tweet-header">
+                                                    <img src="data:image;base64,@Convert.ToBase64String(comentario.IdUsuarioNavigation.Imagen)" alt="Foto de perfil" class="profile-picture">
+                                                    @{
+                                                        string nombreUsuario = comentario.IdUsuarioNavigation.Nombre + " " + comentario.IdUsuarioNavigation.Apellido;
+
+                                                        DateTime fechaComentario = Convert.ToDateTime(comentario.Fecha);
+                                                        TimeSpan diferenciaComentario = DateTime.Now - fechaComentario;
+
+                                                        string formatoFechaComentario;
+
+                                                        if (diferenciaComentario.TotalDays >= 7)
+                                                        {
+                                                            formatoFechaComentario = fechaComentario.ToString("dd/MM/yyyy");
+                                                        }
+                                                        else if (diferenciaComentario.TotalDays >= 2)
+                                                        {
+                                                            formatoFechaComentario = $"{(int)diferenciaComentario.TotalDays} días atrás";
+                                                        }
+                                                        else if (diferenciaComentario.TotalDays >= 1)
+                                                        {
+                                                            formatoFechaComentario = "Ayer";
+                                                        }
+                                                        else
+                                                        {
+                                                            formatoFechaComentario = "Hoy";
+                                                        }
+                                                    }
+                                                    <h4 class="username">@nombreUsuario</h4>
+                                                </div>
+                                                <div class="tweet-body">
+                                                    <p class="tweet-content">@comentario.Comentario1</p>
+                                                </div>
+                                                <div class="tweet-footer">
+                                                    <span class="timestamp">Fecha de publicación: @formatoFechaComentario</span>
+                                                    <!-- <span class="like-count">10 likes</span>
+                                                    <span class="comment-count">@item.Comentarios.Count comentarios</span>
+                                                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalDetalles-@item.IdLugar">
+                                                        Ver más
+                                                    </a> -->
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p>No hay comentarios.</p>
+                                    }
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No hay publicaciones disponibles.</p>
+        }
+    </div>
+</div>
+
+
+

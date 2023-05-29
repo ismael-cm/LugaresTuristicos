@@ -1,5 +1,6 @@
 ﻿using LugaresTuristicos.Commod;
 using LugaresTuristicos.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,7 @@ namespace LugaresTuristicos.Areas.Admin.Controllers
 {
     [Area("admin")]
     [Route("admin/[controller]/[action]")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CategoriaController : Controller
     {
         private readonly ILogger<CategoriaController> _logger;

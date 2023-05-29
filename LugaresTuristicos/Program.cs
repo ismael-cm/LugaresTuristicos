@@ -1,4 +1,5 @@
 using LugaresTuristicos.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,16 @@ var configuration = new ConfigurationBuilder()
 
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
+
+//Agregar Autentication
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(option =>
+    {
+        option.LoginPath = "/Home/Login";
+        option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        option.AccessDeniedPath = "/Home/Privacity";
+    });
 
 // Add database context
 var connectionString = configuration.GetConnectionString("DefaultConnection");
@@ -48,7 +59,7 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=dashboard}/{id?}");
 app.MapRazorPages();
 
 app.Run();

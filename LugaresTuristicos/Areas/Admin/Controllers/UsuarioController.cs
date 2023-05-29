@@ -1,22 +1,16 @@
 ﻿using LugaresTuristicos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static System.Net.Mime.MediaTypeNames;
-
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.PixelFormats;
-using System.IO;
-using Image = SixLabors.ImageSharp.Image;
 using LugaresTuristicos.Commod;
 using System.Text;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LugaresTuristicos.Areas.Admin.Controllers
 {
     [Area("admin")]
     [Route("admin/[controller]/[action]")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class UsuarioController : Controller
     {
         private readonly ILogger<UsuarioController> _logger;
@@ -284,7 +278,7 @@ namespace LugaresTuristicos.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
 
-            var usuario = _dbContext.Usuarios.Include(l => l.IdRolNavigation)
+            var usuario = _dbContext.Usuarios.Include(l => l.Rol)
                                             .FirstOrDefault(u => u.IdUsuario == id);
 
             if (usuario == null)
