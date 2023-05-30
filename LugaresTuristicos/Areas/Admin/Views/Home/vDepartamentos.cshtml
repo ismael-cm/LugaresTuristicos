@@ -53,7 +53,7 @@
             <div class="modal-body">
 
                 <form id="Form2">
-                    <input id="IdDepto2" class="form-control" placeholder="IdDepto" />
+                    <input id="IdDepto2" class="form-control" placeholder="IdDepto" hidden/>
                     <div class="form-group mb-1">
                         <label class="control-label">Nombre del departamento</label>
                         <input id="Departamento2" class="form-control" />
@@ -212,6 +212,7 @@
                         confirmButtonText: 'OK'
                     })
                 }
+                document.getElementById("Departamento1").value = "";
             });
 
 

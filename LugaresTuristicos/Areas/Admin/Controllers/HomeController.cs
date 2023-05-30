@@ -76,6 +76,41 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
         }
 
         [HttpPost]
+        public IActionResult getTablaCategoria()
+        {
+            List<Categoria> lstCategoria = contexto.Categorias.Where(x => x.Estado == true).ToList();
+            return Json(lstCategoria);
+        }
+
+        [HttpPost]
+        public IActionResult getTablaUsuario()
+        {
+            var lstUsuario = (from usuario in contexto.Usuarios
+                             join rol in contexto.Rols on usuario.IdRol equals rol.IdRol
+                             where usuario.Estado == true
+                             select new
+                             {
+                                 idUsuario = usuario.IdUsuario,
+                                 nombre = usuario.Nombre,
+                                 apellido = usuario.Apellido,
+                                 edad = usuario.Edad,
+                                 correo = usuario.Correo,
+                                 fecha = usuario.FechaCreacion,
+                                 idRol = rol.IdRol,
+                                 rol = rol.NombreRol
+                             }).ToList();
+
+            return Json(lstUsuario);
+        }
+
+        [HttpPost]
+        public IActionResult getCorreo(string correo)
+        {
+            List<Usuario> lstUsuario = contexto.Usuarios.Where(x => x.Correo == correo).ToList();
+            return Json(lstUsuario);
+        }
+
+        [HttpPost]
         public ActionResult guardarBlackList(Blacklist black)
         {
             Blacklist obj = new Blacklist();
@@ -133,6 +168,81 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
         }
 
         [HttpPost]
+        public ActionResult guardarCategoria(Categoria categoria)
+        {
+            Categoria obj = new Categoria();
+            obj.NombreCategoria = categoria.NombreCategoria;
+            obj.Estado = true;
+            try
+            {
+                contexto.Categorias.Add(obj);
+                contexto.SaveChanges();
+                return Json(true);
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult guardarUsuario(Usuario model)
+        {
+            try
+            {
+                string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "DefaultUser.png");
+
+                byte[] imageBytes;
+                using (FileStream fileStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        fileStream.CopyTo(memoryStream);
+                        imageBytes = memoryStream.ToArray();
+                    }
+                }
+
+                /***********************Encryption**********************************************/
+                // Get the bytes of the string
+                byte[] bytesToBeEncrypted = Encoding.UTF8.GetBytes(model.Password);
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(model.Password);
+
+                // Hash the password with SHA256
+                passwordBytes = SHA256.Create().ComputeHash(passwordBytes);
+
+                byte[] bytesEncrypted = validationClass.AES_Encrypt(bytesToBeEncrypted, passwordBytes);
+
+                string encryptedResult = Convert.ToBase64String(bytesEncrypted);
+                /***********************End*Encryption******************************************/
+
+                // Preparacion del usuario que se guardara a la base de datos
+                var user = new Usuario
+                {
+                    Nombre = model.Nombre,
+                    Apellido = model.Apellido,
+                    Estado = true,
+                    Edad = model.Edad,
+                    Correo = model.Correo,
+                    Password = encryptedResult,
+                    IdRol = model.IdRol,
+                    Imagen = imageBytes,
+                    FechaCreacion = DateTime.Now,
+                };
+
+                _dbContext.Usuarios.Add(user);
+                _dbContext.SaveChanges();
+                return Json(true);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+            return Json(false);
+        }
+
+        [HttpPost]
         public IActionResult EliminarBlackList(int id)
         {
             try
@@ -181,6 +291,46 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
                 objDel.Estado = false;
                 //contexto.Departamentos.Remove(objDel);
                 contexto.Departamentos.Update(objDel);
+                contexto.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult EliminarCategoria(int id)
+        {
+            try
+            {
+                var objDel = contexto.Categorias.FirstOrDefault(x => x.IdCategoria == id);
+                objDel.Estado = false;
+                //contexto.Categorias.Remove(objDel);
+                contexto.Categorias.Update(objDel);
+                contexto.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult EliminarUsuario(int id)
+        {
+            try
+            {
+                var objDel = contexto.Usuarios.FirstOrDefault(x => x.IdUsuario == id);
+                objDel.Estado = false;
+                //contexto.Categorias.Remove(objDel);
+                contexto.Usuarios.Update(objDel);
                 contexto.SaveChanges();
                 return Json(true);
             }
@@ -250,6 +400,47 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult ActualizarCategoria(int id, string valor)
+        {
+            try
+            {
+                var objUpt = contexto.Categorias.FirstOrDefault(x => x.IdCategoria == id);
+                objUpt.NombreCategoria = valor;
+                contexto.Categorias.Update(objUpt);
+                contexto.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarUsuario(int id, string nombre, string apellido, int edad, int idRol)
+        {
+            try
+            {
+                var objUpt = contexto.Usuarios.FirstOrDefault(x => x.IdUsuario == id);
+                objUpt.Nombre = nombre;
+                objUpt.Apellido = apellido;
+                objUpt.Edad = edad;
+                objUpt.IdRol = idRol;
+                contexto.Usuarios.Update(objUpt);
+                contexto.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
+
         public IActionResult vBlackList()
         {
             return View();
@@ -267,6 +458,17 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
             return View(municipio);
         }
 
+        public IActionResult vCategorias()
+        {
+            return View();
+        }
+
+        public IActionResult vUsuarios()
+        {
+            ViewBag.Usuarios = contexto.Rols.Where(x => x.Estado == true).ToList();
+            Usuario usuario = new Usuario();
+            return View(usuario);
+        }
 
     }
 }

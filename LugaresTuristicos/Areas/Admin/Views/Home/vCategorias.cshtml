@@ -1,7 +1,7 @@
-﻿@model Blacklist
+﻿@model Categoria
 
 
-<h3>Mantenimiento de palabras ofensivas</h3>
+<h3>Mantenimiento de Categoria</h3>
 
 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
@@ -20,14 +20,16 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Agregando palabra</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Agregando Categoria</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
 
                 <form id="Form1">
-                    @*<input asp-for="IdBlacklist" class="form-control" placeholder="IdBlacklist" hidden/>*@
-                    <input asp-for="Palabra" class="form-control" placeholder="Palabra" />
+                    <div class="form-group mb-1">
+                        <label asp-for="NombreCategoria" class="control-label">Nombre de la categoria</label>
+                        <input asp-for="NombreCategoria" class="form-control" />
+                    </div>
                 </form>
 
             </div>
@@ -45,14 +47,17 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Mofificar palabra</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Modificar Categoria</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
 
                 <form id="Form2">
-                    <input id="IdBlacklist2" class="form-control" placeholder="IdBlacklist" hidden />
-                    <input id="Palabra2" class="form-control" placeholder="Palabra" />
+                    <input id="IdCategoria2" class="form-control" placeholder="IdDepto" hidden />
+                    <div class="form-group mb-1">
+                        <label class="control-label">Nombre de la Categoria</label>
+                        <input id="NombreCategoria2" class="form-control" />
+                    </div>
                 </form>
 
             </div>
@@ -66,27 +71,29 @@
 
 
 
+
 @section Scripts{
     <script>
         function cargarTabla() {
             $.ajax({
-                url: '/admin/Home/getTablaBlackList',
+                url: '/admin/Home/getTablaCategoria',
                 type: 'post',
                 dataType: 'json',
                 cache: false
             }).done(function (resp) {
-                //console.log(resp);
+                console.log(resp);
                 var div = $("#contenido");
-                var tabla = "<table id='tabla' class='table table-striped table-hover'><thead class='table-dark'><tr><th>Blacklist ID</th><th>Palabra</th><th>Acciones</th></tr></thead><tbody>";
-                $.each(resp, function (index, blacklist) {
+                var tabla = "<table id='tabla' class='table table-striped table-hover'><thead class='table-dark'><tr><th>Categoria ID</th><th>Categoria</th><th>Acciones</th></tr></thead><tbody>";
+                $.each(resp, function (index, categoria) {
                     tabla += "<tr>";
-                    tabla += "<td>" + blacklist.idBlacklist + "</td>";
-                    tabla += "<td>" + blacklist.palabra + "</td>";
+                    tabla += "<td>" + categoria.idCategoria + "</td>";
+                    tabla += "<td>" + categoria.nombreCategoria + "</td>";
 
-                    var texto = blacklist.palabra;
+                    var texto = categoria.nombreCategoria;
                     var textoModificado = texto.replace(/ /g, "-");
+                    //console.log(textoModificado);
 
-                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='btn btn-light' onclick=cargarUpt('" + blacklist.idBlacklist + "," + textoModificado + "') >Editar</a> | <a class='btn btn-danger' href=\"javascript:cargarDel('" + blacklist.idBlacklist + "')\">Eliminar</a></td>";
+                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='btn btn-light' onclick=cargarUpt('" + categoria.idCategoria + "," + textoModificado + "') >Editar</a> | <a class='btn btn-danger' href=\"javascript:cargarDel('" + categoria.idCategoria + "')\">Eliminar</a></td>";
                     tabla += "</tr>";
                 });
                 tabla += "</tbody></table>";
@@ -96,7 +103,7 @@
 
         }
 
-        function cargarDel(IdBlacklist) {
+        function cargarDel(idCategoria) {
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
                     confirmButton: 'btn btn-success',
@@ -116,11 +123,11 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '@Url.Action("EliminarBlackList", "Home")',
+                        url: '@Url.Action("EliminarCategoria", "Home")',
                         type: 'post',
                         dataType: 'json',
                         cache: false,
-                        data: { id: IdBlacklist }
+                        data: { id: idCategoria }
                     }).done(function (resp) {
                         if (resp) {
                             swalWithBootstrapButtons.fire(
@@ -155,9 +162,8 @@
             var textoModificado = obj[1];
             var textoOriginal = textoModificado.replace(/-/g, " ");
 
-            document.getElementById("IdBlacklist2").value = obj[0];
-            document.getElementById("Palabra2").value = textoOriginal;
-
+            document.getElementById("IdCategoria2").value = obj[0];
+            document.getElementById("NombreCategoria2").value = textoOriginal;
 
         }
 
@@ -166,12 +172,12 @@
             cargarTabla();
 
             $("#btnGuardar").click(function () {
-                if ($("#Palabra").val() != "") {
+                if ($("#Departamento1").val() != "") {
 
                     var formulario = $("#Form1").serialize();
 
                     $.ajax({
-                        url: '@Url.Action("guardarBlackList","Home")',
+                        url: '@Url.Action("guardarCategoria","Home")',
                         type: 'post',
                         cache: false,
                         dataType: 'json',
@@ -206,7 +212,8 @@
                         confirmButtonText: 'OK'
                     })
                 }
-                document.getElementById("Palabra").value = "";
+
+                document.getElementById("NombreCategoria").value = "";
 
             });
 
@@ -214,17 +221,18 @@
 
             $("#btnActualizar").click(function () {
                 //console.log(1);
-                if ($("#Palabra2").val() != "" && $("#IdBlacklist2").val() != "") {
+                if ($("#IdCategoria2").val() != "" && $("#NombreCategoria2").val() != "") {
 
                     var formulario = $("#Form2").serialize();
-                    var obj1 = document.getElementById("IdBlacklist2").value;
-                    var obj2 = document.getElementById("Palabra2").value;
+
+                    var obj1 = document.getElementById("IdCategoria2").value;
+                    var obj2 = document.getElementById("NombreCategoria2").value;
 
                     console.log(obj1);
                     console.log(obj2);
 
                     $.ajax({
-                        url: '@Url.Action("ActualizarBlackList","Home")',
+                        url: '@Url.Action("ActualizarCategoria","Home")',
                         type: 'post',
                         cache: false,
                         dataType: 'json',

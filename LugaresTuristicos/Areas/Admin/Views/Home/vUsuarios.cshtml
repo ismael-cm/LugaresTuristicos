@@ -1,0 +1,518 @@
+﻿@model Usuario
+
+<h3>Mantenimiento de Usuarios</h3>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
+</div>
+<br />
+
+<div id="container ">
+    <div class="row">
+        <div class="col-md-12" id="contenido">
+        </div>
+    </div>
+</div>
+
+<!-- Modal agregar -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregando Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="Form1">
+                <div class="modal-body">
+
+                
+                        <div class="form-group mb-1">
+                            <label asp-for="Nombre" class="control-label">Nombre</label>
+                            <input asp-for="Nombre" class="form-control" required/>
+                            <label asp-for="Apellido" class="control-label">Apellido</label>
+                            <input asp-for="Apellido" class="form-control" required />
+                            <label asp-for="Edad" class="control-label">Edad</label>
+                        <input asp-for="Edad" class="form-control" required min="14" max="99" />
+                            <label asp-for="Correo" class="control-label">Correo</label>
+                            <input asp-for="Correo" class="form-control" type="email" required />
+                            <label asp-for="Password" class="control-label">Password</label>
+                            <input asp-for="Password" class="form-control" type="password" required data-bs-toggle="popover" data-bs-title="Requisitos" data-bs-content="Agrega mas de 4 caracteres y al menos un numero" />
+                            <div id="feed-1" class="valid-feedback" hidden>
+                                Requisitos correctos!
+                            </div>
+                            <label class="control-label">Confirmar Password</label>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label asp-for="IdRol" class="control-label">Rol</label>
+                            <select asp-for="IdRol" class="form-control">
+                                <option value=""> - Elije uno -</option>
+                                @foreach (Rol rol in ViewBag.Usuarios)
+                                {
+                                    <option value="@rol.IdRol">@rol.NombreRol</option>
+                                }
+                            </select>
+                            <span asp-validation-for="IdRol" class="text-danger"></span>
+                        </div>
+                
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCerrar" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btnGuardar" class="btn btn-primary">Guardar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal actualizar -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modificando Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <form id="Form2">
+                    <div class="form-group mb-1">
+                        <input id="IdUsuario2" class="form-control" hidden required/>
+                        <label class="control-label">Nombre</label>
+                        <input id="Nombre2" class="form-control" required />
+                        <label class="control-label">Apellido</label>
+                        <input id="Apellido2" class="form-control" required />
+                        <label class="control-label">Edad</label>
+                        <input id="Edad2" class="form-control" required/>
+                        <label class="control-label">Correo</label>
+                        <input id="Correo2" class="form-control" type="email" disabled required/>
+
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Rol</label>
+                        <select id="IdRol2" class="form-control" required>
+                            <option value=""> - Elije uno -</option>
+                            @foreach (Rol rol in ViewBag.Usuarios)
+                            {
+                                <option value="@rol.IdRol">@rol.NombreRol</option>
+                            }
+                        </select>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCerrar2" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" id="btnActualizar" class="btn btn-primary">Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    <script>
+        function cargarTabla() {
+            $.ajax({
+                url: '/admin/Home/getTablaUsuario',
+                type: 'post',
+                dataType: 'json',
+                cache: false
+            }).done(function (resp) {
+                console.log(resp);
+                var div = $("#contenido");
+                var tabla = "<table id='tabla' class='table table-striped table-hover'><thead class='table-dark'><tr><th>Usuario ID</th><th>Nombre</th><th>Apellido</th><th>Edad</th><th>Correo</th><th>Rol</th><th>Creacion</th><th>Acciones</th></tr></thead><tbody>";
+                $.each(resp, function (index, usuario) {
+                    tabla += "<tr>";
+                    tabla += "<td>" + usuario.idUsuario + "</td>";
+                    tabla += "<td>" + usuario.nombre + "</td>";
+                    tabla += "<td>" + usuario.apellido + "</td>";
+                    tabla += "<td>" + usuario.edad + "</td>";
+                    tabla += "<td>" + usuario.correo + "</td>";
+                    tabla += "<td>" + usuario.rol + "</td>";
+                    tabla += "<td>" + usuario.fecha + "</td>";
+
+                    var tNombre = usuario.nombre;
+                    var tNombreModificado = tNombre.replace(/ /g, "-");
+                    var tApellido = usuario.apellido;
+                    var tApellidoModificado = tApellido.replace(/ /g, "-");
+                    //console.log(tNombreModificado);
+
+                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='btn btn-light' onclick=cargarUpt('" + usuario.idUsuario
+                        + "," + tNombreModificado + "," + tApellidoModificado + "," + usuario.edad + "," + usuario.correo + "," + usuario.idRol + "') >Editar</a> | <a class='btn btn-danger' href=\"javascript:cargarDel('" + usuario.idUsuario + "')\">Eliminar</a></td>";
+                    tabla += "</tr>";
+                });
+                tabla += "</tbody></table>";
+                div.empty();
+                div.append(tabla);
+            }).fail();
+
+        }
+
+        function cargarDel(idUsuario) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger me-4'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Estas seguro?',
+                text: "Una vez eliminado se pierde definitivamente!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("EliminarUsuario", "Home")',
+                        type: 'post',
+                        dataType: 'json',
+                        cache: false,
+                        data: { id: idUsuario }
+                    }).done(function (resp) {
+                        if (resp) {
+                            swalWithBootstrapButtons.fire(
+                                'Eliminado!',
+                                'Tu registro ha sido elimando.',
+                                'success'
+                            )
+                            cargarTabla();
+                        } else {
+                            swalWithBootstrapButtons.fire(
+                                'Cancelado',
+                                'Se omitieron los datos',
+                                'error'
+                            )
+                        }
+                    }).fail();
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelado',
+                        'Se han omitido los datos',
+                        'error'
+                    )
+                }
+            })
+        }
+
+        function cargarUpt(valor) {
+
+            var obj = valor.split(',');
+            var tNombreModificado = obj[1];
+            var tNombreOriginal = tNombreModificado.replace(/-/g, " ");
+            var tApellidoModificado = obj[2];
+            var tApellidoOriginal = tApellidoModificado.replace(/-/g, " ");
+
+            document.getElementById("IdUsuario2").value = obj[0];
+            document.getElementById("Nombre2").value = tNombreOriginal;
+            document.getElementById("Apellido2").value = tApellidoOriginal;
+            document.getElementById("Edad2").value = obj[3];
+            document.getElementById("Correo2").value = obj[4];
+            document.getElementById("IdRol2").value = obj[5];
+            
+        }
+
+        function limpiarCajas(){
+            $("#Nombre").val("");
+            $("#Apellido").val("");
+            $("#Edad").val("");
+            $("#Correo").val("");
+            $("#Password").val("");
+            $("#IdRol").val("");
+        }
+
+        function limpiarClases(){
+            document.getElementById("Nombre").classList.remove("is-valid");
+            document.getElementById("Nombre").classList.remove("is-invalid");
+            document.getElementById("Apellido").classList.remove("is-valid");
+            document.getElementById("Apellido").classList.remove("is-invalid");
+            document.getElementById("Edad").classList.remove("is-valid");
+            document.getElementById("Edad").classList.remove("is-invalid");
+            document.getElementById("Correo").classList.remove("is-valid");
+            document.getElementById("Correo").classList.remove("is-invalid");
+            document.getElementById("Password").classList.remove("is-valid");
+            document.getElementById("Password").classList.remove("is-invalid");
+            document.getElementById("IdRol").classList.remove("is-valid");
+            document.getElementById("IdRol").classList.remove("is-invalid");
+
+            document.getElementById("Nombre2").classList.remove("is-valid");
+            document.getElementById("Nombre2").classList.remove("is-invalid");
+            document.getElementById("Apellido2").classList.remove("is-valid");
+            document.getElementById("Apellido2").classList.remove("is-invalid");
+            document.getElementById("Edad2").classList.remove("is-valid");
+            document.getElementById("Edad2").classList.remove("is-invalid");
+            document.getElementById("Correo2").classList.remove("is-valid");
+            document.getElementById("Correo2").classList.remove("is-invalid");
+            document.getElementById("Password2").classList.remove("is-valid");
+            document.getElementById("Password2").classList.remove("is-invalid");
+            document.getElementById("IdRol2").classList.remove("is-valid");
+            document.getElementById("IdRol2").classList.remove("is-invalid");
+        }
+
+        $(document).ready(function () {
+
+            const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+            const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+            var inputNombre = document.getElementById("Nombre");
+            function validarNombre() {
+
+                var valor = inputNombre.value.trim();
+                if (valor.length >= 4) {
+                    inputNombre.classList.add("is-valid");
+                    inputNombre.classList.remove("is-invalid");
+                } else {
+                    inputNombre.classList.add("is-invalid");
+                    inputNombre.classList.remove("is-valid");
+                }
+            }
+
+            inputNombre.addEventListener("keypress", function () {
+                validarNombre();
+            });
+
+            inputNombre.addEventListener("keydown", function () {
+                setTimeout(validarNombre, 0);
+            });
+
+            var inputApellido = document.getElementById("Apellido");
+            function validarApellido() {
+
+                var valor = inputApellido.value.trim();
+                if (valor.length >= 4) {
+                    inputApellido.classList.add("is-valid");
+                    inputApellido.classList.remove("is-invalid");
+                } else {
+                    inputApellido.classList.add("is-invalid");
+                    inputApellido.classList.remove("is-valid");
+                }
+            }
+
+            inputApellido.addEventListener("keypress", function () {
+                validarApellido();
+            });
+
+            inputApellido.addEventListener("keydown", function () {
+                setTimeout(validarApellido, 0);
+            });
+
+            var inputEdad = document.getElementById("Edad");
+            inputEdad.addEventListener("keypress", function (event) {
+                var keyCode = event.keyCode || event.which;
+
+                if (keyCode < 48 || keyCode > 57) {
+                    event.preventDefault();
+                    inputEdad.classList.add("is-invalid");
+                    inputEdad.classList.remove("is-valid");
+                }else{
+                    inputEdad.classList.add("is-valid");
+                    inputEdad.classList.remove("is-invalid");
+                    
+                }
+            });
+
+            var inputEmail = document.getElementById("Correo");
+            var correo = inputEmail.value;
+            inputEmail.addEventListener("keypress", function(event) {
+             
+              var char = String.fromCharCode(event.keyCode);              
+              var pattern = /[a-zA-Z0-9@@._-]/;
+
+              if (!pattern.test(char)) {
+                if(correo.includes("@@") && correo.includes(".")){
+                        event.preventDefault();
+                        inputEmail.classList.add("is-invalid");
+                        inputEmail.classList.remove("is-valid");
+                }else{
+                        inputEmail.classList.add("is-valid");
+                        inputEmail.classList.remove("is-invalid");
+                }
+              }else{
+                    inputEmail.classList.add("is-valid");
+                    inputEmail.classList.remove("is-invalid");
+              }
+            });
+
+
+
+            var inputPassword = document.getElementById("Password");
+            function validarPassword() {
+
+                var valor = inputPassword.value.trim();
+                if (valor.length > 4 && /\d/.test(valor)) {
+                    inputPassword.classList.add("is-valid");
+                    inputPassword.classList.remove("is-invalid");
+                    document.getElementById("feed-1").removeAttribute("hidden");
+                } else {
+                    inputPassword.classList.add("is-invalid");
+                    inputPassword.classList.remove("is-valid");
+                    document.getElementById("feed-1").setAttribute("hidden","");
+                }
+            }
+
+            inputPassword.addEventListener("keypress", function () {
+                validarPassword();
+            });
+
+            inputPassword.addEventListener("keydown", function () {
+                setTimeout(validarPassword, 0);
+            });
+
+            var selectRol = document.getElementById("IdRol");
+            selectRol.addEventListener("change", function () {
+                if (selectRol.value !== "") {
+                    selectRol.classList.add("is-valid");
+                    selectRol.classList.remove("is-invalid");
+                } else {
+                    selectRol.classList.add("is-invalid");
+                    selectRol.classList.remove("is-valid");
+                }
+            });
+
+
+            cargarTabla();
+
+            $("#btnGuardar").click(function () {
+                if ($("#Nombre").val() != "" && $("#Apellido").val() != "" &&
+                    $("#Edad").val() != "" && $("#Correo").val() != "" &&
+                    $("#Password").val() != "" && $("#IdRol").val() != ""){
+
+                    var formulario = $("#Form1").serialize();
+                    var inputsInvalidos = $("#Form1 .is-invalid").length;
+                    var corr = $("#Correo").val();
+
+                    $.ajax({
+                        url: '@Url.Action("getCorreo","Home")',
+                        type: 'post',
+                        cache: false,
+                        dataType: 'json',
+                        data: { correo: corr }
+                    }).done(function(resp){
+                        //console.log(resp);
+                        if(resp.length > 0){
+                            Swal.fire({
+                                title: 'El correo electronico ya existe',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        }else{
+                            if(inputsInvalidos === 0){
+                                $.ajax({
+                                    url: '@Url.Action("guardarUsuario","Home")',
+                                    type: 'post',
+                                    cache: false,
+                                    dataType: 'json',
+                                    data: formulario
+                                }).done(function (respuesta) {
+                                    //console.log(respuesta);
+                                    if (respuesta) {
+                                        Swal.fire({
+                                            title: 'El registro ha sido agregado correctamente',
+                                            icon: 'success',
+                                            confirmButtonText: 'Continuar'
+                                        })
+                                        cargarTabla();
+                                        $("#btnCerrar").click();
+                                        limpiarCajas();
+                                        limpiarClases();
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Hubo un error al momento de agregar el dato',
+                                            icon: 'error',
+                                            confirmButtonText: 'Continuar'
+                                        })
+                                    }
+                                }).fail(function () {
+                                    Swal.fire({
+                                        title: 'Hubo un error al momento de agregar el dato',
+                                        icon: 'error',
+                                        confirmButtonText: 'Continuar'
+                                    })
+                                });
+                            }else{
+                                Swal.fire({
+                                    title: 'Verifica los textos en rojo para continuar',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            }
+                        }
+                    }).fail(); 
+                } else {
+                    Swal.fire({
+                        title: 'Todos los campos son obligatorios',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                }
+                //document.getElementById("Municipio1").value = "";
+            });
+
+
+
+            $("#btnActualizar").click(function () {
+                //console.log(1);
+                if ($("#IdUsuario2").val() != "" && $("#Nombre2").val() != "" && $("#Apellido2").val() != ""
+                    && $("#Edad2").val() != "" && $("#IdRol2").val() != "") {
+
+                    var formulario = $("#Form2").serialize();
+
+                    var obj1 = document.getElementById("IdUsuario2").value;
+                    var obj2 = document.getElementById("Nombre2").value;
+                    var obj3 = document.getElementById("Apellido2").value;
+                    var obj4 = document.getElementById("Edad2").value;
+                    //var obj5 = document.getElementById("Correo2").value;
+                    var obj6 = document.getElementById("IdRol2").value;
+
+                    $.ajax({
+                        url: '@Url.Action("ActualizarUsuario","Home")',
+                        type: 'post',
+                        cache: false,
+                        dataType: 'json',
+                        data: { id: obj1, nombre: obj2, apellido: obj3, edad: obj4, idRol: obj6 }
+                    }).done(function (resp) {
+                        if (resp) {
+                            Swal.fire({
+                                title: 'El registro ha sido modificado correctamente',
+                                icon: 'success',
+                                confirmButtonText: 'Continuar'
+                            })
+                            cargarTabla();
+                            $("#btnCerrar2").click();
+                        } else {
+                            Swal.fire({
+                                title: 'Hubo un error al momento de actualizar el dato',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        }
+                    }).fail(function () {
+                        Swal.fire({
+                            title: 'Hubo un error al momento de actualizar el dato',
+                            icon: 'error',
+                            confirmButtonText: 'Continuar'
+                        })
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Todos los campos son obligatorios',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            });
+        });
+    </script>
+
+}
