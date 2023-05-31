@@ -85,7 +85,7 @@
                         <label class="control-label">Apellido</label>
                         <input id="Apellido2" class="form-control" required />
                         <label class="control-label">Edad</label>
-                        <input id="Edad2" class="form-control" required/>
+                        <input id="Edad2" class="form-control" required min="14" max="99" />
                         <label class="control-label">Correo</label>
                         <input id="Correo2" class="form-control" type="email" disabled required/>
 
@@ -125,7 +125,7 @@
             }).done(function (resp) {
                 console.log(resp);
                 var div = $("#contenido");
-                var tabla = "<table id='tabla' class='table table-striped table-hover'><thead class='table-dark'><tr><th>Usuario ID</th><th>Nombre</th><th>Apellido</th><th>Edad</th><th>Correo</th><th>Rol</th><th>Creacion</th><th>Acciones</th></tr></thead><tbody>";
+                var tabla = "<table id='tabla' class='fw-light table table-striped table-hover'><thead class='table-dark'><tr><th>Usuario ID</th><th>Nombre</th><th>Apellido</th><th>Edad</th><th>Correo</th><th>Rol</th><th>Creacion</th><th>Acciones</th></tr></thead><tbody>";
                 $.each(resp, function (index, usuario) {
                     tabla += "<tr>";
                     tabla += "<td>" + usuario.idUsuario + "</td>";
@@ -142,13 +142,22 @@
                     var tApellidoModificado = tApellido.replace(/ /g, "-");
                     //console.log(tNombreModificado);
 
-                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='btn btn-light' onclick=cargarUpt('" + usuario.idUsuario
-                        + "," + tNombreModificado + "," + tApellidoModificado + "," + usuario.edad + "," + usuario.correo + "," + usuario.idRol + "') >Editar</a> | <a class='btn btn-danger' href=\"javascript:cargarDel('" + usuario.idUsuario + "')\">Eliminar</a></td>";
+                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='fw-light btn btn-light' onclick=cargarUpt('" + usuario.idUsuario
+                        + "," + tNombreModificado + "," + tApellidoModificado + "," + usuario.edad + "," + usuario.correo + "," + usuario.idRol + "') >Editar</a> | <a class='fw-light btn btn-danger' href=\"javascript:cargarDel('" + usuario.idUsuario + "')\">Eliminar</a></td>";
                     tabla += "</tr>";
                 });
                 tabla += "</tbody></table>";
                 div.empty();
                 div.append(tabla);
+
+                //$('#tabla').DataTable();
+
+                var table = new DataTable('#tabla', {
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json',
+                    },
+                });
+
             }).fail();
 
         }
@@ -262,6 +271,7 @@
 
         $(document).ready(function () {
 
+            // Modal Agregar
             const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
             const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 
@@ -344,8 +354,6 @@
               }
             });
 
-
-
             var inputPassword = document.getElementById("Password");
             function validarPassword() {
 
@@ -357,7 +365,7 @@
                 } else {
                     inputPassword.classList.add("is-invalid");
                     inputPassword.classList.remove("is-valid");
-                    document.getElementById("feed-1").setAttribute("hidden","");
+                    document.getElementById("feed-1").setAttribute("hidden", "");
                 }
             }
 
@@ -380,6 +388,79 @@
                 }
             });
 
+            // Termina Modal Agregar
+
+            // Modal Actualizar
+
+            var inputNombre2 = document.getElementById("Nombre2");
+            function validarNombre2() {
+
+                var valor = inputNombre2.value.trim();
+                if (valor.length >= 4) {
+                    inputNombre2.classList.add("is-valid");
+                    inputNombre2.classList.remove("is-invalid");
+                } else {
+                    inputNombre2.classList.add("is-invalid");
+                    inputNombre2.classList.remove("is-valid");
+                }
+            }
+
+            inputNombre2.addEventListener("keypress", function () {
+                validarNombre2();
+            });
+
+            inputNombre2.addEventListener("keydown", function () {
+                setTimeout(validarNombre2, 0);
+            });
+
+            var inputApellido2 = document.getElementById("Apellido2");
+            function validarApellido2() {
+
+                var valor = inputApellido2.value.trim();
+                if (valor.length >= 4) {
+                    inputApellido2.classList.add("is-valid");
+                    inputApellido2.classList.remove("is-invalid");
+                } else {
+                    inputApellido2.classList.add("is-invalid");
+                    inputApellido2.classList.remove("is-valid");
+                }
+            }
+
+            inputApellido2.addEventListener("keypress", function () {
+                validarApellido2();
+            });
+
+            inputApellido2.addEventListener("keydown", function () {
+                setTimeout(validarApellido2, 0);
+            });
+
+            var inputEdad2 = document.getElementById("Edad2");
+            inputEdad2.addEventListener("keypress", function (event) {
+                var keyCode = event.keyCode || event.which;
+
+                if (keyCode < 48 || keyCode > 57) {
+                    event.preventDefault();
+                    inputEdad2.classList.add("is-invalid");
+                    inputEdad2.classList.remove("is-valid");
+                } else {
+                    inputEdad2.classList.add("is-valid");
+                    inputEdad2.classList.remove("is-invalid");
+
+                }
+            });
+
+            var selectRol2 = document.getElementById("IdRol2");
+            selectRol2.addEventListener("change", function () {
+                if (selectRol2.value !== "") {
+                    selectRol2.classList.add("is-valid");
+                    selectRol2.classList.remove("is-invalid");
+                } else {
+                    selectRol2.classList.add("is-invalid");
+                    selectRol2.classList.remove("is-valid");
+                }
+            });
+
+            // Termina Modal Actualizar
 
             cargarTabla();
 
@@ -467,6 +548,7 @@
                     && $("#Edad2").val() != "" && $("#IdRol2").val() != "") {
 
                     var formulario = $("#Form2").serialize();
+                    var inputsInvalidos2 = $("#Form2 .is-invalid").length;
 
                     var obj1 = document.getElementById("IdUsuario2").value;
                     var obj2 = document.getElementById("Nombre2").value;
@@ -475,35 +557,46 @@
                     //var obj5 = document.getElementById("Correo2").value;
                     var obj6 = document.getElementById("IdRol2").value;
 
-                    $.ajax({
-                        url: '@Url.Action("ActualizarUsuario","Home")',
-                        type: 'post',
-                        cache: false,
-                        dataType: 'json',
-                        data: { id: obj1, nombre: obj2, apellido: obj3, edad: obj4, idRol: obj6 }
-                    }).done(function (resp) {
-                        if (resp) {
-                            Swal.fire({
-                                title: 'El registro ha sido modificado correctamente',
-                                icon: 'success',
-                                confirmButtonText: 'Continuar'
-                            })
-                            cargarTabla();
-                            $("#btnCerrar2").click();
-                        } else {
+                    if(inputsInvalidos2 === 0){
+                        $.ajax({
+                            url: '@Url.Action("ActualizarUsuario","Home")',
+                            type: 'post',
+                            cache: false,
+                            dataType: 'json',
+                            data: { id: obj1, nombre: obj2, apellido: obj3, edad: obj4, idRol: obj6 }
+                        }).done(function (resp) {
+                            if (resp) {
+                                Swal.fire({
+                                    title: 'El registro ha sido modificado correctamente',
+                                    icon: 'success',
+                                    confirmButtonText: 'Continuar'
+                                })
+                                cargarTabla();
+                                $("#btnCerrar2").click();
+                                limpiarCajas();
+                                limpiarClases();
+                            } else {
+                                Swal.fire({
+                                    title: 'Hubo un error al momento de actualizar el dato',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            }
+                        }).fail(function () {
                             Swal.fire({
                                 title: 'Hubo un error al momento de actualizar el dato',
                                 icon: 'error',
                                 confirmButtonText: 'Continuar'
                             })
-                        }
-                    }).fail(function () {
+                        });
+                    }else{
                         Swal.fire({
-                            title: 'Hubo un error al momento de actualizar el dato',
+                            title: 'Verifica los textos en rojo para continuar',
                             icon: 'error',
                             confirmButtonText: 'Continuar'
                         })
-                    });
+                    }
+
                 } else {
                     Swal.fire({
                         title: 'Todos los campos son obligatorios',

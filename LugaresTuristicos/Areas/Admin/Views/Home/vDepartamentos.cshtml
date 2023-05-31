@@ -10,7 +10,7 @@
 
 <div id="container ">
     <div class="row">
-        <div class="col-md-6 offset-md-3" id="contenido">
+        <div class="col-md-8 offset-md-2" id="contenido">
         </div>
     </div>
 </div>
@@ -23,20 +23,18 @@
                 <h5 class="modal-title" id="exampleModalLabel">Agregando Departamento</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-
-                <form id="Form1">
+            <form id="Form1">
+                <div class="modal-body">
                     <div class="form-group mb-1">
                         <label asp-for="Departamento1" class="control-label">Nombre Departamento</label>
-                        <input asp-for="Departamento1" class="form-control" />
+                        <input asp-for="Departamento1" class="form-control" required/>
                     </div>
-                </form>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="btnCerrar" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" id="btnGuardar" class="btn btn-primary">Guardar</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCerrar" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btnGuardar" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -50,21 +48,19 @@
                 <h5 class="modal-title" id="exampleModalLabel">Mofificar Departamento</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-
-                <form id="Form2">
+            <form id="Form2">
+                <div class="modal-body">
                     <input id="IdDepto2" class="form-control" placeholder="IdDepto" hidden/>
                     <div class="form-group mb-1">
                         <label class="control-label">Nombre del departamento</label>
-                        <input id="Departamento2" class="form-control" />
+                        <input id="Departamento2" class="form-control" required/>
                     </div>
-                </form>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="btnCerrar2" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" id="btnActualizar" class="btn btn-primary">Actualizar</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCerrar2" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btnActualizar" class="btn btn-primary">Actualizar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -83,7 +79,7 @@
             }).done(function (resp) {
                 console.log(resp);
                 var div = $("#contenido");
-                var tabla = "<table id='tabla' class='table table-striped table-hover'><thead class='table-dark'><tr><th>Departamento ID</th><th>Departamento</th><th>Acciones</th></tr></thead><tbody>";
+                var tabla = "<table id='tabla' class='fw-light table table-striped table-hover'><thead class='table-dark'><tr><th>Departamento ID</th><th>Departamento</th><th>Acciones</th></tr></thead><tbody>";
                 $.each(resp, function (index, departamento) {
                     tabla += "<tr>";
                     tabla += "<td>" + departamento.idDepto + "</td>";
@@ -93,12 +89,21 @@
                     var textoModificado = texto.replace(/ /g, "-");
                     //console.log(textoModificado);
 
-                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='btn btn-light' onclick=cargarUpt('" + departamento.idDepto + "," + textoModificado + "') >Editar</a> | <a class='btn btn-danger' href=\"javascript:cargarDel('" + departamento.idDepto + "')\">Eliminar</a></td>";
+                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='fw-light btn btn-light' onclick=cargarUpt('" + departamento.idDepto + "," + textoModificado + "') >Editar</a> | <a class='fw-light btn btn-danger' href=\"javascript:cargarDel('" + departamento.idDepto + "')\">Eliminar</a></td>";
                     tabla += "</tr>";
                 });
                 tabla += "</tbody></table>";
                 div.empty();
                 div.append(tabla);
+
+                //$('#tabla').DataTable();
+
+                var table = new DataTable('#tabla', {
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json',
+                    },
+                });
+
             }).fail();
 
         }
@@ -167,7 +172,61 @@
 
         }
 
+        function limpiarCajas(){
+            document.getElementById("Departamento1").value = "";
+        }
+
+        function limpiarClases(){
+            document.getElementById("Departamento1").classList.remove("is-valid");
+            document.getElementById("Departamento1").classList.remove("is-invalid");
+            
+            document.getElementById("Departamento2").classList.remove("is-valid");
+            document.getElementById("Departamento2").classList.remove("is-invalid");
+        }
+
         $(document).ready(function () {
+
+            var inputDepto = document.getElementById("Departamento1");
+            function validarDepto() {
+
+                var valor = inputDepto.value.trim();
+                if (valor.length >= 4) {
+                    inputDepto.classList.add("is-valid");
+                    inputDepto.classList.remove("is-invalid");
+                } else {
+                    inputDepto.classList.add("is-invalid");
+                    inputDepto.classList.remove("is-valid");
+                }
+            }
+
+            inputDepto.addEventListener("keypress", function () {
+                validarDepto();
+            });
+
+            inputDepto.addEventListener("keydown", function () {
+                setTimeout(validarDepto, 0);
+            });
+
+            var inputDepto2 = document.getElementById("Departamento2");
+            function validarDepto2() {
+
+                var valor = inputDepto2.value.trim();
+                if (valor.length >= 4) {
+                    inputDepto2.classList.add("is-valid");
+                    inputDepto2.classList.remove("is-invalid");
+                } else {
+                    inputDepto2.classList.add("is-invalid");
+                    inputDepto2.classList.remove("is-valid");
+                }
+            }
+
+            inputDepto2.addEventListener("keypress", function () {
+                validarDepto2();
+            });
+
+            inputDepto2.addEventListener("keydown", function () {
+                setTimeout(validarDepto2, 0);
+            });
 
             cargarTabla();
 
@@ -175,44 +234,54 @@
                 if ($("#Departamento1").val() != "") {
 
                     var formulario = $("#Form1").serialize();
+                    var inputsInvalidos = $("#Form1 .is-invalid").length;
 
-                    $.ajax({
-                        url: '@Url.Action("guardarDepartamento","Home")',
-                        type: 'post',
-                        cache: false,
-                        dataType: 'json',
-                        data: formulario
-                    }).done(function (resp) {
-                        if (resp) {
-                            Swal.fire({
-                                title: 'El registro ha sido agregado correctamente',
-                                icon: 'success',
-                                confirmButtonText: 'Continuar'
-                            })
-                            cargarTabla();
-                            $("#btnCerrar").click();
-                        } else {
+                    if(inputsInvalidos === 0){
+                        $.ajax({
+                            url: '@Url.Action("guardarDepartamento","Home")',
+                            type: 'post',
+                            cache: false,
+                            dataType: 'json',
+                            data: formulario
+                        }).done(function (resp) {
+                            if (resp) {
+                                Swal.fire({
+                                    title: 'El registro ha sido agregado correctamente',
+                                    icon: 'success',
+                                    confirmButtonText: 'Continuar'
+                                })
+                                cargarTabla();
+                                $("#btnCerrar").click();
+                                limpiarCajas();
+                                limpiarClases();
+                            } else {
+                                Swal.fire({
+                                    title: 'Hubo un error al momento de agregar el dato',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            }
+                        }).fail(function () {
                             Swal.fire({
                                 title: 'Hubo un error al momento de agregar el dato',
                                 icon: 'error',
                                 confirmButtonText: 'Continuar'
                             })
-                        }
-                    }).fail(function () {
+                        });
+                    }else{
                         Swal.fire({
-                            title: 'Hubo un error al momento de agregar el dato',
+                            title: 'Verifica los textos en rojo para continuar',
                             icon: 'error',
                             confirmButtonText: 'Continuar'
                         })
-                    });
+                    }
                 } else {
                     Swal.fire({
                         title: 'Todos los campos son obligatorios',
                         icon: 'warning',
                         confirmButtonText: 'OK'
                     })
-                }
-                document.getElementById("Departamento1").value = "";
+                }                
             });
 
 
@@ -222,42 +291,51 @@
                 if ($("#IdDepto2").val() != "" && $("#Departamento2").val() != "") {
 
                     var formulario = $("#Form2").serialize();
+                    var inputsInvalidos2 = $("#Form2 .is-invalid").length;
 
                     var obj1 = document.getElementById("IdDepto2").value;
                     var obj2 = document.getElementById("Departamento2").value;
 
-                    console.log(obj1);
-                    console.log(obj2);
-
-                    $.ajax({
-                        url: '@Url.Action("ActualizarDepartamento","Home")',
-                        type: 'post',
-                        cache: false,
-                        dataType: 'json',
-                        data: { idDepto: obj1, departamento: obj2 }
-                    }).done(function (resp) {
-                        if (resp) {
-                            Swal.fire({
-                                title: 'El registro ha sido modificado correctamente',
-                                icon: 'success',
-                                confirmButtonText: 'Continuar'
-                            })
-                            cargarTabla();
-                            $("#btnCerrar2").click();
-                        } else {
+                    if(inputsInvalidos2 === 0){
+                        $.ajax({
+                            url: '@Url.Action("ActualizarDepartamento","Home")',
+                            type: 'post',
+                            cache: false,
+                            dataType: 'json',
+                            data: { idDepto: obj1, departamento: obj2 }
+                        }).done(function (resp) {
+                            if (resp) {
+                                Swal.fire({
+                                    title: 'El registro ha sido modificado correctamente',
+                                    icon: 'success',
+                                    confirmButtonText: 'Continuar'
+                                })
+                                cargarTabla();
+                                $("#btnCerrar2").click();
+                                limpiarCajas();
+                                limpiarClases();
+                            } else {
+                                Swal.fire({
+                                    title: 'Hubo un error al momento de actualizar el dato',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            }
+                        }).fail(function () {
                             Swal.fire({
                                 title: 'Hubo un error al momento de actualizar el dato',
                                 icon: 'error',
                                 confirmButtonText: 'Continuar'
                             })
-                        }
-                    }).fail(function () {
+                        });
+                    }else{
                         Swal.fire({
-                            title: 'Hubo un error al momento de actualizar el dato',
+                            title: 'Verifica los textos en rojo para continuar',
                             icon: 'error',
                             confirmButtonText: 'Continuar'
                         })
-                    });
+                    }
+
                 } else {
                     Swal.fire({
                         title: 'Todos los campos son obligatorios',
