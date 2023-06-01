@@ -9,17 +9,17 @@
     <link rel="stylesheet" href="~/LugaresTuristicos.styles.css" asp-append-version="true" />
 
     <script>
-        // Desactivar clic derecho
-        document.addEventListener('contextmenu', function (e) {
-            e.preventDefault();
-        });
+        //// Desactivar clic derecho
+        //document.addEventListener('contextmenu', function (e) {
+        //    e.preventDefault();
+        //});
 
-        // Desactivar F12
-        document.onkeydown = function (e) {
-            if (event.keyCode == 123) {
-                return false;
-            }
-        };
+        //// Desactivar F12
+        //document.onkeydown = function (e) {
+        //    if (event.keyCode == 123) {
+        //        return false;
+        //    }
+        //};
     </script>
 
 </head>
@@ -86,6 +86,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

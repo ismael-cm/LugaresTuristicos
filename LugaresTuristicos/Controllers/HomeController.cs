@@ -2,6 +2,7 @@
 using LugaresTuristicos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
@@ -38,34 +39,40 @@ namespace LugaresTuristicos.Controllers
             return View();
         }
 
-        public IActionResult Dashboard()
-        {
-            try
-            {
-                // Verificar si el usuario ha iniciado sesión
-                if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
-                {
-                    // Si no ha iniciado sesión, redirigir al inicio de sesión
-                    return RedirectToAction("Login"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
-                }
+        //public IActionResult Dashboard()
+        //{
+        //    try
+        //    {
+        //        // Verificar si el usuario ha iniciado sesión
+        //        if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
+        //        {
+        //            // Si no ha iniciado sesión, redirigir al inicio de sesión
+        //            return RedirectToAction("Login"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
+        //        }
 
-                if (TempData["IsLoggedIn"] != null && (bool)TempData["IsLoggedIn"])
-                    TempData["NameUser"] = TempData["IsLoggedInNameUser"];
+        //        if (TempData["IsLoggedIn"] != null && (bool)TempData["IsLoggedIn"])
+        //            TempData["NameUser"] = TempData["IsLoggedInNameUser"];
 
-                List<Lugare> lista = _dbContext.Lugares.Include(l => l.Comentarios)
-                                                       .Include(l => l.IdMunicipioNavigation)
-                                                       .Include(l => l.IdCategoriaNavigation)
-                                                       .Include(l => l.IdUsuarioNavigation)
-                                                       .ToList();
-
-                return View(lista);
-            }
-            catch (Exception ex)
-            {
-                Lugare model = new Lugare();
-                return View(model);
-            }
-        }
+        //        List<Lugare> lista = _dbContext.Lugares.Include(l => l.Comentarios)
+        //                                               .Include(l => l.IdMunicipioNavigation)
+        //                                               .Include(l => l.IdMunicipioNavigation.IdDeptoNavigation)
+        //                                               .Include(l => l.IdCategoriaNavigation)
+        //                                               .Include(l => l.IdUsuarioNavigation)
+        //                                               .ToList();
+                
+        //        var currentUserId=HttpContext.Session.GetString("IdUser");
+        //        var currentUser = _dbContext.Usuarios.FirstOrDefault(s => s.IdUsuario.Equals(int.Parse(currentUserId)));
+        //        CommonProfile allData = new CommonProfile();
+        //        allData.Usuario = currentUser;
+        //        allData.Lugares = lista;
+        //        return View(allData);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Lugare model = new Lugare();
+        //        return View(model);
+        //    }
+        //}
 
         public IActionResult Logout()
         {
@@ -92,11 +99,13 @@ namespace LugaresTuristicos.Controllers
                         TempData["IsLoggedIn"] = true;
                         TempData["IsLoggedInNameUser"] = username;
 
+                        //Almacenando datos del usuario para visualizarlo en perfil
                         // Almacenar datos en la sesión
                         HttpContext.Session.SetString("Username", username);
                         HttpContext.Session.SetString("IdUser", user.IdUsuario.ToString());
+                        
 
-                        return RedirectToAction("Dashboard"); // Redirigir a la página de inicio del usuario autenticado
+                        return RedirectToAction("Dashboard","Turista"); // Redirigir a la página de inicio del usuario autenticado
                     }
                     else
                     {

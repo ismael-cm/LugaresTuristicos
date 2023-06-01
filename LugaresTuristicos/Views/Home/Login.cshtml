@@ -1,22 +1,69 @@
 ﻿@model Usuario
+@{
+    Layout = ("_LayoutLogin");
+}
 
-<form asp-action="Login" method="post">
-    <h2>Log in</h2>
-    <hr />
-    <div class="form-group mb-1">
-        <label class="form-label" for="Correo">Email</label>
-        <input class="form-control" autocomplete="username" aria-required="true" type="email" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Correo" name="Correo" value="" />
-        <span class="text-danger field-validation-valid" data-valmsg-for="Correo" data-valmsg-replace="true"></span>
+<body>
+    <div class="row" style="height: 100%;margin: 0;">
+        <div class="col-lg-7 col-md-7 col-sm-12 im">
+            <div class="header-image">
+                <div class="text-center">
+                    <img src="/Images/Logo.png" height="55px" alt="Sivar Places Logo" />
+                </div>
+                <br />
+                <h1 class="text-center">¡Bienvenido(a) a SivarBook!</h1>
+                <br>
+                <p class="text-center">
+                    Aquí encontrarás información detallada sobre los destinos turísticos más
+                    populares de todo El Salvador.
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-5 col-sm-12 login-content">
+            <div class="login">
+                <form asp-action="Login" method="post">
+                    <p class="text-center titulo">Inicia sesión</p>
+                    <br>
+                    <div class="form-group mb-1">
+                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 4H5a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3Zm-.67 2L12 10.75 5.67 6h12.66ZM19 18H5a1 1 0 0 1-1-1V7.25l7.4 5.55a1 1 0 0 0 1.2 0L20 7.25V17a1 1 0 0 1-1 1Z">
+                            </path>
+                        </svg>
+                        <label class="form-label" for="Correo">Correo electrónico:</label>
+                        <input class="form-control" autocomplete="username" aria-required="true" type="email"
+                               data-val="true" data-val-email="The Email field is not a valid e-mail address."
+                               data-val-required="The Email field is required." id="Correo" name="Correo" value="" />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="Correo"
+                              data-valmsg-replace="true"></span>
+                    </div>
+                    <br />
+                    <div class="form-group mb-1">
+                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17 8h-1V6.11a4 4 0 1 0-8 0V8H7a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-8a3 3 0 0 0-3-3Zm-7-1.89A2.06 2.06 0 0 1 12 4a2.06 2.06 0 0 1 2 2.11V8h-4V6.11ZM18 19a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v8Z">
+                            </path>
+                            <path d="M12 12a3 3 0 1 0 0 5.999A3 3 0 0 0 12 12Zm0 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
+                        </svg>
+                        <label class="form-label" for="Password">Contraseña:</label>
+                        <input class="form-control" autocomplete="current-password" aria-required="true" type="password"
+                               data-val="true" data-val-required="The Password field is required." id="Password"
+                               name="Password" />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="Password"
+                              data-valmsg-replace="true"></span>
+                    </div>
+                    <br>
+                    <div class="col-12">
+                        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Entrar</button>
+                    </div>
+                </form>
+                <br>
+                <p class="text-center">¿No tienes cuenta? <a asp-controller="Home" asp-action="Register"> <b>Regístrate</b> </a> </p>
+
+            </div>
+        </div>
     </div>
-    <div class="form-group mb-1">
-        <label class="form-label" for="Password">Password</label>
-        <input class="form-control" autocomplete="current-password" aria-required="true" type="password" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" />
-        <span class="text-danger field-validation-valid" data-valmsg-for="Password" data-valmsg-replace="true"></span>
-    </div>
-    <div class="col-12">
-        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-    </div>
-</form>
+</body>
 
 @section Scripts {
     <script>
