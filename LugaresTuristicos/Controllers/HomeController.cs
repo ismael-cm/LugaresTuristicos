@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Diagnostics;
-using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
@@ -51,32 +50,24 @@ namespace LugaresTuristicos.Controllers
         [Authorize]
         public IActionResult Index()
         {
+            ClaimsPrincipal claimUser = HttpContext.User;
+            // Verificar si el usuario ha iniciado sesión
+            if (claimUser.Identity.IsAuthenticated)
+            {
+                // Si no ha iniciado sesión, redirigir al inicio de sesión
+                return RedirectToAction("Login"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
+            }
+
             return View();
         }
 
-        [Authorize]
-        public IActionResult Dashboard()
-        {
-            try
-            {
-                List<Lugare> lista = _dbContext.Lugares.Include(l => l.Comentarios)
-                                                       .Include(l => l.IdMunicipioNavigation)
-                                                       .Include(l => l.IdCategoriaNavigation)
-                                                       .Include(l => l.IdUsuarioNavigation)
-                                                       .ToList();
-                return View(lista);
-            }
-            catch (Exception ex)
-            {
-                Lugare model = new Lugare();
-                return View(model);
-            }
-        }
 
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             TempData["error"] = "";
+            HttpContext.Session.Clear();
+            
             return RedirectToAction("Login", "Home");
         }
 

@@ -2,6 +2,8 @@
 using LugaresTuristicos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace LugaresTuristicos.Controllers
 {
@@ -20,15 +22,13 @@ namespace LugaresTuristicos.Controllers
         {
             try
             {
+                ClaimsPrincipal claimUser = HttpContext.User;
                 // Verificar si el usuario ha iniciado sesión
-                if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
+                if (!claimUser.Identity.IsAuthenticated)
                 {
                     // Si no ha iniciado sesión, redirigir al inicio de sesión
-                    return RedirectToAction("Login"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
+                    return RedirectToAction("Login", "Home"); 
                 }
-
-                if (TempData["IsLoggedIn"] != null && (bool)TempData["IsLoggedIn"])
-                    TempData["NameUser"] = TempData["IsLoggedInNameUser"];
 
                 List<Lugare> lista = _dbContext.Lugares.Include(l => l.Comentarios)
                                                        .Include(l => l.IdMunicipioNavigation)
@@ -37,8 +37,10 @@ namespace LugaresTuristicos.Controllers
                                                        .Include(l => l.IdUsuarioNavigation)
                                                        .ToList();
 
-                var currentUserId = HttpContext.Session.GetString("IdUser");
-                var currentUser = _dbContext.Usuarios.FirstOrDefault(s => s.IdUsuario.Equals(int.Parse(currentUserId)));
+                //Para obtener el user id del usuario autenticado
+                var user_id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                var currentUser = _dbContext.Usuarios.FirstOrDefault(s => s.IdUsuario.Equals(int.Parse(user_id)));
                 CommonProfile allData = new CommonProfile();
                 allData.Usuario = currentUser;
                 allData.Lugares = lista;

@@ -59,7 +59,7 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=dashboard}/{id?}");
+    pattern: "{controller=Home}/{action=index}/{id?}");
 app.MapRazorPages();
 
 app.Run();
