@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -32,7 +33,7 @@ namespace LugaresTuristicos.Controllers
                     return RedirectToAction("Dashboard", "Home", new { area = "Admin" });
                 }
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Dashboard", "Turista");
             }
 
             return View();

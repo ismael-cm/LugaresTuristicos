@@ -1,39 +1,91 @@
 ﻿@model Usuario
+@{
+    Layout = ("_LayoutLogin");
+}
 
-<form asp-action="Register" method="post">
-    <h2>Register</h2>
-    <hr />
-    <div class="form-group mb-1">
-        <label class="form-label" for="Nombre">First Name</label>
-        <input class="form-control" autocomplete="off" aria-required="true" type="text" data-val="true" data-val-required="The First Name field is required." id="Nombre" name="Nombre" />
-        <span class="text-danger field-validation-valid" data-valmsg-for="Nombre" data-valmsg-replace="true"></span>
-    </div>
-    <div class="form-group mb-1">
-        <label class="form-label" for="Apellido">Last Name</label>
-        <input class="form-control" autocomplete="off" aria-required="true" type="text" data-val="true" data-val-required="The Last Name field is required." id="Apellido" name="Apellido" />
-        <span class="text-danger field-validation-valid" data-valmsg-for="Apellido" data-valmsg-replace="true"></span>
-    </div>
-    <div class="form-group mb-1">
-        <label class="form-label" for="Correo">Email</label>
-        <input class="form-control" autocomplete="username" aria-required="true" type="email" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Correo" name="Correo" value="" />
-        <span class="text-danger field-validation-valid" data-valmsg-for="Correo" data-valmsg-replace="true"></span>
-    </div>
-    <div class="form-group mb-1">
-        <label class="form-label" for="Password">Password</label>
-        <input class="form-control" autocomplete="current-password" aria-required="true" type="password" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" />
-        <span class="text-danger field-validation-valid" data-valmsg-for="Password" data-valmsg-replace="true"></span>
-    </div>
-    <div class="form-group mb-1">
-        <label class="form-label" for="ConfirmPassword">Confirm Password</label>
-        <input class="form-control" autocomplete="current-password" aria-required="true" type="password" data-val="true" data-val-required="The Confirm Password field is required." id="ConfirmPassword" name="ConfirmPassword" />
-        <span class="text-danger field-validation-valid" data-valmsg-for="ConfirmPassword" data-valmsg-replace="true"></span>
-    </div>
-    <div id="error-message" style="display:none" class="alert alert-danger">Passwords do not match.</div>
-    <div class="col-12">
-        <button id="register-submit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-    </div>
-</form>
+<body>
+    <div class="container">
+        <div class="row justify-content-md-center" style="height: 100%;margin: 0;">
+            <div class="col-7">
+                <div class="register">
+                    <form asp-action="Register" method="post">
+                        <h2 class="text-center">Crea tu cuenta</h2>
+                        <p class="text-center">
+                            ¡Bienvenido a nuestra página de registro de usuario! Aquí podrás crear
+                            una cuenta personal para acceder a todo el contenido.
+                        </p>
+                        <br />
+                        <div class="form-group mb-1">
+                            <label class="form-label" for="Nombre">Nombre:</label>
+                            <input class="form-control" autocomplete="off" aria-required="true" type="text"
+                                   data-val="true" data-val-required="The First Name field is required." id="Nombre"
+                                   name="Nombre" />
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Nombre"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label class="form-label" for="Apellido">Apellido:</label>
+                            <input class="form-control" autocomplete="off" aria-required="true" type="text"
+                                   data-val="true" data-val-required="The Last Name field is required." id="Apellido"
+                                   name="Apellido" />
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Apellido"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label class="form-label" for="Edad">Edad:</label>
+                            <input class="form-control" autocomplete="off" aria-required="true" type="number"
+                                   data-val="true" data-val-required="The Last Name field is required." id="Edad"
+                                   name="Edad" />
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Edad"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label class="form-label" for="Correo">Correo Electrónico:</label>
+                            <input class="form-control" autocomplete="username" aria-required="true" type="email"
+                                   data-val="true" data-val-email="The Email field is not a valid e-mail address."
+                                   data-val-required="The Email field is required." id="Correo" name="Correo" value="" />
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Correo"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label class="form-label" for="Password">Contraseña:</label>
+                            <input class="form-control" autocomplete="current-password" aria-required="true"
+                                   type="password" data-val="true" data-val-required="The Password field is required."
+                                   id="Password" name="Password" />
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Password"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label class="form-label" for="ConfirmPassword">Confirma tu contraseña:</label>
+                            <input class="form-control" autocomplete="current-password" aria-required="true"
+                                   type="password" data-val="true"
+                                   data-val-required="The Confirm Password field is required." id="ConfirmPassword"
+                                   name="ConfirmPassword" />
+                            <span class="text-danger field-validation-valid" data-valmsg-for="ConfirmPassword"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div id="error-message" style="display:none" class="alert alert-danger">
+                            Passwords do not match.
+                        </div>
+                        <br>
+                        <br />
+                        <div class="col-12">
+                            <button id="register-submit" type="submit"
+                                    class="w-100 btn btn-lg btn-primary">
+                                Registrarse
+                            </button>
+                        </div>
+                        <br />
+                        <div class="col-12 text-center">
+                            <a asp-area="" asp-controller="Home" asp-action="Login"> Iniciar Sesión </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
+        </div>
+    </div>
+</body>
 
 @section Scripts {
     <script>
