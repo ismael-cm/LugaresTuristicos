@@ -32,7 +32,12 @@ namespace LugaresTuristicos.Controllers
                     return RedirectToAction("Dashboard", "Home", new { area = "Admin" });
                 }
 
-                return RedirectToAction("Dashboard", "Turista");
+                if (claimUser.IsInRole("USUARIO"))
+                {
+                    return RedirectToAction("Dashboard", "Turista");
+                }
+
+                //return RedirectToAction("Dashboard", "Turista");
             }
 
             return View();

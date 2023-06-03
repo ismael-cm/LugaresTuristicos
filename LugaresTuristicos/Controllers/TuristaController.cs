@@ -55,11 +55,13 @@ namespace LugaresTuristicos.Controllers
 
         public IActionResult PostDetails(int? id)
         {
-            
+
+            ClaimsPrincipal claimUser = HttpContext.User;
+
             try
             {
                 TempData["d"] = id;
-                if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
+                if (!claimUser.Identity.IsAuthenticated)
                 {
                     // Si no ha iniciado sesión, redirigir al inicio de sesión
                     return RedirectToAction("Login", "Home"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
