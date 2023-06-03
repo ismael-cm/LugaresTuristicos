@@ -63,8 +63,7 @@ namespace LugaresTuristicos.Controllers
                     return RedirectToAction("Login", "Home"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
                 }
 
-                if (TempData["IsLoggedIn"] != null && (bool)TempData["IsLoggedIn"])
-                    TempData["NameUser"] = TempData["IsLoggedInNameUser"];
+
 
                 List<Lugare> currentPlace = _dbContext.Lugares.Include(l => l.Comentarios)
                                                        .Include(l => l.IdMunicipioNavigation)
@@ -99,7 +98,7 @@ namespace LugaresTuristicos.Controllers
 
                 _dbContext.Comentarios.Add(comentario);
                 _dbContext.SaveChanges();
-
+                //g
             }
             catch (Exception ex)
             {
