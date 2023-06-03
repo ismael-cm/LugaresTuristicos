@@ -30,7 +30,7 @@ namespace LugaresTuristicos.Controllers
                     return RedirectToAction("Login", "Home"); 
                 }
 
-                List<Lugare> lista = _dbContext.Lugares.Include(l => l.Comentarios)
+                List<Lugare> lista = _dbContext.Lugares.Where(x=>x.Estado==true).Include(l => l.Comentarios)
                                                        .Include(l => l.IdMunicipioNavigation)
                                                        .Include(l => l.IdMunicipioNavigation.IdDeptoNavigation)
                                                        .Include(l => l.IdCategoriaNavigation)
