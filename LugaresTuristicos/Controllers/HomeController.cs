@@ -189,6 +189,7 @@ namespace LugaresTuristicos.Controllers
                         {
                             Nombre = model.Nombre,
                             Apellido = model.Apellido,
+                            Edad = model.Edad,
                             Estado = true,
                             Correo = model.Correo,
                             Password = encryptedResult,

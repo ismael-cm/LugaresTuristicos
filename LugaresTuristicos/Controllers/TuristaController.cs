@@ -92,6 +92,7 @@ namespace LugaresTuristicos.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateComment(string IdLugar, string Comentario)
         {
+            ClaimsPrincipal claimUser = HttpContext.User;
             try
             {
                 Comentario comentario = new Comentario();
@@ -99,7 +100,7 @@ namespace LugaresTuristicos.Controllers
                 comentario.Comentario1 = Comentario;
                 comentario.Fecha = DateTime.Now;
                 comentario.Estado = true;
-                comentario.IdUsuario = Convert.ToInt32(HttpContext.Session.GetString("IdUser"));
+                comentario.IdUsuario = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
                 _dbContext.Comentarios.Add(comentario);
                 _dbContext.SaveChanges();
