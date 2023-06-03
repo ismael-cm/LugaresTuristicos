@@ -1,0 +1,577 @@
+﻿@model Lugare
+
+<style>
+    .profile-picture {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+</style>
+
+
+
+<div class="container-fluid">
+
+    <div class="row">
+        <h3>Mantenimiento de Lugares</h3>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
+        </div>
+        <br />
+        <div class="col-md-12" id="contenido">
+        </div>
+    </div>
+</div>
+
+<!-- Modal agregar -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregando Lugar turistico</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="Form1" enctype="multipart/form-data" method="post">
+                <div class="modal-body">
+                    <div class="form-group mb-1">
+                        <label asp-for="IdUsuario" class="control-label">Usuario</label>
+                        <select asp-for="IdUsuario" class="form-control" required>
+                            <option value="">Seleccione un usuario</option>
+                            @foreach (Usuario usuario in ViewBag.Usuarios)
+                            {
+                                <option value="@usuario.IdUsuario">@usuario.Nombre @usuario.Apellido</option>
+                            }
+                        </select>
+                        <span asp-validation-for="IdUsuario" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label asp-for="NombreLugar" class="control-label">Nombre del Lugar</label>
+                        <input asp-for="NombreLugar" class="form-control" placeholder="Escribe el nombre" required />
+                        <span asp-validation-for="NombreLugar" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Escribe una descripcion" asp-for="Descripcion"></textarea>
+                        <label asp-for="Descripcion">Escribe la descripcion del lugar</label>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Departamento</label>
+                        <select id="idDepto" class="form-control" required>
+                            <option value="">Seleccione un departamento</option>
+                            @foreach (Departamento departamento in ViewBag.Departamento)
+                            {
+                                <option value="@departamento.IdDepto">@departamento.Departamento1</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Municipio</label>
+                        <select asp-for="IdMunicipio" class="form-control" required disabled>
+                            <option value="">Seleccione un municipio</option>
+                            @foreach (Municipio municipio in ViewBag.Municipio)
+                            {
+                                <option value="@municipio.IdMunicipio">@municipio.Municipio1</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label asp-for="Precio" class="control-label">Precio del Lugar</label>
+                        <input asp-for="Precio" class="form-control" required />
+                        <span asp-validation-for="Precio" class="text-danger"></span>
+
+                        <label asp-for="Imagen" class="control-label">Imagen</label>
+                        <input type="file" name="imagenArchivo" class="form-control" accept="image/jpeg, image/png, image/gif" asp-for="Imagen" />
+                        <span asp-validation-for="Imagen" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group mb-1">
+                        <label asp-for="IdCategoria" class="control-label">Categoria</label>
+                        <select asp-for="IdCategoria" class="form-control" required>
+                            <option value="">Seleccione una categoria</option>
+                            @foreach (Categoria categoria in ViewBag.Categoria)
+                            {
+                                <option value="@categoria.IdCategoria">@categoria.NombreCategoria</option>
+                            }
+                        </select>
+                        <span asp-validation-for="IdCategoria" class="text-danger"></span>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCerrar" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" id="btnGuardar" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal actualizar -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mofificar Municipio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="Form2">
+                <div class="modal-body">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCerrar2" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btnActualizar" class="btn btn-primary">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    <script>
+        function cargarTabla() {
+            $.ajax({
+                url: '/admin/Home/getTablaLugares',
+                type: 'post',
+                dataType: 'json',
+                cache: false
+            }).done(function (resp) {
+                console.log(resp);
+                var div = $("#contenido");
+                var tabla = "<table id='tabla' class='fw-light table table-striped table-hover'><thead class='table-dark'><tr><th>ID</th><th>Usuario</th><th>Nombre</th><th>Descripcion</th><th>Municipio</th><th>Departamento</th><th>Categoria</th><th>Precio</th><th>Imagen</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody>";
+                                
+                $.each(resp, function (index, lugares) {
+
+                    var img = 'data:image;base64,' + lugares.imagen;
+                    var imagenHTML = "<img class='rounded-pill profile-picture' src='" + img + "'>";
+
+
+                    tabla += "<tr>";
+                    tabla += "<td>" + lugares.idLugar + "</td>";
+                    tabla += "<td>" + lugares.user + "</td>";
+                    tabla += "<td>" + lugares.nombre + "</td>";
+                    tabla += "<td>" + lugares.descripcion + "</td>";
+                    tabla += "<td>" + lugares.municipio + "</td>";
+                    tabla += "<td>" + lugares.departamento + "</td>";
+                    tabla += "<td>" + lugares.categoria + "</td>";
+                    tabla += "<td>" + lugares.precio + "</td>";
+                    tabla += "<td>" + imagenHTML + "</td>";
+                    tabla += "<td>" + lugares.fecha + "</td>";
+
+                    //var texto = municipio.municipio1;
+                    //var textoModificado = texto.replace(/ /g, "-");
+                    //console.log(textoModificado);
+
+                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='fw-light btn btn-light' onclick=cargarUpt('" + "dd" + "') >Editar</a> | <a class='fw-light btn btn-danger' href=\"javascript:cargarDel('" + lugares.idLugar + "')\">Eliminar</a></td>";
+                    tabla += "</tr>";
+                });
+                tabla += "</tbody></table>";
+                div.empty();
+                div.append(tabla);
+
+                //$('#tabla').DataTable();
+
+                var table = new DataTable('#tabla', {
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json',
+                    },
+                });
+
+            }).fail();
+
+        }
+
+        function cargarDel(IdLugar) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger me-4'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Estas seguro?',
+                text: "Una vez eliminado se pierde definitivamente!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("EliminarLugar", "Home")',
+                        type: 'post',
+                        dataType: 'json',
+                        cache: false,
+                        data: { id: IdLugar }
+                    }).done(function (resp) {
+                        if (resp) {
+                            swalWithBootstrapButtons.fire(
+                                'Eliminado!',
+                                'Tu registro ha sido elimando.',
+                                'success'
+                            )
+                            cargarTabla();
+                        } else {
+                            swalWithBootstrapButtons.fire(
+                                'Cancelado',
+                                'Se omitieron los datos',
+                                'error'
+                            )
+                        }
+                    }).fail();
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelado',
+                        'Se han omitido los datos',
+                        'error'
+                    )
+                }
+            })
+        }
+
+        function cargarUpt(valor) {
+
+            var obj = valor.split(',');
+            var textoModificado = obj[1];
+            var textoOriginal = textoModificado.replace(/-/g, " ");
+
+            document.getElementById("idMunicipio2").value = obj[0];
+            document.getElementById("Municipio2").value = textoOriginal;
+            document.getElementById("IdDepto2").value = obj[2];
+
+        }
+
+        function limpiarCajas() {
+            document.getElementById("Municipio1").value = "";
+            document.getElementById("IdDepto").value = "";
+        }
+
+        function limpiarClases() {
+            document.getElementById("Municipio1").classList.remove("is-valid");
+            document.getElementById("Municipio1").classList.remove("is-invalid");
+            document.getElementById("IdDepto").classList.remove("is-valid");
+            document.getElementById("IdDepto").classList.remove("is-invalid");
+
+            document.getElementById("Municipio2").classList.remove("is-valid");
+            document.getElementById("Municipio2").classList.remove("is-invalid");
+            document.getElementById("IdDepto2").classList.remove("is-valid");
+            document.getElementById("IdDepto2").classList.remove("is-invalid");
+        }
+
+
+        $(document).ready(function () {
+
+            $("#idDepto").change(function () {
+                var selectedValue = $(this).val();
+                if(selectedValue != ""){
+
+                    document.getElementById("IdMunicipio").removeAttribute("disabled");
+                    var idDepto = $("#idDepto").val();
+                    $("#IdMunicipio").empty();
+                    $("#IdMunicipio").append('<option value="">' + "Seleccione un municipio" + '</option>');
+
+                    $.ajax({
+                        type: "post",
+                        url: '@Url.Action("getTablaMunicipioByIdDepto","Home")',
+                        cache: false,
+                        dataType: 'json',
+                        data: { id: selectedValue }
+                    }).done(function (resp){
+                        $.each(resp, function (index, muni){
+                            $("#IdMunicipio").append('<option value="' + muni.id_depto + '">' + muni.municipio + '</option>');
+                        });
+                    });
+                }else{
+                    $("#IdMunicipio").empty();
+                    $("#IdMunicipio").append('<option value="">' + "Seleccione un municipio" + '</option>');
+                    document.getElementById("IdMunicipio").setAttribute("disabled", "disabled");
+                }
+            });
+
+
+            $('#Form1').submit(function (event) {
+                event.preventDefault();
+
+                var formData = new FormData();
+                var inputsInvalidos = $("#Form1 .is-invalid").length;
+                var idUser = $("#IdUsuario").val();
+                var nombre = $("#NombreLugar").val();
+                var desc = $("#Descripcion").val();
+                var muni = $("#IdMunicipio").val();
+                var prec = $("#Precio").val();
+                var cat = $("#IdCategoria").val();
+                
+
+                if(idUser != "" && nombre != "" && desc != ""
+                   && muni != "" && prec != "" && cat != ""){
+
+                    var lugaresObj = {
+                        IdUsuario: idUser,
+                        IdCategoria: cat,
+                        NombreLugar: nombre,
+                        Descripcion: desc,
+                        IdMunicipio: muni,
+                        Precio: prec
+                    };
+
+                    //console.log(lugaresObj);
+
+                    if(inputsInvalidos === 0){
+                        formData.append('imageFile', $('#Imagen')[0].files[0]);
+                        formData.append('lugaresObj', JSON.stringify(lugaresObj));
+
+                        $.ajax({
+                            url: '/admin/Home/UploadImage',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false
+                        }).done(function (resp) {
+                            if (resp) {
+                                Swal.fire({
+                                    title: 'El registro ha sido agregado correctamente',
+                                    icon: 'success',
+                                    confirmButtonText: 'Continuar'
+                                })
+                                cargarTabla();
+                                $("#btnCerrar").click();
+                                //limpiarCajas();
+                                //limpiarClases();
+                            } else {
+                                Swal.fire({
+                                    title: 'Hubo un error al momento de agregar el dato',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            }
+                        }).fail(function () {
+                            Swal.fire({
+                                title: 'Hubo un error al momento de agregar el dato',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        });;
+
+                    }else{
+                        Swal.fire({
+                            title: 'Verifica los textos en rojo para continuar',
+                            icon: 'error',
+                            confirmButtonText: 'Continuar'
+                        })
+                    }
+                }else{
+                    Swal.fire({
+                        title: 'Todos los campos son obligatorios',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            });
+
+
+            var inputUsuario = document.getElementById("Municipio1");
+            function validarMunicipio() {
+
+                var valor = inputMunicipio.value.trim();
+                if (valor.length >= 4) {
+                    inputMunicipio.classList.add("is-valid");
+                    inputMunicipio.classList.remove("is-invalid");
+                } else {
+                    inputMunicipio.classList.add("is-invalid");
+                    inputMunicipio.classList.remove("is-valid");
+                }
+            }
+
+            inputMunicipio.addEventListener("keypress", function () {
+                validarMunicipio();
+            });
+
+            inputMunicipio.addEventListener("keydown", function () {
+                setTimeout(validarMunicipio, 0);
+            });
+
+            var inputMunicipio2 = document.getElementById("Municipio2");
+            function validarMunicipio2() {
+
+                var valor = inputMunicipio2.value.trim();
+                if (valor.length >= 4) {
+                    inputMunicipio2.classList.add("is-valid");
+                    inputMunicipio2.classList.remove("is-invalid");
+                } else {
+                    inputMunicipio2.classList.add("is-invalid");
+                    inputMunicipio2.classList.remove("is-valid");
+                }
+            }
+
+            inputMunicipio2.addEventListener("keypress", function () {
+                validarMunicipio2();
+            });
+
+            inputMunicipio2.addEventListener("keydown", function () {
+                setTimeout(validarMunicipio2, 0);
+            });
+
+            var selectDepto = document.getElementById("IdDepto");
+            selectDepto.addEventListener("change", function () {
+                if (selectDepto.value !== "") {
+                    selectDepto.classList.add("is-valid");
+                    selectDepto.classList.remove("is-invalid");
+                } else {
+                    selectDepto.classList.add("is-invalid");
+                    selectDepto.classList.remove("is-valid");
+                }
+            });
+
+            var selectDepto2 = document.getElementById("IdDepto2");
+            selectDepto2.addEventListener("change", function () {
+                if (selectDepto2.value !== "") {
+                    selectDepto2.classList.add("is-valid");
+                    selectDepto2.classList.remove("is-invalid");
+                } else {
+                    selectDepto2.classList.add("is-invalid");
+                    selectDepto2.classList.remove("is-valid");
+                }
+            });
+
+            cargarTabla();
+
+            $("#btnGuardar").click(function () {
+                if ($("#IdDepto").val() != "" && $("#Municipio1").val() != "") {
+
+                    //var formulario = $("#Form1").serialize();
+                    var inputsInvalidos = $("#Form1 .is-invalid").length;
+
+                    var img = $("#Imagen")[0].files[0];
+                    var formData = new FormData();
+                    console.log("imagen: ", img);
+
+                    formData.append("Imagen", img);
+
+                    if (inputsInvalidos === 0) {
+                        $.ajax({
+                            url: '@Url.Action("UploadImage","Home")',
+                            type: 'post',
+                            processData: false,
+                            dataType: 'json',
+                            contentType: false,
+                            data: formData
+                        }).done(function (resp) {
+                            if (resp) {
+                                console.log("1");
+                                Swal.fire({
+                                    title: 'El registro ha sido agregado correctamente',
+                                    icon: 'success',
+                                    confirmButtonText: 'Continuar'
+                                })
+                                cargarTabla();
+                                $("#btnCerrar").click();
+                                limpiarCajas();
+                                limpiarClases();
+                            } else {
+                                console.log("2");
+                                Swal.fire({
+                                    title: 'Hubo un error al momento de agregar el dato 1',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            }
+                        }).fail(function () {
+                            console.log("3");
+                            Swal.fire({
+                                title: 'Hubo un error al momento de agregar el dato 2',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Verifica los textos en rojo para continuar',
+                            icon: 'error',
+                            confirmButtonText: 'Continuar'
+                        })
+                    }
+
+                } else {
+                    Swal.fire({
+                        title: 'Todos los campos son obligatorios',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            });
+
+
+
+            $("#btnActualizar").click(function () {
+                //console.log(1);
+                if ($("#idMunicipio2").val() != "" && $("#Municipio2").val() != "" && $("#IdDepto2").val() != "") {
+
+                    var formulario = $("#Form2").serialize();
+                    var inputsInvalidos2 = $("#Form2 .is-invalid").length;
+
+                    var obj1 = document.getElementById("idMunicipio2").value;
+                    var obj2 = document.getElementById("Municipio2").value;
+                    var obj3 = document.getElementById("IdDepto2").value;
+
+                    if (inputsInvalidos2 === 0) {
+                        $.ajax({
+                            url: '@Url.Action("ActualizarMunicipio","Home")',
+                            type: 'post',
+                            cache: false,
+                            dataType: 'json',
+                            data: { idMunicipio: obj1, idDepto: obj3, municipio: obj2 }
+                        }).done(function (resp) {
+                            if (resp) {
+                                Swal.fire({
+                                    title: 'El registro ha sido modificado correctamente',
+                                    icon: 'success',
+                                    confirmButtonText: 'Continuar'
+                                })
+                                cargarTabla();
+                                $("#btnCerrar2").click();
+                                limpiarCajas();
+                                limpiarClases();
+                            } else {
+                                Swal.fire({
+                                    title: 'Hubo un error al momento de actualizar el dato',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            }
+                        }).fail(function () {
+                            Swal.fire({
+                                title: 'Hubo un error al momento de actualizar el dato',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Verifica los textos en rojo para continuar',
+                            icon: 'error',
+                            confirmButtonText: 'Continuar'
+                        })
+                    }
+
+                } else {
+                    Swal.fire({
+                        title: 'Todos los campos son obligatorios',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            });
+        });
+    </script>
+
+}

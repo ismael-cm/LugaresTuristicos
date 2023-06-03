@@ -3,10 +3,14 @@ using LugaresTuristicos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Data;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
+
 
 namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
 {
@@ -76,6 +80,20 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
         }
 
         [HttpPost]
+        public IActionResult getTablaMunicipioByIdDepto(int id)
+        {
+            var muni = (from municipi in contexto.Municipios
+                        where municipi.IdDepto == id && municipi.Estado == true
+                        select new
+                        {
+                            id_depto = municipi.IdDepto,
+                            municipio = municipi.Municipio1
+                        }).ToList();
+
+            return Json(muni);
+        }
+
+        [HttpPost]
         public IActionResult getTablaCategoria()
         {
             List<Categoria> lstCategoria = contexto.Categorias.Where(x => x.Estado == true).ToList();
@@ -101,6 +119,32 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
                              }).ToList();
 
             return Json(lstUsuario);
+        }
+
+        [HttpPost]
+        public IActionResult getTablaLugares()
+        {
+            var lstLugares = (from lugares in contexto.Lugares
+                              join usuarios in contexto.Usuarios on lugares.IdUsuario equals usuarios.IdUsuario
+                              join categorias in contexto.Categorias on lugares.IdCategoria equals categorias.IdCategoria
+                              join municipio in contexto.Municipios on lugares.IdMunicipio equals municipio.IdMunicipio
+                              join departamento in contexto.Departamentos on municipio.IdDepto equals departamento.IdDepto
+                              where usuarios.Estado == true && categorias.Estado == true && municipio.Estado == true && lugares.Estado == true 
+                              select new
+                              {
+                                  idLugar = lugares.IdLugar,
+                                  user = usuarios.Nombre + " " + usuarios.Apellido,
+                                  categoria = categorias.NombreCategoria,
+                                  nombre = lugares.NombreLugar,
+                                  descripcion = lugares.Descripcion,
+                                  municipio = municipio.Municipio1,
+                                  departamento = departamento.Departamento1,
+                                  precio = "$" + Math.Round((Decimal)lugares.Precio, 2, MidpointRounding.AwayFromZero),
+                                  imagen = lugares.Imagen,
+                                  fecha = lugares.FechaPublicacion
+                              }).ToList();
+
+            return Json(lstLugares);
         }
 
         [HttpPost]
@@ -185,6 +229,63 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile imageFile, [FromForm] string lugaresObj)
+        {
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                return Json(false);
+            }
+
+            if (!IsValidImage(imageFile))
+            {
+                return Json(false);
+            }
+
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await imageFile.CopyToAsync(memoryStream);
+                    var lugar = Newtonsoft.Json.JsonConvert.DeserializeObject<Lugare>(lugaresObj);
+
+                   
+                    var image = new Lugare
+                    {
+                        IdUsuario = lugar.IdUsuario,
+                        IdCategoria = lugar.IdCategoria,
+                        NombreLugar = lugar.NombreLugar,
+                        Descripcion = lugar.Descripcion,
+                        IdMunicipio = lugar.IdMunicipio,
+                        Precio = lugar.Precio,
+                        FechaPublicacion = DateTime.Now,
+                        Estado = true,
+                        Imagen = memoryStream.ToArray()
+                    };
+
+                    contexto.Lugares.Add(image);
+                    await contexto.SaveChangesAsync();
+                }
+
+                return Json(true);
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+        }
+
+        private bool IsValidImage(IFormFile file)
+        {
+            if (file.ContentType.ToLower() != "image/jpeg" &&
+                file.ContentType.ToLower() != "image/jpg" &&
+                file.ContentType.ToLower() != "image/png")
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         [HttpPost]
         public ActionResult guardarUsuario(Usuario model)
@@ -343,6 +444,26 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
         }
 
         [HttpPost]
+        public IActionResult EliminarLugar(int id)
+        {
+            try
+            {
+                var objDel = contexto.Lugares.FirstOrDefault(x => x.IdLugar == id);
+                objDel.Estado = false;
+                //contexto.Lugares.Remove(objDel);
+                contexto.Lugares.Update(objDel);
+                contexto.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
+
+        [HttpPost]
         public IActionResult ActualizarBlackList(int id, string valor)
         {
             try
@@ -468,6 +589,16 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
             ViewBag.Usuarios = contexto.Rols.Where(x => x.Estado == true).ToList();
             Usuario usuario = new Usuario();
             return View(usuario);
+        }
+
+        public IActionResult vLugares()
+        {
+            ViewBag.Usuarios = contexto.Usuarios.Where(x => x.Estado == true && x.IdRol == 4).ToList();
+            ViewBag.Categoria = contexto.Categorias.Where(x => x.Estado == true).ToList();
+            ViewBag.Departamento = contexto.Departamentos.Where(x => x.Estado == true).ToList();
+            ViewBag.Municipio = contexto.Municipios.Where(x => x.Estado == true).ToList();
+            Lugare lugares = new Lugare();
+            return View(lugares);
         }
 
     }
