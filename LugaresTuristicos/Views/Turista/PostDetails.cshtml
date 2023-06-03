@@ -1,0 +1,305 @@
+﻿@model List<Lugare>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            console.log('ok');
+           // showData(1);
+        });
+
+
+        function showData(id){
+            $.ajax({
+                url:'/Turista/AllComentarios/',
+                data:"{idLugar:'" + id + "'}",
+                type: 'Post',
+                dataType: 'json',
+                contentType:'application/json;charset-utf-8;',
+                success: function(result){
+                    console.log('si funciona bb');
+                },
+                error: function(){
+                    alert('Ocurrió un error');
+                }
+            });
+        };
+    </script>
+}
+
+<style>
+            :root {
+                --color-dark: hs1(252,30%,17%);
+                --color-light: #f2f5f8;
+                --color-gray: hs1(252,15%,65%);
+                --color-primary: #3cafa3;
+                --border-radius: 2rem;
+                --card-border-radius: 1rem;
+                --card-padding: 1rem;
+                --btn-padding: 0.6rem 2rem;
+                --btn-seemore: #20659d;
+            }
+            
+            html {
+                font-size: 14px;
+                position: relative;
+                min-height: 100%;
+            }
+            
+            body {
+                margin-bottom: 60px;
+                font-family: "Poppins", sans-serif;
+                color: var(--color-dark);
+                background: var(--color-light);
+            }
+            .profile-photo{
+                width:2.7rem;
+                aspect-ratio:1/1;
+                border-radius:50%;
+                overflow:hidden;
+            }
+            
+            .details {
+                color:var(--color-dark);
+                padding:var(--card-padding);
+                background-color:white;
+                border-radius:var(--card-border-radius);
+                position: sticky;
+            }
+                .details a {
+                    text-decoration: none;
+                    color: var(--color-dark);
+                }
+            
+            img{
+                display:block;
+                width:100%;
+            }
+            .left .feed-photo{
+    border-radius:var(--card-border-radius);
+    overflow:hidden;
+    margin: 0.7rem 0;
+
+}
+            .container {
+                background: var(--color-light);
+            }
+            .text-muted{
+                color:var(--color-gray);
+            }
+            .middle .feed {
+                width: 100%;
+                background-color: white;
+                border-radius: var(--card-border-radius);
+                padding: var(--card-padding);
+            }
+            
+            .details-location {
+        color: #696969;
+            }
+            
+                .comment-description, .comment-section-stars{
+                    font-size: 20px;
+                    font-weight: lighter;
+                }
+                .v{
+                    background-color: #3cafa3;
+                    border-radius: 5px;
+                    color: white;
+                    font-size: 12px;
+                    padding: 5px;
+                }
+            </style>
+
+
+<div class="row">
+    @{
+        if (Model.Count > 0)
+        {
+            foreach (var item in Model)
+            {
+                DateTime fechaPublicacion = Convert.ToDateTime(item.FechaPublicacion);
+                TimeSpan diferencia = DateTime.Now - fechaPublicacion;
+
+                string formatoFecha;
+
+                if (diferencia.TotalDays >= 7)
+                {
+                    formatoFecha = fechaPublicacion.ToString("dd/MM/yyyy");
+                }
+                else if (diferencia.TotalDays >= 2)
+                {
+                    formatoFecha = $"{(int)diferencia.TotalDays} días atrás";
+                }
+                else if (diferencia.TotalDays >= 1)
+                {
+                    formatoFecha = "Ayer";
+                }
+                else
+                {
+                    formatoFecha = "Hoy";
+                }
+
+    <div class="left col-md-6 grid gap-0 row-gap-3">
+                   <div class="row p-2 g-col-12">
+                   
+            <div class="details">
+                            <div>
+                                <a asp-action="Dashboard" asp-controller="Turista">
+                                    <svg width="21" height="21" fill="#212121" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M19 11.001H7.14l3.63-4.36a1.001 1.001 0 0 0-1.54-1.28l-5 6a1.184 1.184 0 0 0-.09.15c0 .05 0 .08-.07.13a1 1 0 0 0-.07.36 1 1 0 0 0 .07.36c0 .05 0 .08.07.13.026.052.056.103.09.15l5 6a1 1 0 0 0 1.41.13 1 1 0 0 0 .13-1.41l-3.63-4.36H19a1 1 0 0 0 0-2Z"></path>
+                                    </svg> Volver atrás
+                                </a>
+                            </div>
+                            <br />
+                <div class="row g-2 details-header">
+                    <div class="col-auto">
+                        <div class="profile-photo">
+                            <img src="data:image;base64,@Convert.ToBase64String(item.IdUsuarioNavigation.Imagen)" alt="Foto de perfil" class="profile-picture">
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <b>@item.IdUsuarioNavigation.Nombre @item.IdUsuarioNavigation.Apellido</b>
+                       
+                            <p class="text-muted">@formatoFecha</p>
+                    </div>
+                </div>
+                <div class="row g-2 ">
+                    <div class="col-auto">
+                        <h4>@item.NombreLugar</h4>
+                    </div>
+                </div>
+                <div class="row g1 details-location">
+                    <div class="col-auto">
+                                    <svg width="20" height="20" fill="#696969" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 11a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path>
+                                        <path d="M12 2a8 8 0 0 0-8 7.92c0 5.48 7.05 11.58 7.35 11.84a1 1 0 0 0 1.3 0C13 21.5 20 15.4 20 9.92A8 8 0 0 0 12 2Zm0 11a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"></path>
+                                    </svg>
+                        @item.IdMunicipioNavigation.Municipio1, @item.IdMunicipioNavigation.IdDeptoNavigation.Departamento1
+                    </div>
+                </div>
+                <div class="row details-description">
+                    <div class="col-auto">
+                        <p>
+                            @item.Descripcion
+                        </p>
+                    </div>
+                </div>
+                <div class="feed-photo">
+                    <img src="data:image;base64,@Convert.ToBase64String(item.Imagen)" alt="Foto de lugar" class="profile-picture">
+                </div>
+                <br>
+            </div>
+        </div> 
+                
+    </div>
+    <div class="middle col-md-6 grid gap-0 row-gap-3">
+        <div class="row p-2 g-col-12">
+            <div class="feed">
+                <div class="row g-2 comment-section-stars" style="margin-top: 5px;">
+                    <div class="col-auto">
+                        Valoraciones:
+                        <svg width="21" height="21" fill="#f9d75d" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <path d="M17.56 20.996a1 1 0 0 1-.46-.11l-5.1-2.67-5.1 2.67a1 1 0 0 1-1.45-1.06l1-5.63-4.12-4a1 1 0 0 1-.25-1 1 1 0 0 1 .81-.68l5.7-.83 2.51-5.13a1 1 0 0 1 1.8 0l2.54 5.12 5.7.83a1 1 0 0 1 .81.68 1 1 0 0 1-.25 1l-4.12 4 1 5.63a1 1 0 0 1-.4 1 1 1 0 0 1-.62.18Z"></path>
+</svg>
+<svg width="21" height="21" fill="#f9d75d" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <path d="M17.56 20.996a1 1 0 0 1-.46-.11l-5.1-2.67-5.1 2.67a1 1 0 0 1-1.45-1.06l1-5.63-4.12-4a1 1 0 0 1-.25-1 1 1 0 0 1 .81-.68l5.7-.83 2.51-5.13a1 1 0 0 1 1.8 0l2.54 5.12 5.7.83a1 1 0 0 1 .81.68 1 1 0 0 1-.25 1l-4.12 4 1 5.63a1 1 0 0 1-.4 1 1 1 0 0 1-.62.18Z"></path>
+</svg>
+                                    <svg width="21" height="21" fill="#f9d75d" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M17.56 20.996a1 1 0 0 1-.46-.11l-5.1-2.67-5.1 2.67a1 1 0 0 1-1.45-1.06l1-5.63-4.12-4a1 1 0 0 1-.25-1 1 1 0 0 1 .81-.68l5.7-.83 2.51-5.13a1 1 0 0 1 1.8 0l2.54 5.12 5.7.83a1 1 0 0 1 .81.68 1 1 0 0 1-.25 1l-4.12 4 1 5.63a1 1 0 0 1-.4 1 1 1 0 0 1-.62.18Z"></path>
+                                    </svg>
+                        <svg width="21" height="21" fill="#f9d75d" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <path d="M17.56 20.996a1 1 0 0 1-.46-.11l-5.1-2.67-5.1 2.67a1 1 0 0 1-1.45-1.06l1-5.63-4.12-4a1 1 0 0 1-.25-1 1 1 0 0 1 .81-.68l5.7-.83 2.51-5.13a1 1 0 0 1 1.8 0l2.54 5.12 5.7.83a1 1 0 0 1 .81.68 1 1 0 0 1-.25 1l-4.12 4 1 5.63a1 1 0 0 1-.4 1 1 1 0 0 1-.62.18Zm-5.56-4.9a.921.921 0 0 1 .46.11l3.77 2-.72-4.21a.998.998 0 0 1 .29-.89l3-2.93-4.2-.62a1 1 0 0 1-.71-.56L12 5.246l-1.89 3.75a1 1 0 0 1-.75.54l-4.2.62 3 2.93a1 1 0 0 1 .29.89l-.72 4.16 3.77-2a.92.92 0 0 1 .5-.04Z"></path>
+</svg>
+                                    <svg width="21" height="21" fill="#f9d75d" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M17.56 20.996a1 1 0 0 1-.46-.11l-5.1-2.67-5.1 2.67a1 1 0 0 1-1.45-1.06l1-5.63-4.12-4a1 1 0 0 1-.25-1 1 1 0 0 1 .81-.68l5.7-.83 2.51-5.13a1 1 0 0 1 1.8 0l2.54 5.12 5.7.83a1 1 0 0 1 .81.68 1 1 0 0 1-.25 1l-4.12 4 1 5.63a1 1 0 0 1-.4 1 1 1 0 0 1-.62.18Zm-5.56-4.9a.921.921 0 0 1 .46.11l3.77 2-.72-4.21a.998.998 0 0 1 .29-.89l3-2.93-4.2-.62a1 1 0 0 1-.71-.56L12 5.246l-1.89 3.75a1 1 0 0 1-.75.54l-4.2.62 3 2.93a1 1 0 0 1 .29.89l-.72 4.16 3.77-2a.92.92 0 0 1 .5-.04Z"></path>
+                                    </svg>
+                    </div>
+                </div>
+                <br>
+                <div class="row comment-section-comments">
+                    <div class="col-12">
+                        <p class="comment-description">Comentarios</p>
+
+                    </div>
+                    <div class="col-12 create-comment">
+                                    <form asp-action="CreateComment" method="post" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            <label asp-for="@item.IdLugar" style="display: none;"></label>
+                                            <input asp-for="@item.IdLugar" id="IdLugar" name="IdLugar" class="form-control" hidden />
+                                        </div>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="Añadir un nuevo comentario" id="Comentario" name="Comentario" />
+                                            <button type="submit" class="btn btn-icon">
+                                                <svg width="34" height="34" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M2 12a10 10 0 1 0 20 0 10 10 0 0 0-20 0Zm11.86-3.69 2.86 3a.49.49 0 0 1 .1.15.54.54 0 0 1 .1.16.94.94 0 0 1 0 .76 1 1 0 0 1-.21.33l-3 3a1.004 1.004 0 1 1-1.42-1.42l1.3-1.29H8a1 1 0 0 1 0-2h5.66l-1.25-1.31a1.001 1.001 0 0 1 1.45-1.38Z"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </form>
+                    <br>
+                    </div>
+
+                    @if (item.Comentarios.Any())
+                    {
+                        @foreach (var comentario in item.Comentarios.OrderByDescending(x=>x.Fecha))
+                        {
+                                        DateTime fechaComentario = Convert.ToDateTime(comentario.Fecha);
+                                        TimeSpan diferenciaComentario = DateTime.Now - fechaComentario;
+
+                                        string formatoFechaComentario;
+
+                                        if (diferenciaComentario.TotalDays >= 7)
+                                        {
+                                            formatoFechaComentario = fechaComentario.ToString("dd/MM/yyyy");
+                                        }
+                                        else if (diferenciaComentario.TotalDays >= 2)
+                                        {
+                                            formatoFechaComentario = $"{(int)diferenciaComentario.TotalDays} días atrás";
+                                        }
+                                        else if (diferenciaComentario.TotalDays >= 1)
+                                        {
+                                            formatoFechaComentario = "Ayer";
+                                        }
+                                        else
+                                        {
+                                            formatoFechaComentario = "Hoy";
+                                        }
+                                        <div class="col-12 single-comment">
+
+                                            <div class="row g-2 feed-header">
+                                                <div class="col-auto">
+                                                    <div class="profile-photo">
+                                                        <img src="data:image;base64,@Convert.ToBase64String(comentario.IdUsuarioNavigation.Imagen)" alt="Foto de perfil" class="profile-picture">
+                                                    </div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <b>@comentario.IdUsuarioNavigation.Nombre @comentario.IdUsuarioNavigation.Apellido</b>
+                                                    <p class="text-muted">@formatoFechaComentario</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <p>
+                                                @comentario.Comentario1
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No hay comentarios.</p>
+                                }
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+                }
+            }
+        }
+
+</div>
+
