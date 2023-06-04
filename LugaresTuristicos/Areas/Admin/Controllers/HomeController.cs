@@ -86,7 +86,7 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
                         where municipi.IdDepto == id && municipi.Estado == true
                         select new
                         {
-                            id_depto = municipi.IdDepto,
+                            id_muni = municipi.IdMunicipio,
                             municipio = municipi.Municipio1
                         }).ToList();
 
@@ -133,6 +133,10 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
                               select new
                               {
                                   idLugar = lugares.IdLugar,
+                                  idUser = usuarios.IdUsuario,
+                                  idMunicipio = lugares.IdMunicipio,
+                                  idDepto = municipio.IdDepto,
+                                  idCategoria = lugares.IdCategoria,
                                   user = usuarios.Nombre + " " + usuarios.Apellido,
                                   categoria = categorias.NombreCategoria,
                                   nombre = lugares.NombreLugar,
@@ -140,6 +144,7 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
                                   municipio = municipio.Municipio1,
                                   departamento = departamento.Departamento1,
                                   precio = "$" + Math.Round((Decimal)lugares.Precio, 2, MidpointRounding.AwayFromZero),
+                                  precio2 = Math.Round((Decimal)lugares.Precio, 2, MidpointRounding.AwayFromZero),
                                   imagen = lugares.Imagen,
                                   fecha = lugares.FechaPublicacion
                               }).ToList();
@@ -274,6 +279,49 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
                 return Json(false);
             }
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UploadImageUpdate(IFormFile imageFile, [FromForm] string lugaresObj)
+        {
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                return Json(false);
+            }
+
+            if (!IsValidImage(imageFile))
+            {
+                return Json(false);
+            }
+
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await imageFile.CopyToAsync(memoryStream);
+                    var lugar = Newtonsoft.Json.JsonConvert.DeserializeObject<Lugare>(lugaresObj);
+
+                    var objUpdate = contexto.Lugares.FirstOrDefault(x => x.IdLugar == lugar.IdLugar);
+                    objUpdate.IdCategoria = lugar.IdCategoria;
+                    objUpdate.NombreLugar = lugar.NombreLugar;
+                    objUpdate.Descripcion = lugar.Descripcion;
+                    objUpdate.IdMunicipio = lugar.IdMunicipio;
+                    objUpdate.Precio = lugar.Precio;
+                    objUpdate.Imagen = memoryStream.ToArray();
+                    objUpdate.FechaPublicacion = DateTime.Now;
+
+                    contexto.Lugares.Update(objUpdate);
+                    await contexto.SaveChangesAsync();
+                }
+
+                return Json(true);
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+        }
+
 
         private bool IsValidImage(IFormFile file)
         {
@@ -471,6 +519,31 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
                 var objUpt = contexto.Blacklists.FirstOrDefault(x => x.IdBlacklist == id);
                 objUpt.Palabra = valor;
                 contexto.Blacklists.Update(objUpt);
+                contexto.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarLugarSinImagen(int id_lugar, int id_usuario, int id_categoria, string nombre, string descripcion, int id_municipio, decimal precio)
+        {
+            try
+            {
+                var objUpt = contexto.Lugares.FirstOrDefault(x => x.IdLugar == id_lugar);
+                objUpt.IdUsuario = id_usuario;
+                objUpt.IdCategoria = id_categoria;
+                objUpt.NombreLugar = nombre;
+                objUpt.Descripcion = descripcion;
+                objUpt.IdMunicipio = id_municipio;
+                objUpt.Precio = precio;
+                objUpt.FechaPublicacion = DateTime.Now;
+                contexto.Lugares.Update(objUpt);
                 contexto.SaveChanges();
                 return Json(true);
             }
