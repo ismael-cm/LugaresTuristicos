@@ -614,6 +614,39 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
         }
 
         [HttpPost]
+        public IActionResult ActualizarPassword(string correo, string valor)
+        {
+            try
+            {
+                var objUpt = contexto.Usuarios.FirstOrDefault(x => x.Correo == correo);
+
+                /***********************Encryption**********************************************/
+                // Get the bytes of the string
+                byte[] bytesToBeEncrypted = Encoding.UTF8.GetBytes(valor);
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(valor);
+
+                // Hash the password with SHA256
+                passwordBytes = SHA256.Create().ComputeHash(passwordBytes);
+
+                byte[] bytesEncrypted = validationClass.AES_Encrypt(bytesToBeEncrypted, passwordBytes);
+
+                string encryptedResult = Convert.ToBase64String(bytesEncrypted);
+                /***********************End*Encryption******************************************/
+
+                objUpt.Password = encryptedResult;
+                contexto.Usuarios.Update(objUpt);
+                contexto.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
+
+        [HttpPost]
         public IActionResult ActualizarUsuario(int id, string nombre, string apellido, int edad, int idRol)
         {
             try
@@ -653,6 +686,11 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
         }
 
         public IActionResult vCategorias()
+        {
+            return View();
+        }
+
+        public IActionResult vChangePass()
         {
             return View();
         }

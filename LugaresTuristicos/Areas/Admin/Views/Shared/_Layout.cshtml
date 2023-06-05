@@ -9,12 +9,14 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LugaresTuristicos.styles.css" asp-append-version="true" />
+    
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jbbrygx1bh5lt8gzjxdzyob+bwve9eio7troutj/e=" crossorigin="anonymous"></script>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/styleAdmin.css" />
 
     <script>
         // Desactivar clic derecho
@@ -43,6 +45,9 @@
                 {
                     <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                         <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link active" asp-area="admin" asp-controller="Home" asp-action="Dashboard">Inicio</a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" style="text-decoration: none; color: black" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Mantenimiento
@@ -56,6 +61,9 @@
                                     <li><a class="dropdown-item" asp-area="admin" asp-controller="Home" asp-action="vMunicipios">Municipios</a></li>
                                     <li><a class="dropdown-item" asp-area="admin" asp-controller="Home" asp-action="vBlackList">Lista negra</a></li>
                                 </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" asp-area="admin" asp-controller="Home" asp-action="vChangePass">Cambiar contraseña</a>
                             </li>
                         </ul>
                     </div>

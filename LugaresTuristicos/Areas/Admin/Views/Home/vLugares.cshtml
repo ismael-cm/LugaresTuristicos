@@ -1,26 +1,17 @@
 ﻿@model Lugare
 
-<style>
-    .profile-picture {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        margin-right: 10px;
-    }
-</style>
+<div class="container-fluid create-post">
 
+    <div class="row feed">
+        <h3 class="data-header">Mantenimiento de Lugares</h3>
 
-
-<div class="container-fluid">
-
-    <div class="row">
-        <h3>Mantenimiento de Lugares</h3>
-
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
-        </div>
-        <br />
-        <div class="col-md-12" id="contenido">
+        <div class="data-body">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
+            </div>
+            <br />
+            <div class="col-md-12" id="contenido">
+            </div>
         </div>
     </div>
 </div>
@@ -240,7 +231,7 @@
                     console.log();
                     console.log();
 
-                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='fw-light btn btn-light' onclick=cargarUpt('" + lugares.idLugar + "," + lugares.idUser + "," + textomodificado2 + "," + textomodificado3 + "," + lugares.idMunicipio + "," + lugares.idDepto + "," + lugares.idCategoria + "," + lugares.precio2 + "') >Editar</a> | <a class='fw-light btn btn-danger' href=\"javascript:cargarDel('" + lugares.idLugar + "')\">Eliminar</a></td>";
+                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='fw-light btn btn-light' onclick=cargarUpt('" + lugares.idLugar + "&&" + lugares.idUser + "&&" + textomodificado2 + "&&" + textomodificado3 + "&&" + lugares.idMunicipio + "&&" + lugares.idDepto + "&&" + lugares.idCategoria + "&&" + lugares.precio2 + "') >Editar</a> | <a class='fw-light btn btn-danger' href=\"javascript:cargarDel('" + lugares.idLugar + "')\">Eliminar</a></td>";
                     tabla += "</tr>";
                 });
                 tabla += "</tbody></table>";
@@ -314,7 +305,7 @@
 
         function cargarUpt(valor) {
 
-            var obj = valor.split(',');
+            var obj = valor.split('&&');
             var textoModificado1 = obj[2];
             var textoOriginal1 = textoModificado1.replace(/-/g, " ");
 

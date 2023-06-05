@@ -1,15 +1,17 @@
 ﻿@model Usuario
 
-<h3>Mantenimiento de Usuarios</h3>
+<div class="container-fluid create-post">
 
-<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
-</div>
-<br />
+    <div class="row feed">
+        <h3 class="data-header">Mantenimiento de Usuarios</h3>
 
-<div id="container ">
-    <div class="row">
-        <div class="col-md-12" id="contenido">
+        <div class="data-body">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
+            </div>
+            <br />
+            <div class="col-md-12" id="contenido">
+            </div>
         </div>
     </div>
 </div>
@@ -143,7 +145,7 @@
                     //console.log(tNombreModificado);
 
                     tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='fw-light btn btn-light' onclick=cargarUpt('" + usuario.idUsuario
-                        + "," + tNombreModificado + "," + tApellidoModificado + "," + usuario.edad + "," + usuario.correo + "," + usuario.idRol + "') >Editar</a> | <a class='fw-light btn btn-danger' href=\"javascript:cargarDel('" + usuario.idUsuario + "')\">Eliminar</a></td>";
+                        + "&&" + tNombreModificado + "&&" + tApellidoModificado + "&&" + usuario.edad + "&&" + usuario.correo + "&&" + usuario.idRol + "') >Editar</a> | <a class='fw-light btn btn-danger' href=\"javascript:cargarDel('" + usuario.idUsuario + "')\">Eliminar</a></td>";
                     tabla += "</tr>";
                 });
                 tabla += "</tbody></table>";
@@ -217,7 +219,7 @@
 
         function cargarUpt(valor) {
 
-            var obj = valor.split(',');
+            var obj = valor.split('&&');
             var tNombreModificado = obj[1];
             var tNombreOriginal = tNombreModificado.replace(/-/g, " ");
             var tApellidoModificado = obj[2];

@@ -1,8 +1,21 @@
 ﻿@model Categoria
 
 
-<h3>Mantenimiento de Categoria</h3>
+<div class="container-fluid create-post">
 
+    <div class="row feed">
+        <h3 class="data-header">Mantenimiento de Categorias</h3>
+
+        <div class="data-body">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
+            </div>
+            <br />
+            <div class="col-md-12" id="contenido">
+            </div>
+        </div>
+    </div>
+</div>
 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
 </div>
@@ -89,7 +102,7 @@
                     var textoModificado = texto.replace(/ /g, "-");
                     //console.log(textoModificado);
 
-                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='btn btn-light fw-light' onclick=cargarUpt('" + categoria.idCategoria + "," + textoModificado + "') >Editar</a> | <a class='btn btn-danger fw-light' href=\"javascript:cargarDel('" + categoria.idCategoria + "')\">Eliminar</a></td>";
+                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='btn btn-light fw-light' onclick=cargarUpt('" + categoria.idCategoria + "&&" + textoModificado + "') >Editar</a> | <a class='btn btn-danger fw-light' href=\"javascript:cargarDel('" + categoria.idCategoria + "')\">Eliminar</a></td>";
                     tabla += "</tr>";
                 });
                 tabla += "</tbody></table>";
@@ -162,7 +175,7 @@
 
         function cargarUpt(valor) {
 
-            var obj = valor.split(',');
+            var obj = valor.split('&&');
             var textoModificado = obj[1];
             var textoOriginal = textoModificado.replace(/-/g, " ");
 

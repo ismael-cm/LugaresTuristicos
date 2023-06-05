@@ -1,16 +1,18 @@
 ﻿@model Departamento
 
 
-<h3>Mantenimiento de Departamento</h3>
+<div class="container-fluid create-post">
 
-<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
-</div>
-<br />
+    <div class="row feed">
+        <h3 class="data-header">Mantenimiento de Departamentos</h3>
 
-<div id="container ">
-    <div class="row">
-        <div class="col-md-8 offset-md-2" id="contenido">
+        <div class="data-body">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
+            </div>
+            <br />
+            <div class="col-md-12" id="contenido">
+            </div>
         </div>
     </div>
 </div>
@@ -89,7 +91,7 @@
                     var textoModificado = texto.replace(/ /g, "-");
                     //console.log(textoModificado);
 
-                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='fw-light btn btn-light' onclick=cargarUpt('" + departamento.idDepto + "," + textoModificado + "') >Editar</a> | <a class='fw-light btn btn-danger' href=\"javascript:cargarDel('" + departamento.idDepto + "')\">Eliminar</a></td>";
+                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='fw-light btn btn-light' onclick=cargarUpt('" + departamento.idDepto + "&&" + textoModificado + "') >Editar</a> | <a class='fw-light btn btn-danger' href=\"javascript:cargarDel('" + departamento.idDepto + "')\">Eliminar</a></td>";
                     tabla += "</tr>";
                 });
                 tabla += "</tbody></table>";
@@ -163,7 +165,7 @@
 
         function cargarUpt(valor) {
 
-            var obj = valor.split(',');
+            var obj = valor.split('&&');
             var textoModificado = obj[1];
             var textoOriginal = textoModificado.replace(/-/g, " ");
 
