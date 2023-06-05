@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using System.Xml.Linq;
+using System.Diagnostics;
+using System.Linq;
 
 namespace LugaresTuristicos.Controllers
 {
@@ -27,10 +30,10 @@ namespace LugaresTuristicos.Controllers
                 if (!claimUser.Identity.IsAuthenticated)
                 {
                     // Si no ha iniciado sesión, redirigir al inicio de sesión
-                    return RedirectToAction("Login", "Home"); 
+                    return RedirectToAction("Login", "Home");
                 }
 
-                List<Lugare> lista = _dbContext.Lugares.Where(x=>x.Estado==true).Include(l => l.Comentarios)
+                List<Lugare> lista = _dbContext.Lugares.Where(x => x.Estado == true).Include(l => l.Comentarios)
                                                        .Include(l => l.IdMunicipioNavigation)
                                                        .Include(l => l.IdMunicipioNavigation.IdDeptoNavigation)
                                                        .Include(l => l.IdCategoriaNavigation)
@@ -78,10 +81,10 @@ namespace LugaresTuristicos.Controllers
                                                        .Where(x => x.IdLugar.Equals(id))
                                                        .ToList();
 
-               
+
                 return View(currentPlace);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Lugare model = new Lugare();
                 return View(model);
@@ -89,35 +92,230 @@ namespace LugaresTuristicos.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CreateComment(string IdLugar, string Comentario)
+        public JsonResult CreateComment(int IdLugar, string Comentario)
         {
             ClaimsPrincipal claimUser = HttpContext.User;
             try
             {
-                Comentario comentario = new Comentario();
-                comentario.IdLugar = Convert.ToInt32(IdLugar);
-                comentario.Comentario1 = Comentario;
-                comentario.Fecha = DateTime.Now;
-                comentario.Estado = true;
-                comentario.IdUsuario = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                List<string> bl = _dbContext.Blacklists.Select(x=>x.Palabra).ToList();
+                string[] palabrasComentario = Comentario.Split(' ');
+                Comentario addComentario = new Comentario();
+                addComentario.IdLugar = Convert.ToInt32(IdLugar);
+                addComentario.Comentario1 = Comentario;
+                addComentario.Fecha = DateTime.Now;
+                addComentario.Estado = true;
+                addComentario.IdUsuario = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                _dbContext.Comentarios.Add(addComentario);
 
-                _dbContext.Comentarios.Add(comentario);
-                _dbContext.SaveChanges();
-
+                if (palabrasComentario.Intersect(bl).Any())
+                {
+                    addComentario.Revision = "En Revisión";
+                    _dbContext.Comentarios.Add(addComentario);
+                    _dbContext.SaveChanges();
+                    return Json(new { respuesta = "En Revisión" });
+                }
+                else
+                {
+                    addComentario.Revision = "Válido";
+                    _dbContext.Comentarios.Add(addComentario);
+                    _dbContext.SaveChanges();
+                    return Json(new { respuesta = "Válido" });
+                }
+                
+                
             }
             catch (Exception ex)
             {
-
+                return Json(new { respuesta = "Error" });
             }
-            return RedirectToAction("PostDetails", routeValues: new { id = Convert.ToInt32(IdLugar) });
+            
         }
 
         [HttpPost]
         public JsonResult AllComentarios(int idLugar)
         {
-            var comments = _dbContext.Comentarios.Where(x => x.IdLugar.Equals(idLugar)).First();
+            var comments = (from comentario in _dbContext.Comentarios
+                            join usuario in _dbContext.Usuarios
+                            on comentario.IdUsuario equals usuario.IdUsuario
+                            where comentario.IdLugar == idLugar && comentario.Estado == true && comentario.Revision.Equals("Válido")
+                            orderby comentario.Fecha descending
+                            select new
+                            {
+                                fecha = comentario.Fecha,
+                                imagen = usuario.Imagen,
+                                nombre = usuario.Nombre,
+                                apellido = usuario.Apellido,
+                                comentario = comentario.Comentario1,
+                                idUsuario=usuario.IdUsuario,
+                                idComentario=comentario.IdComentario
+                            }).ToList();
+
+
             return Json(comments);
         }
+
+        [HttpPost]
+        public JsonResult findByMunicipio(string sValor, string sTipo)
+        {
+            try
+            {
+                if (sTipo.Equals("Dpto"))
+                {
+                    int idDpto = _dbContext.Departamentos.Where(x => x.Departamento1.Equals(sValor)).Select(x => x.IdDepto).FirstOrDefault();
+                    List<Lugare> lugares = _dbContext.Lugares.Where(x => x.Estado == true && x.IdMunicipioNavigation.IdDepto==idDpto).ToList();
+                    return Json(lugares);
+                }
+                else
+                {
+                    int idMunicipio = _dbContext.Municipios.Where(x => x.Municipio1.Equals(sValor)).Select(x => x.IdMunicipio).FirstOrDefault();
+                    List<Lugare> lugares = _dbContext.Lugares.Where(x => x.Estado == true && x.IdMunicipio == idMunicipio).ToList();
+                    return Json(lugares);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { respuesta = "Error" });
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult findByCategorias(int sValor)
+        {
+            try
+            {
+                List<Lugare> lugares = _dbContext.Lugares.Where(x => x.Estado == true && x.IdCategoria == sValor).ToList();
+                return Json(lugares);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { respuesta = "Error" });
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult findUser()
+        {
+            try
+            {
+                int user = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                return Json(user);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { respuesta = "Error" });
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult findByDescripcion(string sValor)
+        {
+            try
+            {
+                string[] palabrasDescripcion = sValor.Split(' ');
+                List<Lugare> desc = _dbContext.Lugares.Where(x => x.Estado == true).ToList();
+                List<Lugare> lugares = new List<Lugare> { };
+
+                foreach(var l in desc)
+                {
+                    if (palabrasDescripcion.Any(palabra => l.Descripcion.Contains(palabra)))
+                                        {
+                                            lugares.Add(l);
+                                        }
+                }
+                
+                return Json(lugares);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { respuesta = "Error" });
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult findByNombre(string sValor)
+        {
+            try
+            {
+                string[] palabrasNombre = sValor.Split(' ');
+                List<Lugare> desc = _dbContext.Lugares.Where(x => x.Estado == true).ToList();
+                List<Lugare> lugares = new List<Lugare> { };
+
+                foreach (var l in desc)
+                {
+                    if (palabrasNombre.Any(palabra => l.NombreLugar.ToLower().Contains(palabra.ToLower())))
+                    {
+                        lugares.Add(l);
+                    }
+                }
+
+                return Json(lugares);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { respuesta = "Error" });
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult getCategorias()
+        {
+            try
+            {
+                List<Categoria> lstCategoria = _dbContext.Categorias.Where(x => x.Estado == true).ToList();
+                return Json(lstCategoria);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { respuesta = "Error" });
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult EliminarComentario(int id)
+        {
+            try
+            {
+                var objDel = _dbContext.Comentarios.FirstOrDefault(x => x.IdComentario == id);
+                objDel.Estado = false;
+                //contexto.Categorias.Remove(objDel);
+                _dbContext.Comentarios.Update(objDel);
+                _dbContext.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarComentaro(int id, string valor)
+        {
+            try
+            {
+                var objUpt = _dbContext.Comentarios.FirstOrDefault(x => x.IdComentario == id);
+                objUpt.Comentario1 = valor;
+                _dbContext.Comentarios.Update(objUpt);
+                _dbContext.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
+
     }
+
+
 }

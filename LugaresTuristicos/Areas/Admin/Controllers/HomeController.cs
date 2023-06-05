@@ -221,11 +221,11 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
             {
                 contexto.Categorias.Add(obj);
                 contexto.SaveChanges();
-                return Json(true);
+                return Json("correcto");
             }
             catch (Exception ex)
             {
-                return Json(false);
+                return Json("error");
             }
         }
 
