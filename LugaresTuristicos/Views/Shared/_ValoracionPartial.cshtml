@@ -1,0 +1,30 @@
+﻿@model Lugare
+ 
+<div class="valoracion">
+
+    <!-- Estrella 1 -->
+    <button id="star5_@Model.IdLugar" class="icon-button" onclick="valoracion(@Model.IdLugar, 5)">
+        <i class="fas fa-star icon"></i>
+    </button>
+
+    <!-- Estrella 2 -->
+    <button id="star4_@Model.IdLugar" class="icon-button" onclick="valoracion(@Model.IdLugar, 4)">
+        <i class="fas fa-star icon"></i>
+    </button>
+
+    <!-- Estrella 3 -->
+    <button id="star3_@Model.IdLugar" class="icon-button" onclick="valoracion(@Model.IdLugar, 3)">
+        <i class="fas fa-star icon"></i>
+    </button>
+
+    <!-- Estrella 4 -->
+    <button id="star2_@Model.IdLugar" class="icon-button" onclick="valoracion(@Model.IdLugar,2)">
+        <i class="fas fa-star icon"></i>
+    </button>
+
+    <!-- Estrella 5 -->
+    <button id="star1_@Model.IdLugar" class="icon-button" onclick="valoracion(@Model.IdLugar, 1)">
+        <i class="fa fa-star icon"></i>
+    </button>
+
+</div>
