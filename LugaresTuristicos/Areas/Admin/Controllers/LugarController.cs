@@ -4,6 +4,7 @@ using LugaresTuristicos.Models;
 using LugaresTuristicos.Commod;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace LugaresTuristicos.Areas.Admin.Controllers
 {
@@ -96,7 +97,7 @@ namespace LugaresTuristicos.Areas.Admin.Controllers
                         return RedirectToAction("Index");
                     }
 
-                    model.IdUsuario = Convert.ToInt32(HttpContext.Session.GetString("IdUser"));
+                    model.IdUsuario = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                     model.FechaPublicacion = DateTime.Now;
 
                     _dbContext.Lugares.Add(model);

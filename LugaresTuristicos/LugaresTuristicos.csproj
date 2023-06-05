@@ -23,6 +23,7 @@
   <ItemGroup>
     <None Include="wwwroot\Images\DefaultUser.png" />
     <None Include="wwwroot\Images\Logo.png" />
+    <None Include="wwwroot\js\valoraciones.js" />
   </ItemGroup>
 
   <ItemGroup>

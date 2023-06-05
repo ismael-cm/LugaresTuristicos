@@ -73,7 +73,7 @@ namespace LugaresTuristicos.Controllers
                 if (TempData["IsLoggedIn"] != null && (bool)TempData["IsLoggedIn"])
                     TempData["NameUser"] = TempData["IsLoggedInNameUser"];
 
-                List<Lugare> currentPlace = _dbContext.Lugares.Include(l => l.Comentarios)
+                List<Lugare> currentPlace = _dbContext.Lugares.Include(l => l.Comentarios).ThenInclude(c => c.IdUsuarioNavigation)
                                                        .Include(l => l.IdMunicipioNavigation)
                                                        .Include(l => l.IdMunicipioNavigation.IdDeptoNavigation)
                                                        .Include(l => l.IdCategoriaNavigation)

@@ -1,26 +1,17 @@
 ﻿@model Lugare
 
-<style>
-    .profile-picture {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        margin-right: 10px;
-    }
-</style>
+<div class="container-fluid create-post">
 
+    <div class="row feed">
+        <h3 class="data-header">Mantenimiento de Lugares</h3>
 
-
-<div class="container-fluid">
-
-    <div class="row">
-        <h3>Mantenimiento de Lugares</h3>
-
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
-        </div>
-        <br />
-        <div class="col-md-12" id="contenido">
+        <div class="data-body">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="agregar">Nuevo registro</button>
+            </div>
+            <br />
+            <div class="col-md-12" id="contenido">
+            </div>
         </div>
     </div>
 </div>
@@ -52,7 +43,7 @@
                         <span asp-validation-for="NombreLugar" class="text-danger"></span>
                     </div>
                     <div class="form-floating">
-                        <textarea class="form-control" placeholder="Escribe una descripcion" asp-for="Descripcion"></textarea>
+                        <textarea class="form-control" placeholder="Escribe una descripcion" asp-for="Descripcion" required></textarea>
                         <label asp-for="Descripcion">Escribe la descripcion del lugar</label>
                     </div>
                     <div class="form-group mb-1">
@@ -113,21 +104,86 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Mofificar Municipio</h5>
+                <h5 class="modal-title" id="exampleModalLabel2">Modificando Lugar turistico</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="Form2">
+            <form id="Form2" enctype="multipart/form-data" method="post">
                 <div class="modal-body">
-                    
+                    <div class="form-group mb-1">
+                        <input id="idLugar" class="form-control" placeholder="Escribe el nombre" hidden required />
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Usuario</label>
+                        <select id="IdUsuario2" class="form-control" required>
+                            <option value="">Seleccione un usuario</option>
+                            @foreach (Usuario usuario in ViewBag.Usuarios)
+                            {
+                                <option value="@usuario.IdUsuario">@usuario.Nombre @usuario.Apellido</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Nombre del Lugar</label>
+                        <input id="NombreLugar2" class="form-control" placeholder="Escribe el nombre" required />
+                    </div>
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Escribe una descripcion" id="Descripcion2" required></textarea>
+                        <label>Escribe la descripcion del lugar</label>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Departamento</label>
+                        <select id="idDepto2" class="form-control" required>
+                            <option value="">Seleccione un departamento</option>
+                            @foreach (Departamento departamento in ViewBag.Departamento)
+                            {
+                                <option value="@departamento.IdDepto">@departamento.Departamento1</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Municipio</label>
+                        <select id="IdMunicipio2" class="form-control" required>
+                            <option value="">Seleccione un municipio</option>
+                            @foreach (Municipio municipio in ViewBag.Municipio)
+                            {
+                                <option value="@municipio.IdMunicipio">@municipio.Municipio1</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Precio del Lugar</label>
+                        <input id="Precio2" class="form-control" required />
+
+                        <label class="control-label">Imagen</label>
+                        <input type="file" name="imagenArchivo" class="form-control" accept="image/jpeg, image/png, image/gif" id="Imagen2" disabled />
+
+                    </div>
+                    <div class="form-check form-switch d-grid gap-2 d-md-flex justify-content-md-end">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">¿Desea modificar la imagen?</label>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Categoria</label>
+                        <select id="IdCategoria2" class="form-control" required>
+                            <option value="">Seleccione una categoria</option>
+                            @foreach (Categoria categoria in ViewBag.Categoria)
+                            {
+                                <option value="@categoria.IdCategoria">@categoria.NombreCategoria</option>
+                            }
+                        </select>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="btnCerrar2" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" id="btnActualizar" class="btn btn-primary">Actualizar</button>
+                    <button type="submit" id="btnActualizar" class="btn btn-primary">Actualizar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+
 
 
 
@@ -163,11 +219,19 @@
                     tabla += "<td>" + imagenHTML + "</td>";
                     tabla += "<td>" + lugares.fecha + "</td>";
 
-                    //var texto = municipio.municipio1;
-                    //var textoModificado = texto.replace(/ /g, "-");
-                    //console.log(textoModificado);
+                    //var texto1 = lugares.user;
+                    //var textomodificado1 = texto1.replace(/ /g, "-");
 
-                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='fw-light btn btn-light' onclick=cargarUpt('" + "dd" + "') >Editar</a> | <a class='fw-light btn btn-danger' href=\"javascript:cargarDel('" + lugares.idLugar + "')\">Eliminar</a></td>";
+                    var texto2 = lugares.nombre;
+                    var textomodificado2 = texto2.replace(/ /g, "-");
+
+                    var texto3 = lugares.descripcion;
+                    var textomodificado3 = texto3.replace(/ /g, "-");
+
+                    console.log();
+                    console.log();
+
+                    tabla += "<td><a data-bs-toggle='modal' data-bs-target='#exampleModal2' class='fw-light btn btn-light' onclick=cargarUpt('" + lugares.idLugar + "&&" + lugares.idUser + "&&" + textomodificado2 + "&&" + textomodificado3 + "&&" + lugares.idMunicipio + "&&" + lugares.idDepto + "&&" + lugares.idCategoria + "&&" + lugares.precio2 + "') >Editar</a> | <a class='fw-light btn btn-danger' href=\"javascript:cargarDel('" + lugares.idLugar + "')\">Eliminar</a></td>";
                     tabla += "</tr>";
                 });
                 tabla += "</tbody></table>";
@@ -241,35 +305,89 @@
 
         function cargarUpt(valor) {
 
-            var obj = valor.split(',');
-            var textoModificado = obj[1];
-            var textoOriginal = textoModificado.replace(/-/g, " ");
+            var obj = valor.split('&&');
+            var textoModificado1 = obj[2];
+            var textoOriginal1 = textoModificado1.replace(/-/g, " ");
 
-            document.getElementById("idMunicipio2").value = obj[0];
-            document.getElementById("Municipio2").value = textoOriginal;
-            document.getElementById("IdDepto2").value = obj[2];
+            var textoModificado2 = obj[3];
+            var textoOriginal2 = textoModificado2.replace(/-/g, " ");
+
+
+            document.getElementById("idLugar").value = obj[0];
+            document.getElementById("IdUsuario2").value = obj[1];
+            document.getElementById("NombreLugar2").value = textoOriginal1;
+            document.getElementById("Descripcion2").value = textoOriginal2;
+            document.getElementById("IdMunicipio2").value = obj[4];
+            document.getElementById("idDepto2").value = obj[5];
+            document.getElementById("IdCategoria2").value = obj[6];
+            document.getElementById("Precio2").value = obj[7];
+            
 
         }
 
         function limpiarCajas() {
-            document.getElementById("Municipio1").value = "";
-            document.getElementById("IdDepto").value = "";
+            document.getElementById("IdUsuario").value = "";
+            document.getElementById("NombreLugar").value = "";
+            document.getElementById("Descripcion").value = "";
+            document.getElementById("idDepto").value = "";
+            document.getElementById("IdMunicipio").value = "";
+            document.getElementById("Precio").value = "";
+            document.getElementById("Imagen").value = "";
+            document.getElementById("IdCategoria").value = "";
         }
 
         function limpiarClases() {
-            document.getElementById("Municipio1").classList.remove("is-valid");
-            document.getElementById("Municipio1").classList.remove("is-invalid");
-            document.getElementById("IdDepto").classList.remove("is-valid");
-            document.getElementById("IdDepto").classList.remove("is-invalid");
+            document.getElementById("IdUsuario").classList.remove("is-valid");
+            document.getElementById("NombreLugar").classList.remove("is-valid");
+            document.getElementById("Descripcion").classList.remove("is-valid");
+            document.getElementById("idDepto").classList.remove("is-valid");
+            document.getElementById("IdMunicipio").classList.remove("is-valid");
+            document.getElementById("Precio").classList.remove("is-valid");
+            document.getElementById("Imagen").classList.remove("is-valid");
+            document.getElementById("IdCategoria").classList.remove("is-valid");
 
-            document.getElementById("Municipio2").classList.remove("is-valid");
-            document.getElementById("Municipio2").classList.remove("is-invalid");
-            document.getElementById("IdDepto2").classList.remove("is-valid");
-            document.getElementById("IdDepto2").classList.remove("is-invalid");
+            document.getElementById("IdUsuario").classList.remove("is-invalid");
+            document.getElementById("NombreLugar").classList.remove("is-invalid");
+            document.getElementById("Descripcion").classList.remove("is-invalid");
+            document.getElementById("idDepto").classList.remove("is-invalid");
+            document.getElementById("IdMunicipio").classList.remove("is-invalid");
+            document.getElementById("Precio").classList.remove("is-invalid");
+            document.getElementById("Imagen").classList.remove("is-invalid");
+            document.getElementById("IdCategoria").classList.remove("is-invalid");
+
+            document.getElementById("IdUsuario2").classList.remove("is-valid");
+            document.getElementById("NombreLugar2").classList.remove("is-valid");
+            document.getElementById("Descripcion2").classList.remove("is-valid");
+            document.getElementById("idDepto2").classList.remove("is-valid");
+            document.getElementById("IdMunicipio2").classList.remove("is-valid");
+            document.getElementById("Precio2").classList.remove("is-valid");
+            document.getElementById("Imagen2").classList.remove("is-valid");
+            document.getElementById("IdCategoria2").classList.remove("is-valid");
+
+            document.getElementById("IdUsuario2").classList.remove("is-invalid");
+            document.getElementById("NombreLugar2").classList.remove("is-invalid");
+            document.getElementById("Descripcion2").classList.remove("is-invalid");
+            document.getElementById("idDepto2").classList.remove("is-invalid");
+            document.getElementById("IdMunicipio2").classList.remove("is-invalid");
+            document.getElementById("Precio2").classList.remove("is-invalid");
+            document.getElementById("Imagen2").classList.remove("is-invalid");
+            document.getElementById("IdCategoria2").classList.remove("is-invalid");
         }
 
 
         $(document).ready(function () {
+
+            const radioInput = document.getElementById('flexSwitchCheckDefault');
+            const fileInput = document.getElementById('Imagen2');
+
+            radioInput.addEventListener('change', function () {
+                if (radioInput.checked) {
+                    fileInput.disabled = false;
+                } else {
+                    fileInput.disabled = true;
+                    document.getElementById("Imagen2").value = "";
+                }
+            });
 
             $("#idDepto").change(function () {
                 var selectedValue = $(this).val();
@@ -288,13 +406,44 @@
                         data: { id: selectedValue }
                     }).done(function (resp){
                         $.each(resp, function (index, muni){
-                            $("#IdMunicipio").append('<option value="' + muni.id_depto + '">' + muni.municipio + '</option>');
+                            $("#IdMunicipio").append('<option value="' + muni.id_muni + '">' + muni.municipio + '</option>');
                         });
                     });
                 }else{
+                    document.getElementById("IdMunicipio").classList.remove("is-invalid");
+                    document.getElementById("IdMunicipio").classList.remove("is-valid");
                     $("#IdMunicipio").empty();
                     $("#IdMunicipio").append('<option value="">' + "Seleccione un municipio" + '</option>');
                     document.getElementById("IdMunicipio").setAttribute("disabled", "disabled");
+                }
+            });
+
+            $("#idDepto2").change(function () {
+                var selectedValue = $(this).val();
+                if (selectedValue != "") {
+
+                    document.getElementById("IdMunicipio2").removeAttribute("disabled");
+                    var idDepto2 = $("#idDepto2").val();
+                    $("#IdMunicipio2").empty();
+                    $("#IdMunicipio2").append('<option value="">' + "Seleccione un municipio" + '</option>');
+
+                    $.ajax({
+                        type: "post",
+                        url: '@Url.Action("getTablaMunicipioByIdDepto","Home")',
+                        cache: false,
+                        dataType: 'json',
+                        data: { id: selectedValue }
+                    }).done(function (resp) {
+                        $.each(resp, function (index, muni) {
+                            $("#IdMunicipio2").append('<option value="' + muni.id_muni + '">' + muni.municipio + '</option>');
+                        });
+                    });
+                } else {
+                    document.getElementById("IdMunicipio2").classList.remove("is-invalid");
+                    document.getElementById("IdMunicipio2").classList.remove("is-valid");
+                    $("#IdMunicipio2").empty();
+                    $("#IdMunicipio2").append('<option value="">' + "Seleccione un municipio" + '</option>');
+                    document.getElementById("IdMunicipio2").setAttribute("disabled", "disabled");
                 }
             });
 
@@ -324,8 +473,6 @@
                         Precio: prec
                     };
 
-                    //console.log(lugaresObj);
-
                     if(inputsInvalidos === 0){
                         formData.append('imageFile', $('#Imagen')[0].files[0]);
                         formData.append('lugaresObj', JSON.stringify(lugaresObj));
@@ -345,8 +492,8 @@
                                 })
                                 cargarTabla();
                                 $("#btnCerrar").click();
-                                //limpiarCajas();
-                                //limpiarClases();
+                                limpiarCajas();
+                                limpiarClases();
                             } else {
                                 Swal.fire({
                                     title: 'Hubo un error al momento de agregar el dato',
@@ -378,50 +525,198 @@
                 }
             });
 
+            $('#Form2').submit(function (event) {
+                event.preventDefault();
 
-            var inputUsuario = document.getElementById("Municipio1");
-            function validarMunicipio() {
+                var formData = new FormData();
+                var inputsInvalidos = $("#Form2 .is-invalid").length;
+                var idUser = $("#IdUsuario2").val();
+                var idluga = $("#idLugar").val();
+                var nombr = $("#NombreLugar2").val();
+                var desc = $("#Descripcion2").val();
+                var muni = $("#IdMunicipio2").val();
+                var prec = $("#Precio2").val();
+                var cat = $("#IdCategoria2").val();
+                var formulario = $("#Form2").serialize();
+                var im = $("#Imagen2").val();
 
-                var valor = inputMunicipio.value.trim();
-                if (valor.length >= 4) {
-                    inputMunicipio.classList.add("is-valid");
-                    inputMunicipio.classList.remove("is-invalid");
+                if (!radioInput.checked) {
+                    if (idUser != "" && nombr != "" && desc != ""
+                        && muni != "" && prec != "" && cat != "") {
+
+                        if (inputsInvalidos === 0) {
+                            $.ajax({
+                                url: '@Url.Action("ActualizarLugarSinImagen","Home")',
+                                type: 'post',
+                                cache: false,
+                                dataType: 'json',
+                                data: { id_lugar: idluga, id_usuario: idUser, id_categoria: cat, nombre: nombr, descripcion: desc, id_municipio: muni, precio: prec }
+                            }).done(function (resp) {
+                                if (resp) {
+                                    Swal.fire({
+                                        title: 'El registro ha sido agregado correctamente',
+                                        icon: 'success',
+                                        confirmButtonText: 'Continuar'
+                                    })
+                                    cargarTabla();
+                                    $("#btnCerrar2").click();
+                                    limpiarCajas();
+                                    limpiarClases();
+                                } else {
+                                    Swal.fire({
+                                        title: 'Hubo un error al momento de agregar el dato',
+                                        icon: 'error',
+                                        confirmButtonText: 'Continuar'
+                                    })
+                                }
+                            }).fail(function () {
+                                Swal.fire({
+                                    title: 'Hubo un error al momento de agregar el dato',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            });;
+
+                        } else {
+                            Swal.fire({
+                                title: 'Verifica los textos en rojo para continuar',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        }
+                    } else {
+                        Swal.fire({
+                            title: 'Todos los campos son obligatorios',
+                            icon: 'warning',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                }else{
+                    if (idUser != "" && nombr != "" && desc != ""
+                        && muni != "" && prec != "" && cat != "" && im != "") {
+
+                        var lugaresObj = {
+                            IdUsuario: idUser,
+                            IdLugar: idluga,
+                            IdCategoria: cat,
+                            NombreLugar: nombr,
+                            Descripcion: desc,
+                            IdMunicipio: muni,
+                            Precio: prec
+                        };
+
+                        if (inputsInvalidos === 0) {
+                            formData.append('imageFile', $('#Imagen2')[0].files[0]);
+                            formData.append('lugaresObj', JSON.stringify(lugaresObj));
+
+                            $.ajax({
+                                url: '/admin/Home/UploadImageUpdate',
+                                type: 'POST',
+                                data: formData,
+                                processData: false,
+                                contentType: false
+                            }).done(function (resp) {
+                                if (resp) {
+                                    Swal.fire({
+                                        title: 'El registro ha sido agregado correctamente',
+                                        icon: 'success',
+                                        confirmButtonText: 'Continuar'
+                                    })
+                                    cargarTabla();
+                                    $("#btnCerrar2").click();
+                                    limpiarCajas();
+                                    limpiarClases();
+                                    radioInput.checked = false;
+                                    fileInput.disabled = true;
+                                    document.getElementById("Imagen2").value = "";
+                                } else {
+                                    Swal.fire({
+                                        title: 'Hubo un error al momento de agregar el dato',
+                                        icon: 'error',
+                                        confirmButtonText: 'Continuar'
+                                    })
+                                }
+                            }).fail(function () {
+                                Swal.fire({
+                                    title: 'Hubo un error al momento de agregar el dato',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            });;
+
+                        } else {
+                            Swal.fire({
+                                title: 'Verifica los textos en rojo para continuar',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        }
+                    } else {
+                        Swal.fire({
+                            title: 'Todos los campos son obligatorios',
+                            icon: 'warning',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                }
+
+            });
+
+            // -----------------
+            var selectUsuario = document.getElementById("IdUsuario");
+            selectUsuario.addEventListener("change", function () {
+                if (selectUsuario.value !== "") {
+                    selectUsuario.classList.add("is-valid");
+                    selectUsuario.classList.remove("is-invalid");
                 } else {
-                    inputMunicipio.classList.add("is-invalid");
-                    inputMunicipio.classList.remove("is-valid");
+                    selectUsuario.classList.add("is-invalid");
+                    selectUsuario.classList.remove("is-valid");
+                }
+            });
+
+            var inputNombre = document.getElementById("NombreLugar");
+            function validarNombre() {
+
+                var valor = inputNombre.value.trim();
+                if (valor.length >= 4) {
+                    inputNombre.classList.add("is-valid");
+                    inputNombre.classList.remove("is-invalid");
+                } else {
+                    inputNombre.classList.add("is-invalid");
+                    inputNombre.classList.remove("is-valid");
                 }
             }
 
-            inputMunicipio.addEventListener("keypress", function () {
-                validarMunicipio();
+            inputNombre.addEventListener("keypress", function () {
+                validarNombre();
             });
 
-            inputMunicipio.addEventListener("keydown", function () {
-                setTimeout(validarMunicipio, 0);
+            inputNombre.addEventListener("keydown", function () {
+                setTimeout(validarNombre, 0);
             });
 
-            var inputMunicipio2 = document.getElementById("Municipio2");
-            function validarMunicipio2() {
+            var inputDescripcion = document.getElementById("Descripcion");
+            function validarDescripcion() {
 
-                var valor = inputMunicipio2.value.trim();
+                var valor = inputDescripcion.value.trim();
                 if (valor.length >= 4) {
-                    inputMunicipio2.classList.add("is-valid");
-                    inputMunicipio2.classList.remove("is-invalid");
+                    inputDescripcion.classList.add("is-valid");
+                    inputDescripcion.classList.remove("is-invalid");
                 } else {
-                    inputMunicipio2.classList.add("is-invalid");
-                    inputMunicipio2.classList.remove("is-valid");
+                    inputDescripcion.classList.add("is-invalid");
+                    inputDescripcion.classList.remove("is-valid");
                 }
             }
 
-            inputMunicipio2.addEventListener("keypress", function () {
-                validarMunicipio2();
+            inputDescripcion.addEventListener("keypress", function () {
+                validarDescripcion();
             });
 
-            inputMunicipio2.addEventListener("keydown", function () {
-                setTimeout(validarMunicipio2, 0);
+            inputDescripcion.addEventListener("keydown", function () {
+                setTimeout(validarDescripcion, 0);
             });
 
-            var selectDepto = document.getElementById("IdDepto");
+            var selectDepto = document.getElementById("idDepto");
             selectDepto.addEventListener("change", function () {
                 if (selectDepto.value !== "") {
                     selectDepto.classList.add("is-valid");
@@ -432,7 +727,136 @@
                 }
             });
 
-            var selectDepto2 = document.getElementById("IdDepto2");
+            var selectMunicipio = document.getElementById("IdMunicipio");
+            selectMunicipio.addEventListener("change", function () {
+                if (selectMunicipio.value !== "") {
+                    selectMunicipio.classList.add("is-valid");
+                    selectMunicipio.classList.remove("is-invalid");
+                } else {
+                    selectMunicipio.classList.add("is-invalid");
+                    selectMunicipio.classList.remove("is-valid");
+                }
+            });
+
+            var selectCategoria = document.getElementById("IdCategoria");
+            selectCategoria.addEventListener("change", function () {
+                if (selectCategoria.value !== "") {
+                    selectCategoria.classList.add("is-valid");
+                    selectCategoria.classList.remove("is-invalid");
+                } else {
+                    selectCategoria.classList.add("is-invalid");
+                    selectCategoria.classList.remove("is-valid");
+                }
+            });
+
+            const inputPrecio = document.getElementById('Precio');
+
+            inputPrecio.addEventListener('input', function () {
+                let valor = inputPrecio.value;
+                const tieneSimboloNegativo = valor.includes('-');
+
+                valor = valor.replace(/[^0-9.-]/g, '');
+
+                const signoPositivo = valor.indexOf('+');
+                const signoNegativo = valor.indexOf('-');
+                if (signoPositivo !== -1 && signoPositivo !== valor.lastIndexOf('+')) {
+                    valor = valor.slice(0, signoPositivo) + valor.slice(signoPositivo + 1);
+                }
+                if (signoNegativo !== -1 && signoNegativo !== valor.lastIndexOf('-')) {
+                    valor = valor.slice(0, signoNegativo) + valor.slice(signoNegativo + 1);
+                }
+
+                if (valor !== inputPrecio.value) {
+                    inputPrecio.value = valor;
+                    inputPrecio.classList.add('is-invalid');
+                    inputPrecio.classList.remove('is-valid');
+                }else{
+                    inputPrecio.classList.add('is-valid');
+                    inputPrecio.classList.remove('is-invalid');
+                }
+
+                if (tieneSimboloNegativo) {
+                    inputPrecio.classList.add('is-invalid');
+                    inputPrecio.classList.remove('is-valid');
+                } else {
+                    inputPrecio.classList.add('is-valid');
+                    inputPrecio.classList.remove('is-invalid');
+                }
+
+                if(valor === ""){
+                    inputPrecio.classList.add('is-invalid');
+                    inputPrecio.classList.remove('is-valid');
+                }
+
+            });
+
+            var inputImagen = document.getElementById("Imagen");
+            inputImagen.addEventListener('change', function () {
+
+                if (inputImagen.files.length > 0) {
+                    inputImagen.classList.add('is-valid');
+                    inputImagen.classList.remove('is-invalid');
+                } else {
+                    inputImagen.classList.add('is-invalid');
+                    inputImagen.classList.remove('is-valid');
+                }
+            });
+
+            //----------------
+            var selectUsuario2 = document.getElementById("IdUsuario2");
+            selectUsuario2.addEventListener("change", function () {
+                if (selectUsuario2.value !== "") {
+                    selectUsuario2.classList.add("is-valid");
+                    selectUsuario2.classList.remove("is-invalid");
+                } else {
+                    selectUsuario2.classList.add("is-invalid");
+                    selectUsuario2.classList.remove("is-valid");
+                }
+            });
+
+            var inputNombre2 = document.getElementById("NombreLugar2");
+            function validarNombre2() {
+
+                var valor = inputNombre2.value.trim();
+                if (valor.length >= 4) {
+                    inputNombre2.classList.add("is-valid");
+                    inputNombre2.classList.remove("is-invalid");
+                } else {
+                    inputNombre2.classList.add("is-invalid");
+                    inputNombre2.classList.remove("is-valid");
+                }
+            }
+
+            inputNombre2.addEventListener("keypress", function () {
+                validarNombre2();
+            });
+
+            inputNombre2.addEventListener("keydown", function () {
+                setTimeout(validarNombre2, 0);
+            });
+
+            var inputDescripcion2 = document.getElementById("Descripcion2");
+            function validarDescripcion2() {
+
+                var valor = inputDescripcion2.value.trim();
+                if (valor.length >= 4) {
+                    inputDescripcion2.classList.add("is-valid");
+                    inputDescripcion2.classList.remove("is-invalid");
+                } else {
+                    inputDescripcion2.classList.add("is-invalid");
+                    inputDescripcion2.classList.remove("is-valid");
+                }
+            }
+
+            inputDescripcion2.addEventListener("keypress", function () {
+                validarDescripcion2();
+            });
+
+            inputDescripcion2.addEventListener("keydown", function () {
+                setTimeout(validarDescripcion2, 0);
+            });
+
+            var selectDepto2 = document.getElementById("idDepto2");
             selectDepto2.addEventListener("change", function () {
                 if (selectDepto2.value !== "") {
                     selectDepto2.classList.add("is-valid");
@@ -443,134 +867,84 @@
                 }
             });
 
+            var selectMunicipio2 = document.getElementById("IdMunicipio2");
+            selectMunicipio2.addEventListener("change", function () {
+                if (selectMunicipio2.value !== "") {
+                    selectMunicipio2.classList.add("is-valid");
+                    selectMunicipio2.classList.remove("is-invalid");
+                } else {
+                    selectMunicipio2.classList.add("is-invalid");
+                    selectMunicipio2.classList.remove("is-valid");
+                }
+            });
+
+            var selectCategoria2 = document.getElementById("IdCategoria2");
+            selectCategoria2.addEventListener("change", function () {
+                if (selectCategoria2.value !== "") {
+                    selectCategoria2.classList.add("is-valid");
+                    selectCategoria2.classList.remove("is-invalid");
+                } else {
+                    selectCategoria2.classList.add("is-invalid");
+                    selectCategoria2.classList.remove("is-valid");
+                }
+            });
+
+            const inputPrecio2 = document.getElementById('Precio2');
+
+            inputPrecio2.addEventListener('input', function () {
+                let valor2 = inputPrecio2.value;
+                const tieneSimboloNegativo2 = valor2.includes('-');
+
+                valor2 = valor2.replace(/[^0-9.-]/g, '');
+
+                const signoPositivo2 = valor2.indexOf('+');
+                const signoNegativo2 = valor2.indexOf('-');
+                if (signoPositivo2 !== -1 && signoPositivo2 !== valor2.lastIndexOf('+')) {
+                    valor2 = valor2.slice(0, signoPositivo2) + valor2.slice(signoPositivo2 + 1);
+                }
+                if (signoNegativo2 !== -1 && signoNegativo2 !== valor2.lastIndexOf('-')) {
+                    valor2 = valor2.slice(0, signoNegativo2) + valor2.slice(signoNegativo2 + 1);
+                }
+
+                if (valor2 !== inputPrecio2.value) {
+                    inputPrecio2.value = valor2;
+                    inputPrecio2.classList.add('is-invalid');
+                    inputPrecio2.classList.remove('is-valid');
+                } else {
+                    inputPrecio2.classList.add('is-valid');
+                    inputPrecio2.classList.remove('is-invalid');
+                }
+
+                if (tieneSimboloNegativo2) {
+                    inputPrecio2.classList.add('is-invalid');
+                    inputPrecio2.classList.remove('is-valid');
+                } else {
+                    inputPrecio2.classList.add('is-valid');
+                    inputPrecio2.classList.remove('is-invalid');
+                }
+
+                if (valor2 === "") {
+                    inputPrecio2.classList.add('is-invalid');
+                    inputPrecio2.classList.remove('is-valid');
+                }
+
+            });
+
+            var inputImagen2 = document.getElementById("Imagen2");
+            inputImagen2.addEventListener('change', function () {
+
+                if (inputImagen2.files.length > 0) {
+                    inputImagen2.classList.add('is-valid');
+                    inputImagen2.classList.remove('is-invalid');
+                } else {
+                    inputImagen2.classList.add('is-invalid');
+                    inputImagen2.classList.remove('is-valid');
+                }
+            });
+
             cargarTabla();
 
-            $("#btnGuardar").click(function () {
-                if ($("#IdDepto").val() != "" && $("#Municipio1").val() != "") {
-
-                    //var formulario = $("#Form1").serialize();
-                    var inputsInvalidos = $("#Form1 .is-invalid").length;
-
-                    var img = $("#Imagen")[0].files[0];
-                    var formData = new FormData();
-                    console.log("imagen: ", img);
-
-                    formData.append("Imagen", img);
-
-                    if (inputsInvalidos === 0) {
-                        $.ajax({
-                            url: '@Url.Action("UploadImage","Home")',
-                            type: 'post',
-                            processData: false,
-                            dataType: 'json',
-                            contentType: false,
-                            data: formData
-                        }).done(function (resp) {
-                            if (resp) {
-                                console.log("1");
-                                Swal.fire({
-                                    title: 'El registro ha sido agregado correctamente',
-                                    icon: 'success',
-                                    confirmButtonText: 'Continuar'
-                                })
-                                cargarTabla();
-                                $("#btnCerrar").click();
-                                limpiarCajas();
-                                limpiarClases();
-                            } else {
-                                console.log("2");
-                                Swal.fire({
-                                    title: 'Hubo un error al momento de agregar el dato 1',
-                                    icon: 'error',
-                                    confirmButtonText: 'Continuar'
-                                })
-                            }
-                        }).fail(function () {
-                            console.log("3");
-                            Swal.fire({
-                                title: 'Hubo un error al momento de agregar el dato 2',
-                                icon: 'error',
-                                confirmButtonText: 'Continuar'
-                            })
-                        });
-                    } else {
-                        Swal.fire({
-                            title: 'Verifica los textos en rojo para continuar',
-                            icon: 'error',
-                            confirmButtonText: 'Continuar'
-                        })
-                    }
-
-                } else {
-                    Swal.fire({
-                        title: 'Todos los campos son obligatorios',
-                        icon: 'warning',
-                        confirmButtonText: 'OK'
-                    })
-                }
-            });
-
-
-
-            $("#btnActualizar").click(function () {
-                //console.log(1);
-                if ($("#idMunicipio2").val() != "" && $("#Municipio2").val() != "" && $("#IdDepto2").val() != "") {
-
-                    var formulario = $("#Form2").serialize();
-                    var inputsInvalidos2 = $("#Form2 .is-invalid").length;
-
-                    var obj1 = document.getElementById("idMunicipio2").value;
-                    var obj2 = document.getElementById("Municipio2").value;
-                    var obj3 = document.getElementById("IdDepto2").value;
-
-                    if (inputsInvalidos2 === 0) {
-                        $.ajax({
-                            url: '@Url.Action("ActualizarMunicipio","Home")',
-                            type: 'post',
-                            cache: false,
-                            dataType: 'json',
-                            data: { idMunicipio: obj1, idDepto: obj3, municipio: obj2 }
-                        }).done(function (resp) {
-                            if (resp) {
-                                Swal.fire({
-                                    title: 'El registro ha sido modificado correctamente',
-                                    icon: 'success',
-                                    confirmButtonText: 'Continuar'
-                                })
-                                cargarTabla();
-                                $("#btnCerrar2").click();
-                                limpiarCajas();
-                                limpiarClases();
-                            } else {
-                                Swal.fire({
-                                    title: 'Hubo un error al momento de actualizar el dato',
-                                    icon: 'error',
-                                    confirmButtonText: 'Continuar'
-                                })
-                            }
-                        }).fail(function () {
-                            Swal.fire({
-                                title: 'Hubo un error al momento de actualizar el dato',
-                                icon: 'error',
-                                confirmButtonText: 'Continuar'
-                            })
-                        });
-                    } else {
-                        Swal.fire({
-                            title: 'Verifica los textos en rojo para continuar',
-                            icon: 'error',
-                            confirmButtonText: 'Continuar'
-                        })
-                    }
-
-                } else {
-                    Swal.fire({
-                        title: 'Todos los campos son obligatorios',
-                        icon: 'warning',
-                        confirmButtonText: 'OK'
-                    })
-                }
-            });
+            
         });
     </script>
 

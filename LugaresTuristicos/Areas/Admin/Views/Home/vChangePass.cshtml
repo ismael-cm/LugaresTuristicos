@@ -1,0 +1,269 @@
+﻿<div class="container-fluid create-post">
+
+    <div class="row feed">        
+        <div class="">
+            
+            <br />
+            <div class="col-md-8 offset-md-2 data-header" id="contenido">
+                <h3>Cambio de contraseñas</h3>
+                <div class="alert alert-warning" role="alert">
+                    <strong>¡Importante!</strong> No olvides cambiar tus contraseñas regularmente para proteger tu seguridad en línea. Utiliza combinaciones únicas de letras, números y símbolos, y evita información personal obvia.
+                </div>
+
+                <form id="formulario">
+                    <div class="row g-3 mb-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="inputPassword6" class="col-form-label">Correo Electronico</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="email" class="form-control" id="idEmail" aria-describedby="animacion" required>
+                            <div id="animacion" class="invalid-feedback">
+                                El correo no existe!
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary" type="button" id="validarCorreo">
+                                @*<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>*@
+                                Check
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cambiarPassword" hidden>
+                        <div class="mb-3 row">
+                            <label for="inputPassword" class="col-sm-2 col-form-label">Contraseña</label>
+                            <div class="col-sm-4">
+                                <input type="password" class="form-control" id="inputPassword" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-title="Requisitos" data-bs-content="Agrega mas de 4 caracteres y al menos un numero">
+                                <div id="feed-1" class="valid-feedback" hidden>
+                                    Requisitos correctos!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="inputPassword" class="col-sm-2 col-form-label">Confirmar contraseña</label>
+                            <div class="col-sm-4">
+                                <input type="password" class="form-control" id="inputPassword2">
+                                <div id="feed-2" class="valid-feedback" hidden>
+                                    Requisitos correctos!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col-sm-12">
+                                <button class="btn btn-primary" type="button" id="updatePassword">Cambiar contraseña</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function(){
+            const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+            const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+
+            var inputPassword = document.getElementById("inputPassword");
+            function validarPassword() {
+
+                var valor = inputPassword.value.trim();
+                if (valor.length > 4 && /\d/.test(valor)) {
+                    inputPassword.classList.add("is-valid");
+                    inputPassword.classList.remove("is-invalid");
+                    document.getElementById("feed-1").removeAttribute("hidden");
+                } else {
+                    inputPassword.classList.add("is-invalid");
+                    inputPassword.classList.remove("is-valid");
+                    document.getElementById("feed-1").setAttribute("hidden", "");
+                }
+            }
+
+            inputPassword.addEventListener("keypress", function () {
+                validarPassword();
+            });
+
+            inputPassword.addEventListener("keydown", function () {
+                setTimeout(validarPassword, 0);
+            });
+
+            var inputPassword2 = document.getElementById("inputPassword2");
+            function validarPassword2() {
+
+                var valor = inputPassword2.value.trim();
+                if (valor.length > 4 && /\d/.test(valor)) {
+                    inputPassword2.classList.add("is-valid");
+                    inputPassword2.classList.remove("is-invalid");
+                    document.getElementById("feed-2").removeAttribute("hidden");
+                } else {
+                    inputPassword2.classList.add("is-invalid");
+                    inputPassword2.classList.remove("is-valid");
+                    document.getElementById("feed-2").setAttribute("hidden", "");
+                }
+            }
+
+            inputPassword2.addEventListener("keypress", function () {
+                validarPassword2();
+            });
+
+            inputPassword2.addEventListener("keydown", function () {
+                setTimeout(validarPassword2, 0);
+            });
+
+            function limpiarCajas() {
+                document.getElementById("idEmail").value = "";
+                document.getElementById("inputPassword").value = "";
+                document.getElementById("inputPassword2").value = "";
+            }
+
+            function limpiarClases() {
+                document.getElementById("idEmail").classList.remove("is-valid");
+                document.getElementById("idEmail").classList.remove("is-invalid");
+
+                document.getElementById("inputPassword").classList.remove("is-valid");
+                document.getElementById("inputPassword").classList.remove("is-invalid");
+
+                document.getElementById("inputPassword2").classList.remove("is-valid");
+                document.getElementById("inputPassword2").classList.remove("is-invalid");
+
+            }
+
+            $("#validarCorreo").click(function () {
+                if ($("#idEmail").val() != "") {
+
+                    var corr = $("#idEmail").val();
+
+                    var formulario = $("#formulario").serialize();
+                        $.ajax({
+                        url: '@Url.Action("getCorreo","Home")',
+                            type: 'post',
+                            cache: false,
+                            dataType: 'json',
+                            data: { correo: corr },
+                        beforeSend: function () {
+                            $('#validarCorreo').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+                        }
+                        }).done(function (resp) {
+
+                            console.log(resp);
+
+                            if(resp.length > 0){
+                                //Validaciones antes de
+                                $('#validarCorreo').empty();
+                                $('#validarCorreo').text('Comprobado');
+                                $('#validarCorreo').prop('disabled', true);
+                                $('#idEmail').prop('disabled', true);
+                                $('#animacion').css('visibility', 'hidden');
+                                $('#idEmail').removeClass('is-invalid');
+
+                                //validaciones despues de
+                                $('#cambiarPassword').removeAttr('hidden');
+                                $('#cambiarPassword').css('visibility', 'visible');
+                                var div = document.getElementById("cambiarPassword");
+                                div.style.display = "";
+
+                            }else{
+                                $('#validarCorreo').empty();
+                                $('#validarCorreo').text('Check');
+                                $('#animacion').css('visibility', 'visible');
+                                $('#idEmail').addClass('is-invalid');
+
+                            }
+
+                           
+                        }).fail(function () {
+                            
+                        });
+
+                } else {
+                    Swal.fire({
+                        title: 'Todos los campos son obligatorios',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            });
+
+            $("#updatePassword").click(function () {
+                if ($("#inputPassword").val() != "" && $("#inputPassword2").val() != "") {
+
+                    if ($("#inputPassword").val() === $("#inputPassword2").val()) {
+                        var inp1 = $("#inputPassword").val();
+                        var inp2 = $("#idEmail").val();
+                        var inputsInvalidos = $("#formulario .is-invalid").length;
+
+                        if(inputsInvalidos === 0){
+                            var formulario = $("#formulario").serialize();
+                            $.ajax({
+                                url: '@Url.Action("ActualizarPassword","Home")',
+                                type: 'post',
+                                cache: false,
+                                dataType: 'json',
+                                data: { correo: inp2, valor: inp1 }
+                            }).done(function (resp) {
+
+                                if (resp) {
+                                    Swal.fire({
+                                        title: 'La contraseñas se ha modificado correctamente',
+                                        icon: 'success',
+                                        confirmButtonText: 'Continuar'
+                                    })
+
+                                    $('#validarCorreo').empty();
+                                    $('#validarCorreo').text('Check');
+                                    $('#validarCorreo').prop('disabled', false);
+                                    $('#idEmail').prop('disabled', false);
+                                    $('#animacion').css('visibility', 'hidden');
+                                    $('#idEmail').removeClass('is-invalid');
+                                    $('#cambiarPassword').css('visibility', 'hidden');
+                                    limpiarCajas();
+                                    limpiarClases();
+                                    var div = document.getElementById("cambiarPassword");
+                                    div.style.display = "none";
+
+                                } else {
+                                    Swal.fire({
+                                        title: 'Hubo un error al momento de actualizar el dato',
+                                        icon: 'error',
+                                        confirmButtonText: 'Continuar'
+                                    })
+                                }
+                            }).fail(function () {
+                                Swal.fire({
+                                    title: 'Hubo un error al momento de actualizar el dato',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            });
+                        }else{
+                            Swal.fire({
+                                title: 'Verifica los textos en rojo para continuar',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        }
+
+                    }else{
+                        Swal.fire({
+                            title: 'Las contraseñas no coinciden',
+                            icon: 'error',
+                            confirmButtonText: 'Continuar'
+                        })
+                    }
+
+                } else {
+                    Swal.fire({
+                        title: 'Todos los campos son obligatorios',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            });
+
+        });
+    </script>
+}
