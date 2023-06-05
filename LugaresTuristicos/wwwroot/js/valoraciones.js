@@ -10,7 +10,7 @@
 
     stars.forEach((star, index) => {
         if (index < idStar)
-            star.style.color = '#ffa400';
+            star.style.color = '#F9D75D';
         else
             star.style.color = '#5f5050';
     })
