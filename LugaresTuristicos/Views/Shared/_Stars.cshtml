@@ -40,16 +40,7 @@
             document.getElementById(`star5_${idLugar}`),
         ]
         //Variable global puntuacion
-        puntuacion = idStar
-        console.log(puntuacion)
-
-        resena = document.getElementById('valoracionComentario')
-        svButton = document.getElementById('guardarValoracion')
-
-        resena.style.display = 'inline'
-        svButton.style.display = 'inline'
-        resena.focus()
-
+      
         stars.forEach((star, index) => {
             if (index < idStar)
                 star.style.color = '#F9D75D';

@@ -2,6 +2,32 @@
 
 @section scripts {
     <script type="text/javascript">
+        //variable global puntuación
+        var puntuacion = 0;
+
+
+        function saveValoracion(id) {
+            let comentario = document.getElementById('v-comentario').value
+            console.log('asdas')
+            console.log(id)
+            console.log(comentario)
+            console.log(puntuacion)
+
+
+             $.ajax({
+                url:'/Valoracion/Store/',
+                data: { comentario: comentario, puntuacion: puntuacion, IdLugar: id},
+                type: 'Post',
+                dataType: 'json',
+                cache: false,
+            }).done(function (resp) {
+                alert("funcino")
+                console.log(resp)
+            })
+        }
+
+    
+
         $(document).ready(function () {
             showData($('#id').val());
             getUser();
@@ -449,8 +475,72 @@
             <div class="feed">
                 <div class="row g-2 comment-section-stars" style="margin-top: 5px;">
                     <div class="col-auto">
-                        Valoraciones:
-                        <partial name="_ValoracionPartial" model="@item" />
+                        <div class="d-flex align-items-center">
+                            <span class="me-1">Valoraciones:</span>
+                            <div class="valoracion">
+
+                                <!--  1 -->
+                                <button id="star5" class="icon-button">
+                                    <i class="fas fa-star icon"></i>
+                                </button>
+
+                                <!--  2 -->
+                                <button id="star4" class="icon-button">
+                                    <i class="fas fa-star icon"></i>
+                                </button>
+
+                                <!--  3 -->
+                                <button id="star3" class="icon-button">
+                                    <i class="fas fa-star icon"></i>
+                                </button>
+
+                                <!--  4 -->
+                                <button id="star2" class="icon-button">
+                                    <i class="fas fa-star icon"></i>
+                                </button>
+
+                                <!-- Estrlla 5 -->
+                                <button id="star1" class="icon-button">
+                                    <i class="fa fa-star icon"></i>
+                                </button>
+
+                            </div>
+                            
+                     
+                        </div>
+                        <button class="btn btn-outline-warning" data-toggle="modal" data-target="#myModal">
+                            Agregar mi valoración
+                            <i class="fa fa-solid fa-pen ms-2"></i>
+                        </button>
+                      
+                        <!-- Modal -->
+                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="comment-section-stars font-weight-bold" id="exampleModalLabel">Dejar valoración</h5>
+                                <button type="button" class="close" style="border:none; background: none" data-dismiss="modal" aria-label="Cerrar">
+                                  <span aria-hidden="true">&times;</span>
+                                  <i class="fa fa-solid fa-lg"></i>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                              <label class="row g-2">Valoración</label>
+                                <partial name="_ValoracionPartial" model="@item" />
+                                <div id="valoracionComentario" class="mt-4 mb-1 mt-2" style="display: none">
+                                    <label class="row g-2 mt-2">Deja tu reseña (opcional)</label>
+                                    <textarea id="v-comentario" rows="6" cols="50" class="form-control" placeholder="Escribe tu resña..."></textarea>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                <button type="button" onclick="saveValoracion(@item.IdLugar)" class="btn btn-warning" id="guardarValoracion" style="display: none">Guardar Valoracion</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
                     </div>
                 </div>
                 <br>
@@ -517,4 +607,10 @@
 </div>
 
 </div>
+
+<script>
+    
+
+    
+</script>
 
