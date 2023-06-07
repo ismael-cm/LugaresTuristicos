@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Xml.Linq;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace LugaresTuristicos.Controllers
 {
@@ -18,20 +19,38 @@ namespace LugaresTuristicos.Controllers
         public IActionResult Store(string comentario, string puntuacion, string IdLugar)
         {
             int IdUsuario = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            LugaresValoracione ValoracionLugar = new LugaresValoracione();
+            int? IdValoracion;
 
-            ValoracionLugar.IdLugar = int.Parse(IdLugar);
-            ValoracionLugar.IdValoracion = int.Parse(puntuacion);
-            ValoracionLugar.IdUsuario = IdUsuario;
-            ValoracionLugar.Descripcion = puntuacion;
-            ValoracionLugar.Fecha = DateTime.Now;
+            var Existing = _context.LugaresValoraciones.Where(x => x.IdUsuario == IdUsuario && x.IdLugar == int.Parse(IdLugar)).FirstOrDefault();
 
-            _context.LugaresValoraciones.Add(ValoracionLugar);
+            if (Existing == null)
+            {
+                //Create new
+                LugaresValoracione ValoracionLugar = new LugaresValoracione();
+
+                ValoracionLugar.IdLugar = int.Parse(IdLugar);
+                ValoracionLugar.IdValoracion = int.Parse(puntuacion);
+                ValoracionLugar.IdUsuario = IdUsuario;
+                ValoracionLugar.Descripcion = comentario;
+                ValoracionLugar.Fecha = DateTime.Now;
+
+                _context.LugaresValoraciones.Add(ValoracionLugar);
+                IdValoracion = ValoracionLugar.IdValoracion;
+            } else
+            {
+                //Update existing
+                Existing.IdValoracion = int.Parse(puntuacion);
+                Existing.Descripcion = comentario;
+                IdValoracion = Existing.IdValoracion;
+            }
+
+
+
             _context.SaveChanges();
 
             
 
-            return RedirectToAction("Show", new { IdValoracion = ValoracionLugar.IdValoracion });
+            return RedirectToAction("Show", new { IdValoracion = IdValoracion });
         }
 
         
@@ -43,10 +62,48 @@ namespace LugaresTuristicos.Controllers
             return Json(ValoracionLugar);
         }
 
+        [HttpPost]
         public JsonResult ShowValoracionesLugar(string IdLugar)
         {
-            LugaresValoracione ValoracionLugar = _context.LugaresValoraciones
-                 .Where(l => l.IdLugar == int.Parse(IdLugar)).First();
+            var ValoracionLugar = _context.LugaresValoraciones
+                 .Where(l => l.IdLugar == int.Parse(IdLugar)).Average(l => l.IdValoracion);
+
+            return Json(ValoracionLugar);
+        }
+
+        [HttpPost]
+        public JsonResult GetValoraciones(string IdLugar)
+        {
+            
+
+            var VarloracionLugar = (from lugaresValoraciones in _context.LugaresValoraciones
+                            join usuario in _context.Usuarios
+                            on lugaresValoraciones.IdUsuario equals usuario.IdUsuario
+                            where lugaresValoraciones.IdLugar == int.Parse(IdLugar)
+                            orderby lugaresValoraciones.Fecha descending
+                            select new
+                            {
+                                fecha = lugaresValoraciones.Fecha,
+                                imagen = usuario.Imagen,
+                                nombre = usuario.Nombre,
+                                apellido = usuario.Apellido,
+                                comentario = lugaresValoraciones.Descripcion,
+                                idUsuario=usuario.IdUsuario,
+                                idComentario= lugaresValoraciones.IdLValoracion,
+                                puntuacion = lugaresValoraciones.IdValoracion
+                            }).ToList();
+
+
+            return Json(VarloracionLugar);
+        }
+
+        [HttpPost]
+        public JsonResult ValoracionUsusarioLugar(string IdLugar)
+        {
+            int IdUsuario = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var ValoracionLugar = _context.LugaresValoraciones
+                 .Where(l => l.IdLugar == int.Parse(IdLugar) && l.IdUsuario == IdUsuario).FirstOrDefault();
 
             return Json(ValoracionLugar);
         }

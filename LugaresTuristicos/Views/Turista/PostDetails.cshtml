@@ -4,15 +4,21 @@
     <script type="text/javascript">
         //variable global puntuación
         var puntuacion = 0;
+        let valoracionGlobal = 0;
+        let valoraciones = 0;
+        var valoracionUsuaro = null
+
+        const swal2Btns = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger me-4'
+            },
+            buttonsStyling: false
+        })
 
 
         function saveValoracion(id) {
             let comentario = document.getElementById('v-comentario').value
-            console.log('asdas')
-            console.log(id)
-            console.log(comentario)
-            console.log(puntuacion)
-
 
              $.ajax({
                 url:'/Valoracion/Store/',
@@ -21,8 +27,126 @@
                 dataType: 'json',
                 cache: false,
             }).done(function (resp) {
-                alert("funcino")
+                
+
+                getValoracion(id)
+               
+                getValoracionUsusario(id)
+                getValoraciones(id)
+
+                swal2Btns.fire(
+                    'Valoracion enviada',
+                    'Muchas gracias por tu opinión',
+                    'success'
+                )
+            })
+        }
+
+        function getValoracion(lugar) {
+             $.ajax({
+                url:'/Valoracion/ShowValoracionesLugar/'+lugar,
+                data: {IdLugar: lugar},
+                type: 'Post',
+                dataType: 'json',
+                cache: false,
+            }).done(function (resp) {
+                valoracionGlobal = resp
+                valoracionNumber = document.getElementById('valoracionNumber');
+                valoracionNumber.innerHTML = valoracionGlobal.toFixed(1)
+
+                setValoracion(valoracionGlobal)
+            })
+        }
+
+        function getValoraciones(lugar) {
+            $.ajax({
+                url: '/Valoracion/GetValoraciones/',
+                data: { IdLugar: lugar },
+                type: 'Post',
+                dataType: 'json',
+                cache: false,
+            }).done(function (resp) {
+                console.log('ama')
                 console.log(resp)
+
+                var content = $('#valoracionesContainer');
+                var comment = "";
+                var user=$('#idUsuario').val();
+                $.each(resp, function (index, comentario) {
+                    var fechaComentario = new Date(comentario.fecha);
+                    var diferenciaComentario = new Date() - fechaComentario;
+
+                    var formatoFechaComentario;
+
+                    if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 7) {
+                        formatoFechaComentario = fechaComentario.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+                    } else if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 2) {
+                        formatoFechaComentario = `${Math.floor(diferenciaComentario / (1000 * 60 * 60 * 24))} días atrás`;
+                    } else if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 1) {
+                        formatoFechaComentario = "Ayer";
+                    } else {
+                        formatoFechaComentario = "Hoy";
+                    }
+                    
+                    var img = 'data:image;base64,' + comentario.imagen;
+                    comment += `<div class='row g-2 feed-header'> 
+                                    <div class='col-auto'>
+                                        <div class='profile-photo'>
+                                            <img src='${img}' alt='Foto de perfil' class='profile-picture'>
+                                        </div>
+                                    </div>
+                                    <div class='col-auto'>
+                                        <b>${comentario.nombre}  ${comentario.apellido} </b> 
+                                        <p class='text-muted'> ${formatoFechaComentario} </p> 
+                                    </div>`;
+                    
+                    
+                    comment += `<div class="col-auto" >
+                                <div class="btn-group">`
+                                 
+                    for(let i = 1; i <= 5; i++) {
+                        console.log(`index is ${i}`)
+                        if(i <= comentario.puntuacion){
+                            comment += `<i class="fas fa-star icon" style="color: rgb(249, 215, 93);"></i>`
+                        } else {
+                            comment += `<i class="fa-regular fa-star icon icon" style="color: rgb(249, 215, 93);"></i>`
+
+                        }
+                    }
+                                       
+                    comment +=`</div></div></div>`
+                    
+
+                    
+                    comment +="<div class='col-12'><p> " + comentario.comentario + "</p></div>";
+                });
+                content.empty();
+                content.append(comment);
+            })
+        }
+
+        function getValoracionUsusario(lugar_id) {
+             $.ajax({
+                url:'/Valoracion/ValoracionUsusarioLugar/',
+                data: {IdLugar: lugar_id},
+                type: 'Post',
+                dataType: 'json',
+                cache: false,
+            }).done(function (resp) {
+
+                valoracionUsuaro = resp
+
+               if(valoracionUsuaro) {
+                    let generalAddValorcion = document.getElementById('generalAddValorcion')
+                    let title = document.getElementById('title-valoracion')
+                    let comentario = document.getElementById('v-comentario')
+
+                    generalAddValorcion.innerHTML = 'Actualizar mi valoración  <i class="fa fa-solid fa-pen ms-2"></i>'
+                    title.innerHTML = "Actualizar valoración"
+                    setValoracion(valoracionUsuaro.idValoracion);
+                    comentario.value = valoracionUsuaro.descripcion
+               }
+
             })
         }
 
@@ -31,6 +155,10 @@
         $(document).ready(function () {
             showData($('#id').val());
             getUser();
+            getValoracion($('#id').val())
+
+            getValoracionUsusario($('#id').val())
+            getValoraciones($('#id').val())
         });
 
         function showData(id){
@@ -41,7 +169,7 @@
                 dataType: 'json',
                 cache: false,
             }).done(function (resp) {
-                    console.log(resp);
+                 
                 var content = $('#Comentarios');
                 var comment = "";
                 var user=$('#idUsuario').val();
@@ -62,7 +190,7 @@
                     }
                     
                     var img = 'data:image;base64,' + comentario.imagen;
-                    comment += "<div class='row g-2 feed-header'> <div class='col-auto'><div class='profile-photo'><img src='"+ img +"' alt='Foto de perfil' class='profile-picture'></div></div><div class='col-auto'><b>"+comentario.nombre + comentario.apellido + "</b> <p class='text-muted'>" + formatoFechaComentario + "</p> </div>";
+                    comment += "<div class='row g-2 feed-header'> <div class='col-auto'><div class='profile-photo'><img src='"+ img +"' alt='Foto de perfil' class='profile-picture'></div></div><div class='col-auto'><b>"+comentario.nombre + " " + comentario.apellido + "</b> <p class='text-muted'>" + formatoFechaComentario + "</p> </div>";
                     
                     if(user==comentario.idUsuario){
                         comment += `<div class="col-auto" >
@@ -299,6 +427,8 @@
                 }
             });
 
+     
+
     </script>
 }
 
@@ -415,10 +545,10 @@
                     formatoFecha = "Hoy";
                 }
 
-    <div class="left col-md-6 grid gap-0 row-gap-3">
-                   <div class="row p-2 g-col-12">
-                   <input name="IdUsuario" class="form-control" id="idUsuario" hidden />
-            <div class="details">
+                <div class="left col-md-6 grid gap-0 row-gap-3">
+                       <div class="row p-2 g-col-12">
+                       <input name="IdUsuario" class="form-control" id="idUsuario" hidden />
+                <div class="details">
                             <div>
                                 <a asp-action="Dashboard" asp-controller="Turista">
                                     <svg width="21" height="21" fill="#212121" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -477,72 +607,50 @@
                     <div class="col-auto">
                         <div class="d-flex align-items-center">
                             <span class="me-1">Valoraciones:</span>
-                            <div class="valoracion">
-
-                                <!--  1 -->
-                                <button id="star5" class="icon-button">
-                                    <i class="fas fa-star icon"></i>
-                                </button>
-
-                                <!--  2 -->
-                                <button id="star4" class="icon-button">
-                                    <i class="fas fa-star icon"></i>
-                                </button>
-
-                                <!--  3 -->
-                                <button id="star3" class="icon-button">
-                                    <i class="fas fa-star icon"></i>
-                                </button>
-
-                                <!--  4 -->
-                                <button id="star2" class="icon-button">
-                                    <i class="fas fa-star icon"></i>
-                                </button>
-
-                                <!-- Estrlla 5 -->
-                                <button id="star1" class="icon-button">
-                                    <i class="fa fa-star icon"></i>
-                                </button>
-
-                            </div>
-                            
-                     
+                             <partial name="_Stars" model="@item" />
+                            <span class="ms-2 font-gold fw-bold" id="valoracionNumber"></span>
+                             
+                        
                         </div>
-                        <button class="btn btn-outline-warning" data-toggle="modal" data-target="#myModal">
+                        <button id="generalAddValorcion" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#myModal">
                             Agregar mi valoración
                             <i class="fa fa-solid fa-pen ms-2"></i>
                         </button>
-                      
+
+                        
+                        </div>
+
+                                
+
+                                    
                         <!-- Modal -->
-                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                          <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="comment-section-stars font-weight-bold" id="exampleModalLabel">Dejar valoración</h5>
-                                <button type="button" class="close" style="border:none; background: none" data-dismiss="modal" aria-label="Cerrar">
-                                  <span aria-hidden="true">&times;</span>
-                                  <i class="fa fa-solid fa-lg"></i>
-                                </button>
-                              </div>
-                              <div class="modal-body">
-                              <label class="row g-2">Valoración</label>
-                                <partial name="_ValoracionPartial" model="@item" />
-                                <div id="valoracionComentario" class="mt-4 mb-1 mt-2" style="display: none">
-                                    <label class="row g-2 mt-2">Deja tu reseña (opcional)</label>
-                                    <textarea id="v-comentario" rows="6" cols="50" class="form-control" placeholder="Escribe tu resña..."></textarea>
+                        <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="title-valoracion">Nueva valoración</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label class="row g-2">Valoración</label>
+                                        <partial name="_ValoracionPartial" model="@item" />
+                                        <div id="valoracionComentario" class="mt-4 mb-1 mt-2" style="display: none">
+                                            <label class="row g-2 mt-2">Deja tu reseña (opcional)</label>
+                                            <textarea id="v-comentario" rows="6" cols="50" class="form-control" placeholder="Escribe tu resña..."></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                <button type="button" onclick="saveValoracion(@item.IdLugar)" class="btn btn-warning" id="guardarValoracion" data-bs-dismiss="modal" style="display: none">Guardar</button>
+                                    </div>
                                 </div>
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                <button type="button" onclick="saveValoracion(@item.IdLugar)" class="btn btn-warning" id="guardarValoracion" style="display: none">Guardar Valoracion</button>
-                              </div>
                             </div>
-                          </div>
                         </div>
 
 
                     </div>
-                </div>
+                     <p class="mt-3" id="valoracionesContainer"></p>
+                
                 <br>
                 <div class="row comment-section-comments" id="contenido">
                     <div class="col-12">
