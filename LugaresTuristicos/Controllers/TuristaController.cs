@@ -21,6 +21,92 @@ namespace LugaresTuristicos.Controllers
             return View();
         }
 
+        public IActionResult Profile()
+        {
+            ClaimsPrincipal claimUser = HttpContext.User;
+            // Verificar si el usuario ha iniciado sesión
+            if (!claimUser.Identity.IsAuthenticated)
+            {
+                // Si no ha iniciado sesión, redirigir al inicio de sesión
+                return RedirectToAction("Login", "Home");
+            }
+
+            var user_id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var usuario = _dbContext.Usuarios.Include(l => l.Rol).FirstOrDefault(s => s.IdUsuario.Equals(int.Parse(user_id)));
+
+            CommonProfile allData = new CommonProfile();
+            allData.Usuario = usuario;
+
+            return View(allData);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarPerfilSinImagen(int id_usuario, string nombre, string apellido, int edad)
+        {
+            try
+            {
+                var objUpt = _dbContext.Usuarios.FirstOrDefault(x => x.IdUsuario == id_usuario);
+                objUpt.Nombre = nombre;
+                objUpt.Apellido = apellido;
+                objUpt.Edad = edad;
+                _dbContext.Usuarios.Update(objUpt);
+                _dbContext.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadImageUpdate(IFormFile imageFile, int idUser)
+        {
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                return Json(false);
+            }
+
+            if (!IsValidImage(imageFile))
+            {
+                return Json(false);
+            }
+
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await imageFile.CopyToAsync(memoryStream);
+
+                    var objUpdate = _dbContext.Usuarios.FirstOrDefault(x => x.IdUsuario == idUser);
+                    objUpdate.Imagen = memoryStream.ToArray();
+
+                    _dbContext.Usuarios.Update(objUpdate);
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                return Json(true);
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+        }
+
+        private bool IsValidImage(IFormFile file)
+        {
+            if (file.ContentType.ToLower() != "image/jpeg" &&
+                file.ContentType.ToLower() != "image/jpg" &&
+                file.ContentType.ToLower() != "image/png")
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public IActionResult Dashboard()
         {
             try
@@ -53,6 +139,27 @@ namespace LugaresTuristicos.Controllers
             {
                 Lugare model = new Lugare();
                 return View(model);
+            }
+        }
+
+        public IActionResult obtenerImagenInicio()
+        {
+            try
+            {
+                ClaimsPrincipal claimUser = HttpContext.User;
+                var user_id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var imagen = (from user in _dbContext.Usuarios
+                              where user.IdUsuario == int.Parse(user_id)
+                              select new
+                              {
+                                  Imagen = user.Imagen
+                              }).ToList();
+
+                return Json(imagen);
+            }
+            catch (Exception error)
+            {
+                return Json(new { respuesta = "Error al consultar la imagen" });
             }
         }
 

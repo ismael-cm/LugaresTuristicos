@@ -129,7 +129,7 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
                               join categorias in contexto.Categorias on lugares.IdCategoria equals categorias.IdCategoria
                               join municipio in contexto.Municipios on lugares.IdMunicipio equals municipio.IdMunicipio
                               join departamento in contexto.Departamentos on municipio.IdDepto equals departamento.IdDepto
-                              where usuarios.Estado == true && categorias.Estado == true && municipio.Estado == true && lugares.Estado == true 
+                              where usuarios.Estado == true && categorias.Estado == true && municipio.Estado == true && lugares.Estado == true
                               select new
                               {
                                   idLugar = lugares.IdLugar,

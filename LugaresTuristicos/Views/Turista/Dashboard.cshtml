@@ -1,199 +1,5 @@
 ﻿@model CommonProfile
 
-<style>
-
-:root {
-    --color-dark: hs1(252,30%,17%);
-    --color-light: #f2f5f8;
-    --color-gray: hs1(252,15%,65%);
-    --color-primary: #3cafa3;
-    --border-radius: 2rem;
-    --card-border-radius: 1rem;
-    --card-padding: 1rem;
-    --btn-padding: 0.6rem 2rem;
-    --btn-seemore: #20659d;
-        --btn-find: #f28b31;
-}
-
-
-html {
-    font-size: 14px;
-    position: relative;
-    min-height: 100%;
-}
-
-body {
-    margin-bottom: 60px;
-    font-family: "Poppins", sans-serif;
-    color: var(--color-dark);
-    background: var(--color-light);
-}
-.btnOwn{
-    display:inline-block;
-    padding:var(--btn-padding);
-    font-weight:500;
-    border-radius:var(--border-radius);
-    cursor:pointer;
-    transition:all 300ms ease;
-    font-size:0.9rem;
-    text-decoration:none;
-    background: var(--color-primary);
-}
-.btn:hover{
-    opacity:0.8;
-}
-.btn-principal{
-    background-color:var(--color-primary);
-    color:white;
-}
-.profile-photo{
-    width:2.7rem;
-    aspect-ratio:1/1;
-    border-radius:50%;
-    overflow:hidden;
-}
-
-.profile-photo-align {
-    width: 100%;
-    display:flex;
-    justify-content:center;
-}
-
-.profile-photo-primary {
-    width: 7rem;
-    aspect-ratio: 1/1;
-    border-radius: 50%;
-    overflow: hidden;
-}
-.data {
-    color:var(--color-dark);
-    padding:var(--card-padding);
-    background-color:white;
-    border-radius:var(--card-border-radius);
-    text-align:center;
-}
-
-.profile {
-    color:var(--color-dark);
-    padding:var(--card-padding);
-    background-color:white;
-    border-radius:var(--card-border-radius);
-    text-align:center;
-}
-    .profile a {
-        text-decoration: none;
-        color: var(--color-dark);
-    }
-
-.sidebar {
-    color: var(--color-dark);
-    padding: var(--card-padding);
-    background-color: white;
-    border-radius: var(--card-border-radius);
-    
-}
-
-    .sidebar a {
-        text-decoration: none;
-        color: var(--color-dark);
-    }
-    .sidebar .menu-item {
-        display: flex;
-        cursor: pointer;
-        transition: all 300ms ease;
-        position: relative;
-        align-content:center;
-        flex-wrap:wrap;
-        height:2.5rem;
-    }
-    .sidebar .menu-item:hover {
-        background:var(--color-light);
-    }
-
-    .menu-item i {
-        font-size: 1.4rem;
-        color:gray;
-        margin-left: 2rem;
-        position: relative;
-    }
-.menu-item h5 {
-    font-weight:300;
-}
-
-img{
-    display:block;
-    width:100%;
-}
-.container {
-    background: var(--color-light);
-}
-main .container .left {
-    height:max-content;
-    position:sticky;
-}
-
-.text-muted{
-    color:var(--color-gray);
-}
-
-.middle .create-post {
-    width: 100%;
-    background-color: white;
-    border-radius: var(--card-border-radius);
-    padding: var(--card-padding);
-}
-
-.middle .feed {
-    width: 100%;
-    background-color: white;
-    border-radius: var(--card-border-radius);
-    padding: var(--card-padding);
-}
-
-.middle .feed .feed-photo{
-    border-radius:var(--card-border-radius);
-    overflow:hidden;
-    margin: 0.7rem 0;
-}
-
-.feed-location {
-   color:#696969;
-}
-
-.feed-button {
-    display:flex;
-    justify-content:center;
-}
-
-    .feed-button button {
-        background: var(--btn-seemore);
-        border-color: var(--btn-seemore);
-    }
-
-    .find{
-        text-decoration:none;
-        cursor: pointer;
-        transition: all 300ms ease;
-        color:black;
-    }
-
-    .create-post a:hover {
-        color:dimgray;
-    }
-
-    .feed-image{
-        position: relative;
-        overflow: hidden;
-    }
-    .feed-image img{
-        width: 100%;
-          height: 100%;
-          object-fit: cover;
-          object-position: center;
-    }
-
-</style>
-
 <div class="container">
     <div class="row">
         <div class="left col-md-3 grid gap-0 row-gap-3">
@@ -208,9 +14,9 @@ main .container .left {
                         <br />
                         <b>@Model.Usuario.Nombre @Model.Usuario.Apellido</b>
                         <p class="text-muted">
-                            @Model.Usuario.Edad
+                            Edad: @Model.Usuario.Edad
                             <br />
-                            @Model.Usuario.Correo 
+                            E-mail: @Model.Usuario.Correo 
                         </p>
                     </div>
                 </div>
@@ -223,10 +29,15 @@ main .container .left {
                             <path d="m20.42 10.184-7.71-7.88a.999.999 0 0 0-1.42 0l-7.71 7.89a2 2 0 0 0-.58 1.43v8.38a2 2 0 0 0 1.89 2H8v-9a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v9h3.11a2 2 0 0 0 1.89-2v-8.38a2.07 2.07 0 0 0-.58-1.44Z"></path>
                         </svg>&nbsp; &nbsp;<h5> Inicio</h5>
                     </a>
+                    <a class="menu-item" asp-area="" asp-controller="Turista" asp-action="Profile">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 7.063C16.5 10.258 14.57 13 12 13c-2.572 0-4.5-2.742-4.5-5.938C7.5 3.868 9.16 2 12 2s4.5 1.867 4.5 5.063zM4.102 20.142C4.487 20.6 6.145 22 12 22c5.855 0 7.512-1.4 7.898-1.857a.416.416 0 0 0 .09-.317C19.9 18.944 19.106 15 12 15s-7.9 3.944-7.989 4.826a.416.416 0 0 0 .091.317z" fill="#000000"></path></g></svg>
+                        &nbsp; &nbsp;
+                        <h5> Mi perfil</h5>
+                    </a>
                     <a class="menu-item" asp-area="" asp-controller="Home" asp-action="Logout">
-                            <svg width="20" height="20" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-  <path d="M19 11.001H7.14l3.63-4.36a1.001 1.001 0 0 0-1.54-1.28l-5 6a1.184 1.184 0 0 0-.09.15c0 .05 0 .08-.07.13a1 1 0 0 0-.07.36 1 1 0 0 0 .07.36c0 .05 0 .08.07.13.026.052.056.103.09.15l5 6a1 1 0 0 0 1.41.13 1 1 0 0 0 .13-1.41l-3.63-4.36H19a1 1 0 0 0 0-2Z"></path>
-</svg>&nbsp; &nbsp;<h5> Cerrar sesión</h5>
+                        <svg width="20" height="20" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 11.001H7.14l3.63-4.36a1.001 1.001 0 0 0-1.54-1.28l-5 6a1.184 1.184 0 0 0-.09.15c0 .05 0 .08-.07.13a1 1 0 0 0-.07.36 1 1 0 0 0 .07.36c0 .05 0 .08.07.13.026.052.056.103.09.15l5 6a1 1 0 0 0 1.41.13 1 1 0 0 0 .13-1.41l-3.63-4.36H19a1 1 0 0 0 0-2Z"></path>
+                        </svg>&nbsp; &nbsp;<h5> Cerrar sesión</h5>
                     </a>
                 </div>
             </div>
