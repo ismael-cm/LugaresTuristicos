@@ -1,0 +1,707 @@
+﻿@model CommonProfile
+
+<div class="container">
+    <div class="row">
+        <div class="left col-md-3 grid gap-0 row-gap-3">
+            <div class="row p-2 g-col-12">
+                <div class="profile">
+                    <div class="profile-photo-align">
+                        <div class="profile-photo-primary">
+                            <img src="data:image;base64,@Convert.ToBase64String(Model.Usuario.Imagen)" alt="Foto de perfil" class="profile-picture">
+                        </div>
+                    </div>
+                    <div class="handle">
+                        <br />
+                        <b>@Model.Usuario.Nombre @Model.Usuario.Apellido</b>
+                        <p class="text-muted">
+                            Edad: @Model.Usuario.Edad
+                            <br />
+                            E-mail: @Model.Usuario.Correo
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row p-2 g-col-12">
+                <div class="sidebar">
+                    <a class="menu-item" asp-area="" asp-controller="Home" asp-action="Index">
+                        <svg width="20" height="20" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14 14h-4v7h4v-7Z"></path>
+                            <path d="m20.42 10.184-7.71-7.88a.999.999 0 0 0-1.42 0l-7.71 7.89a2 2 0 0 0-.58 1.43v8.38a2 2 0 0 0 1.89 2H8v-9a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v9h3.11a2 2 0 0 0 1.89-2v-8.38a2.07 2.07 0 0 0-.58-1.44Z"></path>
+                        </svg>&nbsp; &nbsp;<h5> Inicio</h5>
+                    </a>
+                    <a class="menu-item" asp-area="" asp-controller="Emprendedor" asp-action="Profile">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 7.063C16.5 10.258 14.57 13 12 13c-2.572 0-4.5-2.742-4.5-5.938C7.5 3.868 9.16 2 12 2s4.5 1.867 4.5 5.063zM4.102 20.142C4.487 20.6 6.145 22 12 22c5.855 0 7.512-1.4 7.898-1.857a.416.416 0 0 0 .09-.317C19.9 18.944 19.106 15 12 15s-7.9 3.944-7.989 4.826a.416.416 0 0 0 .091.317z" fill="#000000"></path></g></svg>
+                        &nbsp; &nbsp;
+                        <h5> Mi perfil</h5>
+                    </a>
+                    <a class="menu-item" data-bs-toggle="modal" data-bs-target="#createPost">
+                        <svg width="20" height="20" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m19.4 7.337-2.74-2.74a2 2 0 0 0-2.66-.07l-9 9a2 2 0 0 0-.57 1.21L4 18.907a1 1 0 0 0 1 1.09h.09l4.17-.38a2 2 0 0 0 1.21-.57l9-9a1.92 1.92 0 0 0-.07-2.71Zm-3.4 3.34-2.68-2.68 1.95-2L18 8.727l-2 1.95Z"></path>
+                        </svg>&nbsp; &nbsp;<h5> Crear publicación</h5>
+                    </a>
+                    <a class="menu-item" asp-area="" asp-controller="Emprendedor" asp-action="AllPost">
+                        <svg width="20" height="20" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 4.34a1.24 1.24 0 0 0-1.08-.23L13 5.89v14.27l7.56-1.94A1.25 1.25 0 0 0 21.5 17V5.32a1.25 1.25 0 0 0-.5-.98Z"></path>
+                            <path d="M11 5.89 4.06 4.11A1.27 1.27 0 0 0 3 4.34a1.25 1.25 0 0 0-.48 1V17a1.25 1.25 0 0 0 .94 1.21L11 20.16V5.89Z"></path>
+                        </svg>&nbsp; &nbsp;<h5> Ver otras publicaciones</h5>
+                    </a>
+                    <a class="menu-item" asp-area="" asp-controller="Home" asp-action="Logout">
+                        <svg width="20" height="20" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 11.001H7.14l3.63-4.36a1.001 1.001 0 0 0-1.54-1.28l-5 6a1.184 1.184 0 0 0-.09.15c0 .05 0 .08-.07.13a1 1 0 0 0-.07.36 1 1 0 0 0 .07.36c0 .05 0 .08.07.13.026.052.056.103.09.15l5 6a1 1 0 0 0 1.41.13 1 1 0 0 0 .13-1.41l-3.63-4.36H19a1 1 0 0 0 0-2Z"></path>
+                        </svg>&nbsp; &nbsp;<h5> Cerrar sesión</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="middle col-md-6 grid gap-0 row-gap-3">
+            <div class="row p-2 g-col-12">
+                <div class="create-post">
+                    <div class="row">
+                        <div class="col-auto">
+                            <b style="font-size:17px;">Explora todos tus destinos</b>
+                            <p>Encuentra los mejores destinos turísticos y lugares de interés en El Salvador</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <a href="#" class="find" data-bs-toggle="modal" data-bs-target="#busquedaUbicacion">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <svg width="22" height="22" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 11a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path>
+                                            <path d="M12 2a8 8 0 0 0-8 7.92c0 5.48 7.05 11.58 7.35 11.84a1 1 0 0 0 1.3 0C13 21.5 20 15.4 20 9.92A8 8 0 0 0 12 2Zm0 11a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"></path>
+                                        </svg>
+                                        Busca por ubicación </p>
+                                </div>
+                            </div>
+                            </a>
+                        </div>
+                        <div class="col-sm-3">
+                            <a href="#" class="find" data-bs-toggle="modal" data-bs-target="#busquedaCategoria">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <svg width="22" height="22" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M15 16H9a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2Z"></path>
+                                            <path d="M9 14h3a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2Z"></path>
+                                            <path d="m19.74 8.33-5.44-6a1 1 0 0 0-.74-.33h-7A2.53 2.53 0 0 0 4 4.5v15A2.53 2.53 0 0 0 6.56 22h10.88A2.531 2.531 0 0 0 20 19.5V9a1 1 0 0 0-.26-.67ZM14 5l2.74 3h-2a.79.79 0 0 1-.74-.85V5Zm3.44 15H6.56a.53.53 0 0 1-.56-.5v-15a.53.53 0 0 1 .56-.5H12v3.15A2.79 2.79 0 0 0 14.71 10H18v9.5a.53.53 0 0 1-.56.5Z"></path>
+                                        </svg>
+                                        Busca por categoría</p>
+                                </div>
+                            </div>
+                            </a>
+                        </div>
+                        <div class="col-sm-3">
+                            <a href="#" class="find" data-bs-toggle="modal" data-bs-target="#busquedaDescripcion">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <svg width="22" height="22" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path>
+                                            <path d="M17 13a3 3 0 1 0 0-5.999A3 3 0 0 0 17 13Z"></path>
+                                            <path d="M21 19.998a1 1 0 0 0 1-1 5 5 0 0 0-8.06-3.95A7 7 0 0 0 2 19.998a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1"></path>
+                                        </svg>
+                                        Buscar por descripción</p>
+                                </div>
+                            </div>
+                            </a>
+                        </div>
+                        <div class="col-sm-3">
+                            <a href="#" class="find" data-bs-toggle="modal" data-bs-target="#busquedaNombre">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <svg width="22" height="22" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M19 3H7a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1ZM7 19a1 1 0 0 1 0-2h11v2H7Z"></path>
+                                        </svg>
+                                        Busca por nombre</p>
+                                </div>
+                            </div></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+            </div>
+            @if (Model.Lugares.Count > 0)
+            {
+            foreach (var item in Model.Lugares)
+                {
+                    DateTime fechaPublicacion = Convert.ToDateTime(item.FechaPublicacion);
+                    TimeSpan diferencia = DateTime.Now - fechaPublicacion;
+
+                    string formatoFecha;
+
+                    if (diferencia.TotalDays >= 7)
+                    {
+                        formatoFecha = fechaPublicacion.ToString("dd/MM/yyyy");
+                    }
+                    else if (diferencia.TotalDays >= 2)
+                    {
+                        formatoFecha = $"{(int)diferencia.TotalDays} días atrás";
+                    }
+                    else if (diferencia.TotalDays >= 1)
+                    {
+                        formatoFecha = "Ayer";
+                    }
+                    else
+                    {
+                        formatoFecha = "Hoy";
+                    }
+
+                    <div class="row p-2 g-col-12">
+                        <div class="feed">
+                            <label asp-for="@item.IdLugar" style="display: none;"></label>
+                            <input asp-for="@item.IdLugar" name="IdLugar" class="form-control" hidden />  
+                            <div class="d-flex justify-content-between">
+                                <div class="row g-2 feed-header">
+                                    <div class="col-auto">
+                                        <div class="profile-photo">
+                                            <img src="data:image;base64,@Convert.ToBase64String(item.IdUsuarioNavigation.Imagen)" alt="Foto de perfil" class="profile-picture">
+                                        </div>
+
+                                    </div>
+                                    <div class="col-auto">
+                                        <b>@item.IdUsuarioNavigation.Nombre @item.IdUsuarioNavigation.Apellido</b>
+                                        <p class="text-muted">@formatoFecha</p>
+                                    </div> 
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    
+                                  
+                                </div>
+                            </div>
+                            <div class="row feed-description">
+                                <div class="col-auto">
+                                    <h4>@item.NombreLugar</h4>
+                                </div>
+                            </div>
+                            <div class="row g1 feed-location">
+                                <div class="col-auto">
+                                    <svg width="20" height="20" fill="#696969" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 11a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path>
+                                        <path d="M12 2a8 8 0 0 0-8 7.92c0 5.48 7.05 11.58 7.35 11.84a1 1 0 0 0 1.3 0C13 21.5 20 15.4 20 9.92A8 8 0 0 0 12 2Zm0 11a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"></path>
+                                    </svg>
+                                    @item.IdMunicipioNavigation.Municipio1, @item.IdMunicipioNavigation.IdDeptoNavigation.Departamento1
+                                </div>
+                            </div>
+                            <div class="row feed-description">
+                                <div class="col-auto">
+                                    <p>
+                                        @item.Descripcion
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="feed-photo">
+                                <img src="data:image;base64,@Convert.ToBase64String(item.Imagen)" alt="Foto de perfil" class="profile-picture">
+                            </div>
+                            <div class="feed-button">
+                                <a class="btnOwn btn-primary btn-sm" asp-action="PostDetails" asp-controller="Emprendedor" asp-route-id="@item.IdLugar">Ver publicación</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+        <div class="right col-md-3 grid gap-0 row-gap-3">
+            
+            <div class="row p-2 g-col-12">
+                <div class="data">
+                    <div class="row">
+                        <div class="col-auto">
+                            <b style="font-size:17px;">Noticias relevantes</b>
+                            <p>En esta sección encontrarás las noticias más relevantes del mundo del turismo en el país.</p>
+                        </div>
+                    </div>
+                    <div class="news" id="news">
+
+                    </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@*Modal para buscar por ubicacion*@ 
+<div class="modal fade" id="busquedaUbicacion" tabindex="-1" aria-labelledby="busquedaUbicacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="busquedaUbicacionLabel">¿Dónde ir?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <form id="formUbicacion">
+                                <p>Buscar por:</p>
+                                <div class="input-group">
+                                    <select class="form-select" aria-label=".form-select-sm example" id="TipoUbicacion" name="TipoUbicacion">
+                                        <option value="Dpto" selected>Departamento</option>
+                                        <option value="Municipio">Municipio</option>
+                                    </select>
+                                    <input type="text" class="form-control" placeholder="Ingresa un valor" id="Ubicacion" name="Ubicacion" />
+                                    <button type="submit" class="btn btn-icon" id="enviar">
+                                        <svg width="22" height="22" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="m20.71 19.29-3.4-3.39A7.92 7.92 0 0 0 19 11a8 8 0 1 0-8 8 7.92 7.92 0 0 0 4.9-1.69l3.39 3.4a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095ZM5 11a6 6 0 1 1 12 0 6 6 0 0 1-12 0Z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-12 ms-auto" id="find-ubicacion">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="limpiarCajas()" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Modal para buscar por categoria*@
+<div class="modal fade" id="busquedaCategoria" tabindex="-1" aria-labelledby="busquedaCategoriaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="busquedaCategoriaLabel">¿Qué mood tienes hoy?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <form id="formCategoria">
+                                <p>Buscar por:</p>
+                                <div class="input-group">
+                                    <select class="form-select" aria-label=".form-select-sm example" id="Categorias" name="Categorias">
+                                        
+                                    </select>
+                                    <button type="submit" class="btn btn-icon" id="enviar">
+                                        <svg width="22" height="22" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="m20.71 19.29-3.4-3.39A7.92 7.92 0 0 0 19 11a8 8 0 1 0-8 8 7.92 7.92 0 0 0 4.9-1.69l3.39 3.4a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095ZM5 11a6 6 0 1 1 12 0 6 6 0 0 1-12 0Z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-12 ms-auto" id="find-categorias">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="limpiarCajas()" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Modal para buscar por descripcion*@
+<div class="modal fade" id="busquedaDescripcion" tabindex="-1" aria-labelledby="busquedaDescripcionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="busquedaDescripcionLabel">¡Busca alguna descripción!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <form id="formDescripcion">
+                                <p>Buscar por:</p>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Ingresa un valor" id="Descripcion" name="Descripcion" />
+                                    <button type="submit" class="btn btn-icon" id="enviar">
+                                        <svg width="22" height="22" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="m20.71 19.29-3.4-3.39A7.92 7.92 0 0 0 19 11a8 8 0 1 0-8 8 7.92 7.92 0 0 0 4.9-1.69l3.39 3.4a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095ZM5 11a6 6 0 1 1 12 0 6 6 0 0 1-12 0Z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-12 ms-auto" id="find-descripcion">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="limpiarCajas()" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Modal para buscar por nombre del lugar*@
+<div class="modal fade" id="busquedaNombre" tabindex="-1" aria-labelledby="busquedaNombreLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="busquedaNombreLabel">¡Busca el nombre del lugar que deseas encontrar!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <form id="formNombre">
+                                <p>Buscar por:</p>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Ingresa el nombre del lugar" id="Lugar" name="Lugar" />
+                                    <button type="submit" class="btn btn-icon" id="enviar">
+                                        <svg width="22" height="22" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="m20.71 19.29-3.4-3.39A7.92 7.92 0 0 0 19 11a8 8 0 1 0-8 8 7.92 7.92 0 0 0 4.9-1.69l3.39 3.4a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095ZM5 11a6 6 0 1 1 12 0 6 6 0 0 1-12 0Z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-12 ms-auto" id="find-nombre">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="limpiarCajas()" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            cargarDatosCategoria();
+            callAPI();
+        });
+        function limpiarCajas() {
+            $('#Ubicacion').val("");
+            $('#Categorias').val("");
+            $('#Descripcion').val("");
+            $('#Lugar').val("");
+            $('#find-ubicacion').empty();
+            $('#find-categorias').empty();
+            $('#find-descripcion').empty();
+            $('#find-nombre').empty();
+        }
+
+        $('#formUbicacion').submit(function (event) {
+            event.preventDefault();
+
+            var valor = $("#Ubicacion").val();
+            var tipo = $("#TipoUbicacion").val();
+
+            if (valor != "") {
+                $.ajax({
+                    url: '/Emprendedor/findByMunicipio',
+                    data: { sValor: valor, sTipo: tipo },
+                    type: 'Post',
+                    dataType: 'json',
+                    cache: false,
+                }).done(function (resp) {
+                    console.log(resp);
+                    var content = $('#find-ubicacion');
+                    var resultado = "";
+                    if (resp.length == 0) {
+                        console.log("nada");
+                        resultado += "<br /><svg width='27' height='27' fill='none' stroke='#000000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z'></path><path fill='#000000' stroke='none' d='M8.625 11.625a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z'></path><path fill='#000000' stroke='none' d='M15.375 11.625a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z'></path><path d='M15.497 15.918a4.5 4.5 0 0 0-6.994 0'></path></svg> ¡Ops!, parece que no hay resultados <br />";
+                    }
+                    else {
+                        resultado += "<p> Total de resultados: " + resp.length + "</p>"
+                        $.each(resp, function (index, lugar) {
+                            var fechaComentario = new Date(lugar.fechaPublicacion);
+                            var diferenciaComentario = new Date() - fechaComentario;
+
+                            var formatoFechaComentario;
+
+                            if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 7) {
+                                formatoFechaComentario = fechaComentario.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+                            } else if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 2) {
+                                formatoFechaComentario = `${Math.floor(diferenciaComentario / (1000 * 60 * 60 * 24))} días atrás`;
+                            } else if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 1) {
+                                formatoFechaComentario = "Ayer";
+                            } else {
+                                formatoFechaComentario = "Hoy";
+                            }
+
+                            var img = 'data:image;base64,' + lugar.imagen;
+                            resultado += "<div class='card mb-3'><div class='row g-0'><div class='col-md-4 feed-image'><img src='" + img + "' class='img-fluid rounded-start' alt='Foto del lugar'></div><div class='col-md-8'><div class='card-body'><h5 class='card-title'>" + lugar.nombreLugar + "</h5><p class='card-text'>" + lugar.descripcion + "</p><p class='card-text'><small class='text-muted'>" + formatoFechaComentario + "</small></p><p class='card-text'><a class='btn btn-primary btn-sm' href='/Turista/PostDetails/"+lugar.idLugar+"'>Ver publicación</a></p></div></div></div></div>";
+                        });
+                    }
+
+                    content.empty();
+                    content.append(resultado);
+                }).fail(function () {
+                    Swal.fire({
+                        title: 'Ocurrió un error en la búsqueda',
+                        icon: 'error',
+                        confirmButtonText: 'Continuar'
+                    })
+                });
+            } else {
+                Swal.fire({
+                    title: 'Debes completar el campo para realizar la búsqueda',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                })
+            }
+        });
+
+        function cargarDatosCategoria() {
+            $.ajax({
+                url: '/Emprendedor/getCategorias',
+                type: 'post',
+                dataType: 'json',
+                cache: false
+            }).done(function (resp) {
+                console.log(resp);
+                var select = $("#Categorias");
+                $.each(resp, function (index, categoria) {
+                    select.append('<option value="' + categoria.idCategoria + '">' + categoria.nombreCategoria + '</option>');
+
+                });
+
+            }).fail();
+
+        }
+
+        $('#formCategoria').submit(function (event) {
+            event.preventDefault();
+
+            var valor = $("#Categorias").val();
+
+            if (valor != "") {
+                $.ajax({
+                    url: '/Emprendedor/findByCategorias',
+                    data: { sValor: valor},
+                    type: 'Post',
+                    dataType: 'json',
+                    cache: false,
+                }).done(function (resp) {
+                    console.log(resp);
+                    var content = $('#find-categorias');
+                    var resultado = "";
+                    if (resp.length == 0) {
+                        console.log("nada");
+                        resultado += "<br /><svg width='27' height='27' fill='none' stroke='#000000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z'></path><path fill='#000000' stroke='none' d='M8.625 11.625a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z'></path><path fill='#000000' stroke='none' d='M15.375 11.625a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z'></path><path d='M15.497 15.918a4.5 4.5 0 0 0-6.994 0'></path></svg> ¡Ops!, parece que no hay resultados <br />";
+                    }
+                    else {
+                        resultado += "<p> Total de resultados: " + resp.length + "</p>"
+                        $.each(resp, function (index, lugar) {
+                            var fechaComentario = new Date(lugar.fechaPublicacion);
+                            var diferenciaComentario = new Date() - fechaComentario;
+
+                            var formatoFechaComentario;
+
+                            if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 7) {
+                                formatoFechaComentario = fechaComentario.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+                            } else if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 2) {
+                                formatoFechaComentario = `${Math.floor(diferenciaComentario / (1000 * 60 * 60 * 24))} días atrás`;
+                            } else if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 1) {
+                                formatoFechaComentario = "Ayer";
+                            } else {
+                                formatoFechaComentario = "Hoy";
+                            }
+
+                            var img = 'data:image;base64,' + lugar.imagen;
+                            resultado += "<div class='card mb-3'><div class='row g-0'><div class='col-md-4 feed-image'><img src='" + img + "' class='img-fluid rounded-start' alt='Foto del lugar'></div><div class='col-md-8'><div class='card-body'><h5 class='card-title'>" + lugar.nombreLugar + "</h5><p class='card-text'>" + lugar.descripcion + "</p><p class='card-text'><small class='text-muted'>" + formatoFechaComentario + "</small></p><p class='card-text'><a class='btn btn-primary btn-sm' href='/Turista/PostDetails/"+lugar.idLugar+"'>Ver publicación</a></p></div></div></div></div>";
+                        });
+                    }
+
+                    content.empty();
+                    content.append(resultado);
+                }).fail(function () {
+                    Swal.fire({
+                        title: 'Ocurrió un error en la búsqueda',
+                        icon: 'error',
+                        confirmButtonText: 'Continuar'
+                    })
+                });
+            } else {
+                Swal.fire({
+                    title: 'Debes completar el campo para realizar la búsqueda',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                })
+            }
+        });
+
+        $('#formDescripcion').submit(function (event) {
+            event.preventDefault();
+
+            var valor = $("#Descripcion").val();
+
+            if (valor != "") {
+                $.ajax({
+                        url: '/Emprendedor/findByDescripcion',
+                    data: { sValor: valor },
+                    type: 'Post',
+                    dataType: 'json',
+                    cache: false,
+                }).done(function (resp) {
+                    console.log(resp);
+                    var content = $('#find-descripcion');
+                    var resultado = "";
+                    if (resp.length == 0) {
+                        console.log("nada");
+                        resultado += "<br /><svg width='27' height='27' fill='none' stroke='#000000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z'></path><path fill='#000000' stroke='none' d='M8.625 11.625a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z'></path><path fill='#000000' stroke='none' d='M15.375 11.625a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z'></path><path d='M15.497 15.918a4.5 4.5 0 0 0-6.994 0'></path></svg> ¡Ops!, parece que no hay resultados <br />";
+                    }
+                    else {
+                        resultado += "<p> Total de resultados: " + resp.length + "</p>"
+                        $.each(resp, function (index, lugar) {
+                            var fechaComentario = new Date(lugar.fechaPublicacion);
+                            var diferenciaComentario = new Date() - fechaComentario;
+
+                            var formatoFechaComentario;
+
+                            if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 7) {
+                                formatoFechaComentario = fechaComentario.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+                            } else if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 2) {
+                                formatoFechaComentario = `${Math.floor(diferenciaComentario / (1000 * 60 * 60 * 24))} días atrás`;
+                            } else if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 1) {
+                                formatoFechaComentario = "Ayer";
+                            } else {
+                                formatoFechaComentario = "Hoy";
+                            }
+
+                            var img = 'data:image;base64,' + lugar.imagen;
+                            resultado += "<div class='card mb-3'><div class='row g-0'><div class='col-md-4 feed-image'><img src='" + img + "' class='img-fluid rounded-start' alt='Foto del lugar'></div><div class='col-md-8'><div class='card-body'><h5 class='card-title'>" + lugar.nombreLugar + "</h5><p class='card-text'>" + lugar.descripcion + "</p><p class='card-text'><small class='text-muted'>" + formatoFechaComentario + "</small></p><p class='card-text'><a class='btn btn-primary btn-sm' href='/Turista/PostDetails/" + lugar.idLugar + "'>Ver publicación</a></p></div></div></div></div>";
+                        });
+                    }
+
+                    content.empty();
+                    content.append(resultado);
+                }).fail(function () {
+                    Swal.fire({
+                        title: 'Ocurrió un error en la búsqueda',
+                        icon: 'error',
+                        confirmButtonText: 'Continuar'
+                    })
+                });
+            } else {
+                Swal.fire({
+                    title: 'Debes completar el campo para realizar la búsqueda',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                })
+            }
+        });
+
+        $('#formNombre').submit(function (event) {
+            event.preventDefault();
+
+            var valor = $("#Lugar").val();
+
+            if (valor != "") {
+                $.ajax({
+                        url: '/Emprendedor/findByNombre',
+                    data: { sValor: valor },
+                    type: 'Post',
+                    dataType: 'json',
+                    cache: false,
+                }).done(function (resp) {
+                    console.log(resp);
+                    var content = $('#find-nombre');
+                    var resultado = "";
+                    if (resp.length == 0) {
+                        console.log("nada");
+                        resultado += "<br /><svg width='27' height='27' fill='none' stroke='#000000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z'></path><path fill='#000000' stroke='none' d='M8.625 11.625a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z'></path><path fill='#000000' stroke='none' d='M15.375 11.625a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z'></path><path d='M15.497 15.918a4.5 4.5 0 0 0-6.994 0'></path></svg> ¡Ops!, parece que no hay resultados <br />";
+                    }
+                    else {
+                        resultado += "<p> Total de resultados: " + resp.length + "</p>"
+                        $.each(resp, function (index, lugar) {
+                            var fechaComentario = new Date(lugar.fechaPublicacion);
+                            var diferenciaComentario = new Date() - fechaComentario;
+
+                            var formatoFechaComentario;
+
+                            if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 7) {
+                                formatoFechaComentario = fechaComentario.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+                            } else if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 2) {
+                                formatoFechaComentario = `${Math.floor(diferenciaComentario / (1000 * 60 * 60 * 24))} días atrás`;
+                            } else if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 1) {
+                                formatoFechaComentario = "Ayer";
+                            } else {
+                                formatoFechaComentario = "Hoy";
+                            }
+
+                            var img = 'data:image;base64,' + lugar.imagen;
+                            resultado += "<div class='card mb-3'><div class='row g-0'><div class='col-md-4 feed-image'><img src='" + img + "' class='img-fluid rounded-start' alt='Foto del lugar'></div><div class='col-md-8'><div class='card-body'><h5 class='card-title'>" + lugar.nombreLugar + "</h5><p class='card-text'>" + lugar.descripcion + "</p><p class='card-text'><small class='text-muted'>" + formatoFechaComentario + "</small></p><p class='card-text'><a class='btn btn-primary btn-sm' href='/Turista/PostDetails/" + lugar.idLugar + "'>Ver publicación</a></p></div></div></div></div>";
+                        });
+                    }
+
+                    content.empty();
+                    content.append(resultado);
+                }).fail(function () {
+                    Swal.fire({
+                        title: 'Ocurrió un error en la búsqueda',
+                        icon: 'error',
+                        confirmButtonText: 'Continuar'
+                    })
+                });
+            } else {
+                Swal.fire({
+                    title: 'Debes completar el campo para realizar la búsqueda',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                })
+            }
+        });
+
+        function callAPI() {
+            const url = 'https://newsdata.io/api/1/news?apikey=pub_24023d24caea9400184d5f62d4dbd77f52c41&q=el%20salvador&country=sv&language=es&category=entertainment,tourism';
+
+            fetch(url)
+                .then(data => {
+                    return data.json();
+                })
+                .then(dataJSON => {
+                    var content = $("#news");
+                    var res="";
+                    if (dataJSON.cod === '404') {
+                        showError('datos no encontrados');
+                    } else {
+                            dataJSON.results.forEach(function (result) {
+                                res+=`
+                                    <div class="card">
+                                      <div class="card-body">
+                                        <p class="card-text">${result.title}</p>
+                                        <a href="${result.link}" target="_blank" class="card-link text-center">Ver noticia</a>
+                                      </div>
+                                    </div>
+                                    <br/>
+                                `;
+                            });
+                    }
+                    content.empty();
+                    content.append(res);
+                    console.log(dataJSON);
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        }
+
+    </script>
+}
+
+

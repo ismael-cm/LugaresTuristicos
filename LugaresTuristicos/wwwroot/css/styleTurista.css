@@ -43,6 +43,24 @@ body {
     opacity: 0.8;
 }
 
+.btnPost {
+    display: inline-block;
+    padding: var(--btn-padding);
+    font-weight: 500;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 300ms ease;
+    font-size: 0.9rem;
+    text-decoration: none;
+    color:white;
+    background: #0078c2;
+}
+
+    .btnPost:hover {
+        opacity: 0.8;
+    }
+
+
 .btn-principal {
     background-color: var(--color-primary);
     color: white;

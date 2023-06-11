@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace LugaresTuristicos.Controllers
 {
-    public class TuristaController : Controller
+    public class EmprendedorController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private SitesContext _dbContext = new SitesContext();
@@ -95,6 +95,99 @@ namespace LugaresTuristicos.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UploadImageUpdatePost(IFormFile imageFile, [FromForm] string lugaresObj)
+        {
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                return Json(false);
+            }
+
+            if (!IsValidImage(imageFile))
+            {
+                return Json(false);
+            }
+
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await imageFile.CopyToAsync(memoryStream);
+                    var lugar = Newtonsoft.Json.JsonConvert.DeserializeObject<Lugare>(lugaresObj);
+
+                    var objUpdate = _dbContext.Lugares.FirstOrDefault(x => x.IdLugar == lugar.IdLugar);
+                    objUpdate.IdCategoria = lugar.IdCategoria;
+                    objUpdate.NombreLugar = lugar.NombreLugar;
+                    objUpdate.Descripcion = lugar.Descripcion;
+                    objUpdate.IdMunicipio = lugar.IdMunicipio;
+                    objUpdate.Precio = lugar.Precio;
+                    objUpdate.Imagen = memoryStream.ToArray();
+                    objUpdate.FechaPublicacion = DateTime.Now;
+
+                    _dbContext.Lugares.Update(objUpdate);
+                    await  _dbContext.SaveChangesAsync();
+                }
+
+                return Json(true);
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult getTablaLugares()
+        {
+            var lstLugares = (from lugares in _dbContext.Lugares
+                              join usuarios in _dbContext.Usuarios on lugares.IdUsuario equals usuarios.IdUsuario
+                              join categorias in _dbContext.Categorias on lugares.IdCategoria equals categorias.IdCategoria
+                              join municipio in _dbContext.Municipios on lugares.IdMunicipio equals municipio.IdMunicipio
+                              join departamento in _dbContext.Departamentos on municipio.IdDepto equals departamento.IdDepto
+                              where usuarios.Estado == true && categorias.Estado == true && municipio.Estado == true && lugares.Estado == true
+                              orderby lugares.FechaPublicacion descending
+                              select new
+                              {
+                                  idLugar = lugares.IdLugar,
+                                  idUser = usuarios.IdUsuario,
+                                  idMunicipio = lugares.IdMunicipio,
+                                  idDepto = municipio.IdDepto,
+                                  idCategoria = lugares.IdCategoria,
+                                  user = usuarios.Nombre + " " + usuarios.Apellido,
+                                  categoria = categorias.NombreCategoria,
+                                  nombre = lugares.NombreLugar,
+                                  descripcion = lugares.Descripcion,
+                                  municipio = municipio.Municipio1,
+                                  departamento = departamento.Departamento1,
+                                  precio = "$" + Math.Round((Decimal)lugares.Precio, 2, MidpointRounding.AwayFromZero),
+                                  precio2 = Math.Round((Decimal)lugares.Precio, 2, MidpointRounding.AwayFromZero),
+                                  imagen = lugares.Imagen,
+                                  imagenUser = usuarios.Imagen,
+                                  fecha = lugares.FechaPublicacion
+                              }).ToList();
+
+            return Json(lstLugares);
+        }
+
+        [HttpPost]
+        public IActionResult EliminarLugar(int id)
+        {
+            try
+            {
+                var objDel = _dbContext.Lugares.FirstOrDefault(x => x.IdLugar == id);
+                objDel.Estado = false;
+                //contexto.Lugares.Remove(objDel);
+                _dbContext.Lugares.Update(objDel);
+                _dbContext.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
         private bool IsValidImage(IFormFile file)
         {
             if (file.ContentType.ToLower() != "image/jpeg" &&
@@ -119,7 +212,7 @@ namespace LugaresTuristicos.Controllers
                     return RedirectToAction("Login", "Home");
                 }
 
-                List<Lugare> lista = _dbContext.Lugares.Where(x => x.Estado == true).OrderByDescending(x => x.FechaPublicacion).Include(l => l.Comentarios)
+                List<Lugare> lista = _dbContext.Lugares.Where(x => x.Estado == true).Include(l => l.Comentarios)
                                                        .Include(l => l.IdMunicipioNavigation)
                                                        .Include(l => l.IdMunicipioNavigation.IdDeptoNavigation)
                                                        .Include(l => l.IdCategoriaNavigation)
@@ -128,7 +221,43 @@ namespace LugaresTuristicos.Controllers
 
                 //Para obtener el user id del usuario autenticado
                 var user_id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                ViewBag.Categoria = _dbContext.Categorias.Where(x => x.Estado == true).ToList();
+                ViewBag.Departamento = _dbContext.Departamentos.Where(x => x.Estado == true).ToList();
+                ViewBag.Municipio = _dbContext.Municipios.Where(x => x.Estado == true).ToList();
+                var currentUser = _dbContext.Usuarios.FirstOrDefault(s => s.IdUsuario.Equals(int.Parse(user_id)));
+                CommonProfile allData = new CommonProfile();
+                allData.Usuario = currentUser;
+                allData.Lugares = lista;
+                return View(allData);
+            }
+            catch (Exception ex)
+            {
+                Lugare model = new Lugare();
+                return View(model);
+            }
+        }
 
+        public IActionResult AllPost()
+        {
+            try
+            {
+                ClaimsPrincipal claimUser = HttpContext.User;
+                // Verificar si el usuario ha iniciado sesión
+                if (!claimUser.Identity.IsAuthenticated)
+                {
+                    // Si no ha iniciado sesión, redirigir al inicio de sesión
+                    return RedirectToAction("Login", "Home");
+                }
+
+                List<Lugare> lista = _dbContext.Lugares.Where(x => x.Estado == true).OrderByDescending(x=>x.FechaPublicacion).Include(l => l.Comentarios)
+                                                       .Include(l => l.IdMunicipioNavigation)
+                                                       .Include(l => l.IdMunicipioNavigation.IdDeptoNavigation)
+                                                       .Include(l => l.IdCategoriaNavigation)
+                                                       .Include(l => l.IdUsuarioNavigation)
+                                                       .ToList();
+
+                //Para obtener el user id del usuario autenticado
+                var user_id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var currentUser = _dbContext.Usuarios.FirstOrDefault(s => s.IdUsuario.Equals(int.Parse(user_id)));
                 CommonProfile allData = new CommonProfile();
                 allData.Usuario = currentUser;
@@ -163,6 +292,19 @@ namespace LugaresTuristicos.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult getTablaMunicipioByIdDepto(int id)
+        {
+            var muni = (from municipi in _dbContext.Municipios
+                        where municipi.IdDepto == id && municipi.Estado == true
+                        select new
+                        {
+                            id_muni = municipi.IdMunicipio,
+                            municipio = municipi.Municipio1
+                        }).ToList();
+
+            return Json(muni);
+        }
         public IActionResult PostDetails(int? id)
         {
 
@@ -180,12 +322,13 @@ namespace LugaresTuristicos.Controllers
                 if (TempData["IsLoggedIn"] != null && (bool)TempData["IsLoggedIn"])
                     TempData["NameUser"] = TempData["IsLoggedInNameUser"];
 
+                var idU= Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 List<Lugare> currentPlace = _dbContext.Lugares.Include(l => l.Comentarios).ThenInclude(c => c.IdUsuarioNavigation)
                                                        .Include(l => l.IdMunicipioNavigation)
                                                        .Include(l => l.IdMunicipioNavigation.IdDeptoNavigation)
                                                        .Include(l => l.IdCategoriaNavigation)
                                                        .Include(l => l.IdUsuarioNavigation)
-                                                       .Where(x => x.IdLugar.Equals(id))
+                                                       .Where(x => x.IdLugar.Equals(id) && x.IdUsuario==idU)
                                                        .ToList();
 
 
@@ -403,6 +546,7 @@ namespace LugaresTuristicos.Controllers
 
         }
 
+
         [HttpPost]
         public IActionResult ActualizarComentaro(int id, string valor)
         {
@@ -422,7 +566,76 @@ namespace LugaresTuristicos.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile imageFile, [FromForm] string lugaresObj)
+        {
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                return Json(false);
+            }
+
+            if (!IsValidImage(imageFile))
+            {
+                return Json(false);
+            }
+
+            try
+            {
+                ClaimsPrincipal claimUser = HttpContext.User;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await imageFile.CopyToAsync(memoryStream);
+                    var lugar = Newtonsoft.Json.JsonConvert.DeserializeObject<Lugare>(lugaresObj);
+
+
+                    var image = new Lugare
+                    {
+                        IdUsuario = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier).Value),
+                        IdCategoria = lugar.IdCategoria,
+                        NombreLugar = lugar.NombreLugar,
+                        Descripcion = lugar.Descripcion,
+                        IdMunicipio = lugar.IdMunicipio,
+                        Precio = lugar.Precio,
+                        FechaPublicacion = DateTime.Now,
+                        Estado = true,
+                        Imagen = memoryStream.ToArray()
+                    };
+
+                    _dbContext.Lugares.Add(image);
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                return Json(true);
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarLugarSinImagen(int id_lugar, int id_categoria, string nombre, string descripcion, int id_municipio, decimal precio)
+        {
+            try
+            {
+                var objUpt = _dbContext.Lugares.FirstOrDefault(x => x.IdLugar == id_lugar);
+                objUpt.IdCategoria = id_categoria;
+                objUpt.NombreLugar = nombre;
+                objUpt.Descripcion = descripcion;
+                objUpt.IdMunicipio = id_municipio;
+                objUpt.Precio = precio;
+                objUpt.FechaPublicacion = DateTime.Now;
+                _dbContext.Lugares.Update(objUpt);
+                _dbContext.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
+
     }
-
-
 }

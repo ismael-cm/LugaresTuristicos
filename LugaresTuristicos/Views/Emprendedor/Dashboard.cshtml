@@ -1,0 +1,1067 @@
+﻿@model CommonProfile
+
+<div class="container">
+    <div class="row">
+        <div class="left col-md-3 grid gap-0 row-gap-3">
+            <div class="row p-2 g-col-12">
+                <div class="profile">
+                    <div class="profile-photo-align">
+                        <div class="profile-photo-primary">
+                            <img src="data:image;base64,@Convert.ToBase64String(Model.Usuario.Imagen)" alt="Foto de perfil" class="profile-picture">
+                        </div>
+                    </div>
+                    <div class="handle">
+                        <br />
+                        <b>@Model.Usuario.Nombre @Model.Usuario.Apellido</b>
+                        <p class="text-muted">
+                            Edad: @Model.Usuario.Edad
+                            <br />
+                            E-mail: @Model.Usuario.Correo 
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row p-2 g-col-12">
+                <div class="sidebar">
+                    <a class="menu-item" asp-area="" asp-controller="Home" asp-action="Index">
+                        <svg width="20" height="20" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14 14h-4v7h4v-7Z"></path>
+                            <path d="m20.42 10.184-7.71-7.88a.999.999 0 0 0-1.42 0l-7.71 7.89a2 2 0 0 0-.58 1.43v8.38a2 2 0 0 0 1.89 2H8v-9a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v9h3.11a2 2 0 0 0 1.89-2v-8.38a2.07 2.07 0 0 0-.58-1.44Z"></path>
+                        </svg>&nbsp; &nbsp;<h5> Inicio</h5>
+                    </a>
+                    <a class="menu-item" asp-area="" asp-controller="Emprendedor" asp-action="Profile">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 7.063C16.5 10.258 14.57 13 12 13c-2.572 0-4.5-2.742-4.5-5.938C7.5 3.868 9.16 2 12 2s4.5 1.867 4.5 5.063zM4.102 20.142C4.487 20.6 6.145 22 12 22c5.855 0 7.512-1.4 7.898-1.857a.416.416 0 0 0 .09-.317C19.9 18.944 19.106 15 12 15s-7.9 3.944-7.989 4.826a.416.416 0 0 0 .091.317z" fill="#000000"></path></g></svg>
+                        &nbsp; &nbsp;
+                        <h5> Mi perfil</h5>
+                    </a>
+                    <a class="menu-item" data-bs-toggle="modal" data-bs-target="#createPost">
+                        <svg width="20" height="20" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m19.4 7.337-2.74-2.74a2 2 0 0 0-2.66-.07l-9 9a2 2 0 0 0-.57 1.21L4 18.907a1 1 0 0 0 1 1.09h.09l4.17-.38a2 2 0 0 0 1.21-.57l9-9a1.92 1.92 0 0 0-.07-2.71Zm-3.4 3.34-2.68-2.68 1.95-2L18 8.727l-2 1.95Z"></path>
+                        </svg>&nbsp; &nbsp;<h5> Crear publicación</h5>
+                    </a>
+                    <a class="menu-item" asp-area="" asp-controller="Emprendedor" asp-action="AllPost">
+                        <svg width="20" height="20" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+     <path d="M21 4.34a1.24 1.24 0 0 0-1.08-.23L13 5.89v14.27l7.56-1.94A1.25 1.25 0 0 0 21.5 17V5.32a1.25 1.25 0 0 0-.5-.98Z"></path>
+     <path d="M11 5.89 4.06 4.11A1.27 1.27 0 0 0 3 4.34a1.25 1.25 0 0 0-.48 1V17a1.25 1.25 0 0 0 .94 1.21L11 20.16V5.89Z"></path>
+</svg>&nbsp; &nbsp;<h5> Ver otras publicaciones</h5>
+                    </a>
+                    <a class="menu-item" asp-area="" asp-controller="Home" asp-action="Logout">
+                        <svg width="20" height="20" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 11.001H7.14l3.63-4.36a1.001 1.001 0 0 0-1.54-1.28l-5 6a1.184 1.184 0 0 0-.09.15c0 .05 0 .08-.07.13a1 1 0 0 0-.07.36 1 1 0 0 0 .07.36c0 .05 0 .08.07.13.026.052.056.103.09.15l5 6a1 1 0 0 0 1.41.13 1 1 0 0 0 .13-1.41l-3.63-4.36H19a1 1 0 0 0 0-2Z"></path>
+                        </svg>&nbsp; &nbsp;<h5> Cerrar sesión</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="middle col-md-6 grid gap-0 row-gap-3">
+            <div class="row p-2 g-col-12">
+                <div class="create-post">
+                    <div class="row">
+                        <div class="col-auto">
+                            <b style="font-size:17px;">¡Comparte tu emprendimiento con el mundo!</b>
+                            <p> Crea una nueva publicación ahora mismo y permite que otros disfruten de tu contenido.</p>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center">
+                        <div class="col-auto bp">
+                            <a class="btnPost" data-bs-toggle="modal" data-bs-target="#createPost">Crear publicación</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="contenido">
+
+            </div>
+        </div>
+        <div class="right col-md-3 grid gap-0 row-gap-3">
+            
+            <div class="row p-2 g-col-12">
+                <div class="data">
+                    <div class="row">
+                        <div class="col-auto">
+                            <b style="font-size:17px;">Noticias relevantes</b>
+                            <p>En esta sección encontrarás las noticias más relevantes del mundo del turismo en el país.</p>
+                        </div>
+                    </div>
+                    <div class="news" id="news">
+
+                    </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal agregar -->
+<div class="modal fade" id="createPost" tabindex="-1" aria-labelledby="createPostLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createPostLabel">Nueva publicación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="FormPost" enctype="multipart/form-data" method="post">
+                    <div class="modal-body">
+                        <div class="form-group mb-1">
+                            <label for="NombreLugar" class="control-label">Nombre del Lugar</label>
+                            <input id="NombreLugar" class="form-control" placeholder="Escribe el nombre" required />
+                            <span id="NombreLugar" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating">
+                            <textarea id="Descripcion" class="form-control" placeholder="Escribe una descripcion"  required></textarea>
+                            <label for="Descripcion">Escribe la descripcion del lugar</label>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label class="control-label">Departamento</label>
+                            <select id="idDepto" class="form-control" required>
+                                <option value="">Seleccione un departamento</option>
+                                @foreach (Departamento departamento in ViewBag.Departamento)
+                                {
+                                    <option value="@departamento.IdDepto">@departamento.Departamento1</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label class="control-label">Municipio</label>
+                            <select id="IdMunicipio" class="form-control" required disabled>
+                                <option value="">Seleccione un municipio</option>
+                                @foreach (Municipio municipio in ViewBag.Municipio)
+                                {
+                                    <option value="@municipio.IdMunicipio">@municipio.Municipio1</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label for="Precio" class="control-label">Precio del Lugar</label>
+                            <input id="Precio" class="form-control" required />
+                            <span id="Precio" class="text-danger"></span>
+
+                            <label for="Imagen" class="control-label">Imagen</label>
+                            <input type="file" name="imagenArchivo" class="form-control" accept="image/jpeg, image/png, image/gif" id="Imagen" />
+                            <span id="Imagen" class="text-danger"></span>
+
+                        </div>
+                        <div class="form-group mb-1">
+                            <label for="IdCategoria" class="control-label">Categoria</label>
+                            <select id="IdCategoria" class="form-control" required>
+                                <option value="">Seleccione una categoria</option>
+                                @foreach (Categoria categoria in ViewBag.Categoria)
+                                {
+                                    <option value="@categoria.IdCategoria">@categoria.NombreCategoria</option>
+                                }
+                            </select>
+                            <span id="IdCategoria" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnCerrar" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" id="btnGuardar" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<!-- Modal actualizar -->
+<div class="modal fade" id="updatePost" tabindex="-1" aria-labelledby="updatePostLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updatePostLabel">Modificando publicación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="updatePost" enctype="multipart/form-data" method="post">
+                <div class="modal-body">
+                    <div class="form-group mb-1">
+                        <input id="idLugar" class="form-control" placeholder="Escribe el nombre" hidden required />
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Nombre del Lugar</label>
+                        <input id="NombreLugar2" class="form-control" placeholder="Escribe el nombre" required />
+                    </div>
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Escribe una descripcion" id="Descripcion2" required></textarea>
+                        <label>Escribe la descripcion del lugar</label>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Departamento</label>
+                        <select id="idDepto2" class="form-control" required>
+                            <option value="">Seleccione un departamento</option>
+                            @foreach (Departamento departamento in ViewBag.Departamento)
+                            {
+                                <option value="@departamento.IdDepto">@departamento.Departamento1</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Municipio</label>
+                        <select id="IdMunicipio2" class="form-control" required>
+                            <option value="">Seleccione un municipio</option>
+                            @foreach (Municipio municipio in ViewBag.Municipio)
+                            {
+                                <option value="@municipio.IdMunicipio">@municipio.Municipio1</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Precio del Lugar</label>
+                        <input id="Precio2" class="form-control" required />
+
+                        <label class="control-label">Imagen</label>
+                        <input type="file" name="imagenArchivo" class="form-control" accept="image/jpeg, image/png, image/gif" id="Imagen2" disabled />
+
+                    </div>
+                    <div class="form-check form-switch d-grid gap-2 d-md-flex justify-content-md-end">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">¿Desea modificar la imagen?</label>
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="control-label">Categoria</label>
+                        <select id="IdCategoria2" class="form-control" required>
+                            <option value="">Seleccione una categoria</option>
+                            @foreach (Categoria categoria in ViewBag.Categoria)
+                            {
+                                <option value="@categoria.IdCategoria">@categoria.NombreCategoria</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCerrar2" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" id="btnActualizar" class="btn btn-primary">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+
+      function cargarLugares() {
+            $.ajax({
+                url: '/Emprendedor/getTablaLugares',
+                type: 'post',
+                dataType: 'json',
+                cache: false
+            }).done(function (resp) {
+                console.log(resp);
+                var div = $("#contenido");
+                var post = "";
+                
+                $.each(resp, function (index, lugares) {
+                    var fechaComentario = new Date(lugares.fecha);
+                    var diferenciaComentario = new Date() - fechaComentario;
+
+                    var formatoFechaComentario;
+
+                    if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 7) {
+                        formatoFechaComentario = fechaComentario.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+                    } else if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 2) {
+                        formatoFechaComentario = `${Math.floor(diferenciaComentario / (1000 * 60 * 60 * 24))} días atrás`;
+                    } else if (diferenciaComentario / (1000 * 60 * 60 * 24) >= 1) {
+                        formatoFechaComentario = "Ayer";
+                    } else {
+                        formatoFechaComentario = "Hoy";
+                    }
+
+                    var img = 'data:image;base64,' + lugares.imagen;
+                    var imgUser = 'data:image;base64,' + lugares.imagenUser;
+                    var texto2 = lugares.nombre;
+                    var textomodificado2 = texto2.replace(/ /g, "-");
+
+                    var texto3 = lugares.descripcion;
+                    var textomodificado3 = texto3.replace(/ /g, "-");
+
+                    post += `<div class="row p-2 g-col-12">
+                            <div class="feed">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="row g-2 feed-header">
+                                                <div class="col-auto" >
+                                                    <div class="profile-photo">
+                                                       <img src='${imgUser}' alt='Foto de perfil' class='profile-picture'>
+                                                            </div>
+
+                                                            </div>
+                                                            <div class="col-auto">
+                                                                            <b>${lugares.user}</b>
+                                                                            <p class="text-muted"> ${formatoFechaComentario}</p>
+                                                                    </div>
+                                                                    <div class="col-auto" >
+                                                                        <div class="btn-group" >
+                                                                            <button class="btn btn-sm dropdown-toggle" type = "button" data-bs-toggle="dropdown" aria-expanded="false" >
+                                                                                <svg width="20" height = "20" fill = "#000000" viewBox = "0 0 24 24" xmlns = "http://www.w3.org/2000/svg" >
+                                                                                    <path fill - rule="evenodd" d = "M15.964 3.793a3 3 0 0 1 4.243 4.242l-7.122 7.123a3 3 0 0 1-1.533.82l-2.942.588a1 1 0 0 1-1.176-1.176l.588-2.942a3 3 0 0 1 .82-1.533l7.122-7.122Zm2.829 1.414a1 1 0 0 0-1.414 0L17 5.586 18.414 7l.379-.379a1 1 0 0 0 0-1.414ZM17 8.414 15.586 7l-5.33 5.33a1 1 0 0 0-.273.51l-.294 1.47 1.47-.293a1 1 0 0 0 .512-.274L17 8.414ZM6 5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-6a1 1 0 1 1 2 0v6a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h6a1 1 0 1 1 0 2H6Z" clip - rule="evenodd" > </path>
+                                                                                        </svg>
+                                                                                        </button>
+                                                                                        <ul class="dropdown-menu" >
+                                                                                                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#updatePost" onclick=cargarUpt('${lugares.idLugar}&&${textomodificado2}&&${textomodificado3}&&${lugares.idMunicipio}&&${lugares.idDepto}&&${lugares.idCategoria}&&${lugares.precio2}')> Editar </a></li>
+                                                                                                <li><a class="dropdown-item" href = "javascript:cargarDel(${lugares.idLugar})"> Eliminar </a></li>
+                                                                                                    </ul>
+                                                                                                    </div>
+                                                                                                    </div>
+                                                                                                    </div>
+                                                                                                    </div>
+                                                                                                    <div class="row feed-description" >
+                                                                                                        <div class="col-auto" >
+                                                                                                                        <h4>${lugares.nombre}</h4>
+                                                                                                            </div>
+                                                                                                            </div>
+                                                                                                            <div class="row g1 feed-location" >
+                                                                                                                <div class="col-auto" >
+                                                                                                                    <svg width="20" height = "20" fill = "#696969" viewBox = "0 0 24 24" xmlns = "http://www.w3.org/2000/svg" >
+                                                                                                                        <path d="M12 11a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" > </path>
+                                                                                                                            <path d = "M12 2a8 8 0 0 0-8 7.92c0 5.48 7.05 11.58 7.35 11.84a1 1 0 0 0 1.3 0C13 21.5 20 15.4 20 9.92A8 8 0 0 0 12 2Zm0 11a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z" > </path>
+                                                                                                                                </svg>
+            ${lugares.municipio}, ${lugares.departamento}
+                            </div>
+                            </div>
+                            <div class="row feed-description" >
+                                <div class="col-auto" >
+                                    <p>
+                        ${lugares.descripcion}
+                                    </p>
+                                    </div>
+                                    </div>
+                                    <div class="feed-photo" >
+                                        <img src='${img}' alt = "Foto de perfil" class="profile-picture" >
+                                            </div>
+                                            <div class="feed-button" >
+                                                                    <a class="btnOwn btn-primary btn-sm" href="/Emprendedor/PostDetails/${lugares.idLugar}" > Ver publicación </a>
+                                                    </div>
+                                                    </div>
+                                                                </div>`
+                });
+
+                div.empty();
+                div.append(post);
+
+
+            }).fail();
+
+        }
+
+
+
+        function callAPI() {
+            const url = 'https://newsdata.io/api/1/news?apikey=pub_24023d24caea9400184d5f62d4dbd77f52c41&q=el%20salvador&country=sv&language=es&category=entertainment,tourism';
+
+            fetch(url)
+                .then(data => {
+                    return data.json();
+                })
+                .then(dataJSON => {
+                    var content = $("#news");
+                    var res="";
+                    if (dataJSON.cod === '404') {
+                        showError('datos no encontrados');
+                    } else {
+                            dataJSON.results.forEach(function (result) {
+                                res+=`
+                                    <div class="card">
+                                      <div class="card-body">
+                                        <p class="card-text">${result.title}</p>
+                                        <a href="${result.link}" target="_blank" class="card-link text-center">Ver noticia</a>
+                                      </div>
+                                    </div>
+                                    <br/>
+                                `;
+                            });
+                    }
+                    content.empty();
+                    content.append(res);
+                    console.log(dataJSON);
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        }
+
+        function cargarDel(IdLugar) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger me-4'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: '¿Estas seguro(a)?',
+                text: "Una vez eliminada ya no podrás recuperar la publicación",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("EliminarLugar", "Emprendedor")',
+                        type: 'post',
+                        dataType: 'json',
+                        cache: false,
+                        data: { id: IdLugar }
+                    }).done(function (resp) {
+                        if (resp) {
+                            swalWithBootstrapButtons.fire(
+                                '¡Eliminado!',
+                                'Tu registro ha sido elimando.',
+                                'success'
+                            )
+                            cargarLugares();
+                        } else {
+                            swalWithBootstrapButtons.fire(
+                                'Cancelado',
+                                    'Se ha omitido la acción',
+                                'error'
+                            )
+                        }
+                    }).fail();
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelado',
+                        'Se ha omitido la acción',
+                        'error'
+                    )
+                }
+            })
+        }
+
+        function cargarUpt(valor) {
+
+            var obj = valor.split('&&');
+            var textoModificado1 = obj[1];
+            var textoOriginal1 = textoModificado1.replace(/-/g, " ");
+
+            var textoModificado2 = obj[2];
+            var textoOriginal2 = textoModificado2.replace(/-/g, " ");
+
+
+            document.getElementById("idLugar").value = obj[0];
+            document.getElementById("NombreLugar2").value = textoOriginal1;
+            document.getElementById("Descripcion2").value = textoOriginal2;
+            document.getElementById("IdMunicipio2").value = obj[3];
+            document.getElementById("idDepto2").value = obj[4];
+            document.getElementById("IdCategoria2").value = obj[5];
+            document.getElementById("Precio2").value = obj[6];
+            
+
+        }
+
+        function limpiarCajasForm() {
+            document.getElementById("NombreLugar").value = "";
+            document.getElementById("Descripcion").value = "";
+            document.getElementById("idDepto").value = "";
+            document.getElementById("IdMunicipio").value = "";
+            document.getElementById("Precio").value = "";
+            document.getElementById("Imagen").value = "";
+            document.getElementById("IdCategoria").value = "";
+        }
+
+        function limpiarClases() {
+            document.getElementById("NombreLugar").classList.remove("is-valid");
+            document.getElementById("Descripcion").classList.remove("is-valid");
+            document.getElementById("idDepto").classList.remove("is-valid");
+            document.getElementById("IdMunicipio").classList.remove("is-valid");
+            document.getElementById("Precio").classList.remove("is-valid");
+            document.getElementById("Imagen").classList.remove("is-valid");
+            document.getElementById("IdCategoria").classList.remove("is-valid");
+
+            document.getElementById("NombreLugar").classList.remove("is-invalid");
+            document.getElementById("Descripcion").classList.remove("is-invalid");
+            document.getElementById("idDepto").classList.remove("is-invalid");
+            document.getElementById("IdMunicipio").classList.remove("is-invalid");
+            document.getElementById("Precio").classList.remove("is-invalid");
+            document.getElementById("Imagen").classList.remove("is-invalid");
+            document.getElementById("IdCategoria").classList.remove("is-invalid");
+
+            document.getElementById("IdUsuario2").classList.remove("is-valid");
+            document.getElementById("NombreLugar2").classList.remove("is-valid");
+            document.getElementById("Descripcion2").classList.remove("is-valid");
+            document.getElementById("idDepto2").classList.remove("is-valid");
+            document.getElementById("IdMunicipio2").classList.remove("is-valid");
+            document.getElementById("Precio2").classList.remove("is-valid");
+            document.getElementById("Imagen2").classList.remove("is-valid");
+            document.getElementById("IdCategoria2").classList.remove("is-valid");
+
+            document.getElementById("IdUsuario2").classList.remove("is-invalid");
+            document.getElementById("NombreLugar2").classList.remove("is-invalid");
+            document.getElementById("Descripcion2").classList.remove("is-invalid");
+            document.getElementById("idDepto2").classList.remove("is-invalid");
+            document.getElementById("IdMunicipio2").classList.remove("is-invalid");
+            document.getElementById("Precio2").classList.remove("is-invalid");
+            document.getElementById("Imagen2").classList.remove("is-invalid");
+            document.getElementById("IdCategoria2").classList.remove("is-invalid");
+        }
+
+
+        $(document).ready(function () {
+            cargarLugares();
+            callAPI();
+            const radioInput = document.getElementById('flexSwitchCheckDefault');
+            const fileInput = document.getElementById('Imagen2');
+
+            radioInput.addEventListener('change', function () {
+                if (radioInput.checked) {
+                    fileInput.disabled = false;
+               } else {
+                    fileInput.disabled = true;
+                   document.getElementById("Imagen2").value = "";
+               }
+            });
+
+            $("#idDepto").change(function () {
+                var selectedValue = $(this).val();
+                if(selectedValue != ""){
+
+                    document.getElementById("IdMunicipio").removeAttribute("disabled");
+                    var idDepto = $("#idDepto").val();
+                    $("#IdMunicipio").empty();
+                    $("#IdMunicipio").append('<option value="">' + "Seleccione un municipio" + '</option>');
+
+                    $.ajax({
+                        type: "post",
+                        url: '@Url.Action("getTablaMunicipioByIdDepto","Emprendedor")',
+                        cache: false,
+                        dataType: 'json',
+                        data: { id: selectedValue }
+                    }).done(function (resp){
+                        console.log(resp);
+                        $.each(resp, function (index, muni){
+                            $("#IdMunicipio").append('<option value="' + muni.id_muni + '">' + muni.municipio + '</option>');
+                        });
+                    });
+                }else{
+                    document.getElementById("IdMunicipio").classList.remove("is-invalid");
+                    document.getElementById("IdMunicipio").classList.remove("is-valid");
+                    $("#IdMunicipio").empty();
+                    $("#IdMunicipio").append('<option value="">' + "Seleccione un municipio" + '</option>');
+                    document.getElementById("IdMunicipio").setAttribute("disabled", "disabled");
+                }
+            });
+
+            $("#idDepto2").change(function () {
+                var selectedValue = $(this).val();
+                if (selectedValue != "") {
+
+                    document.getElementById("IdMunicipio2").removeAttribute("disabled");
+                    var idDepto2 = $("#idDepto2").val();
+                    $("#IdMunicipio2").empty();
+                    $("#IdMunicipio2").append('<option value="">' + "Seleccione un municipio" + '</option>');
+
+                    $.ajax({
+                        type: "post",
+                        url: '@Url.Action("getTablaMunicipioByIdDepto","Emprendedor")',
+                        cache: false,
+                        dataType: 'json',
+                        data: { id: selectedValue }
+                    }).done(function (resp) {
+                        $.each(resp, function (index, muni) {
+                            $("#IdMunicipio2").append('<option value="' + muni.id_muni + '">' + muni.municipio + '</option>');
+                        });
+                    });
+                } else {
+                    document.getElementById("IdMunicipio2").classList.remove("is-invalid");
+                    document.getElementById("IdMunicipio2").classList.remove("is-valid");
+                    $("#IdMunicipio2").empty();
+                    $("#IdMunicipio2").append('<option value="">' + "Seleccione un municipio" + '</option>');
+                    document.getElementById("IdMunicipio2").setAttribute("disabled", "disabled");
+                }
+            });
+
+            $('#FormPost').submit(function (event) {
+                event.preventDefault();
+
+                var formData = new FormData();
+                var inputsInvalidos = $("#FormPost .is-invalid").length;
+                var nombre = $("#NombreLugar").val();
+                var desc = $("#Descripcion").val();
+                var muni = $("#IdMunicipio").val();
+                var prec = $("#Precio").val();
+                var cat = $("#IdCategoria").val();
+                
+
+                if(nombre != "" && desc != ""
+                   && muni != "" && prec != "" && cat != ""){
+
+                    var lugaresObj = {
+                        IdCategoria: cat,
+                        NombreLugar: nombre,
+                        Descripcion: desc,
+                        IdMunicipio: muni,
+                        Precio: prec
+                    };
+
+                    if(inputsInvalidos === 0){
+                        formData.append('imageFile', $('#Imagen')[0].files[0]);
+                        formData.append('lugaresObj', JSON.stringify(lugaresObj));
+
+                        $.ajax({
+                            url: '/Emprendedor/UploadImage',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false
+                        }).done(function (resp) {
+                            if (resp) {
+                                Swal.fire({
+                                    title: 'El registro ha sido agregado correctamente',
+                                    icon: 'success',
+                                    confirmButtonText: 'Continuar'
+                                })
+                                $("#btnCerrar").click();
+                                cargarLugares();
+                                limpiarCajasForm();
+                                limpiarClases();
+                            } else {
+                                Swal.fire({
+                                    title: 'Hubo un error al momento de agregar el dato',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            }
+                        }).fail(function () {
+                            Swal.fire({
+                                title: 'Hubo un error al momento de agregar el dato',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        });;
+
+                    }else{
+                        Swal.fire({
+                            title: 'Verifica los textos en rojo para continuar',
+                            icon: 'error',
+                            confirmButtonText: 'Continuar'
+                        })
+                    }
+                }else{
+                    Swal.fire({
+                        title: 'Todos los campos son obligatorios',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            });
+
+            $('#updatePost').submit(function (event) {
+                event.preventDefault();
+
+                var formData = new FormData();
+                var inputsInvalidos = $("#updatePost .is-invalid").length;
+                var idluga = $("#idLugar").val();
+                var nombr = $("#NombreLugar2").val();
+                var desc = $("#Descripcion2").val();
+                var muni = $("#IdMunicipio2").val();
+                var prec = $("#Precio2").val();
+                var cat = $("#IdCategoria2").val();
+                var formulario = $("#updatePost").serialize();
+                var im = $("#Imagen2").val();
+
+                if (!radioInput.checked) {
+                    if (nombr != "" && desc != ""
+                        && muni != "" && prec != "" && cat != "") {
+
+                        if (inputsInvalidos === 0) {
+                            $.ajax({
+                                url: '@Url.Action("ActualizarLugarSinImagen","Emprendedor")',
+                                type: 'post',
+                                cache: false,
+                                dataType: 'json',
+                                data: { id_lugar: idluga,id_categoria: cat, nombre: nombr, descripcion: desc, id_municipio: muni, precio: prec }
+                            }).done(function (resp) {
+                                if (resp) {
+                                    Swal.fire({
+                                        title: 'El registro ha sido actualizado correctamente',
+                                        icon: 'success',
+                                        confirmButtonText: 'Continuar'
+                                    })
+                                    
+                                    $("#btnCerrar2").click();
+                                cargarLugares();
+                                    limpiarCajas();
+                                    limpiarClases();
+                                } else {
+                                    Swal.fire({
+                                        title: 'Hubo un error al momento de actualizar el dato',
+                                        icon: 'error',
+                                        confirmButtonText: 'Continuar'
+                                    })
+                                }
+                            }).fail(function () {
+                                Swal.fire({
+                                    title: 'Hubo un error al momento de actualizar el dato',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            });;
+
+                        } else {
+                            Swal.fire({
+                                title: 'Verifica los textos en rojo para continuar',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        }
+                    } else {
+                        Swal.fire({
+                            title: 'Todos los campos son obligatorios',
+                            icon: 'warning',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                }else{
+                    if (nombr != "" && desc != ""
+                        && muni != "" && prec != "" && cat != "" && im != "") {
+
+                        var lugaresObj = {
+                            IdLugar: idluga,
+                            IdCategoria: cat,
+                            NombreLugar: nombr,
+                            Descripcion: desc,
+                            IdMunicipio: muni,
+                            Precio: prec
+                        };
+
+                        if (inputsInvalidos === 0) {
+                            formData.append('imageFile', $('#Imagen2')[0].files[0]);
+                            formData.append('lugaresObj', JSON.stringify(lugaresObj));
+
+                            $.ajax({
+                                url: '/Emprendedor/UploadImageUpdatePost',
+                                type: 'POST',
+                                data: formData,
+                                processData: false,
+                                contentType: false
+                            }).done(function (resp) {
+                                if (resp) {
+                                    Swal.fire({
+                                        title: 'El registro ha sido actualizado correctamente',
+                                        icon: 'success',
+                                        confirmButtonText: 'Continuar'
+                                    })
+                                    $("#btnCerrar2").click();
+                                    cargarLugares();
+                                    limpiarCajas();
+                                    limpiarClases();
+                                    radioInput.checked = false;
+                                    fileInput.disabled = true;
+                                    document.getElementById("Imagen2").value = "";
+                                } else {
+                                    Swal.fire({
+                                        title: 'Hubo un error al momento de actualizar el dato',
+                                        icon: 'error',
+                                        confirmButtonText: 'Continuar'
+                                    })
+                                }
+                            }).fail(function () {
+                                Swal.fire({
+                                    title: 'Hubo un error al momento de actualizar el dato',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            });;
+
+                        } else {
+                            Swal.fire({
+                                title: 'Verifica los textos en rojo para continuar',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        }
+                    } else {
+                        Swal.fire({
+                            title: 'Todos los campos son obligatorios',
+                            icon: 'warning',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                }
+
+            });
+            // -----------------
+
+            var inputNombre = document.getElementById("NombreLugar");
+            function validarNombre() {
+                var valor = inputNombre.value.trim();
+                if (valor.length >= 4) {
+                    inputNombre.classList.add("is-valid");
+                    inputNombre.classList.remove("is-invalid");
+                } else {
+                    inputNombre.classList.add("is-invalid");
+                    inputNombre.classList.remove("is-valid");
+                }
+            }
+
+            inputNombre.addEventListener("keypress", function () {
+                validarNombre();
+            });
+
+            inputNombre.addEventListener("keydown", function () {
+                setTimeout(validarNombre, 0);
+            });
+
+            var inputDescripcion = document.getElementById("Descripcion");
+            function validarDescripcion() {
+                console.log("entraaa");
+                var valor = inputDescripcion.value.trim();
+                if (valor.length >= 4) {
+                    inputDescripcion.classList.add("is-valid");
+                    inputDescripcion.classList.remove("is-invalid");
+                } else {
+                    inputDescripcion.classList.add("is-invalid");
+                    inputDescripcion.classList.remove("is-valid");
+                }
+            }
+
+            inputDescripcion.addEventListener("keypress", function () {
+                validarDescripcion();
+            });
+
+            inputDescripcion.addEventListener("keydown", function () {
+                setTimeout(validarDescripcion, 0);
+            });
+
+            var selectDepto = document.getElementById("idDepto");
+            selectDepto.addEventListener("change", function () {
+                if (selectDepto.value !== "") {
+                    selectDepto.classList.add("is-valid");
+                    selectDepto.classList.remove("is-invalid");
+                } else {
+                    selectDepto.classList.add("is-invalid");
+                    selectDepto.classList.remove("is-valid");
+                }
+            });
+
+            var selectMunicipio = document.getElementById("IdMunicipio");
+            selectMunicipio.addEventListener("change", function () {
+                if (selectMunicipio.value !== "") {
+                    selectMunicipio.classList.add("is-valid");
+                    selectMunicipio.classList.remove("is-invalid");
+                } else {
+                    selectMunicipio.classList.add("is-invalid");
+                    selectMunicipio.classList.remove("is-valid");
+                }
+            });
+
+            var selectCategoria = document.getElementById("IdCategoria");
+            selectCategoria.addEventListener("change", function () {
+                if (selectCategoria.value !== "") {
+                    selectCategoria.classList.add("is-valid");
+                    selectCategoria.classList.remove("is-invalid");
+                } else {
+                    selectCategoria.classList.add("is-invalid");
+                    selectCategoria.classList.remove("is-valid");
+                }
+            });
+
+            const inputPrecio = document.getElementById('Precio');
+
+            inputPrecio.addEventListener('input', function () {
+                let valor = inputPrecio.value;
+                const tieneSimboloNegativo = valor.includes('-');
+
+                valor = valor.replace(/[^0-9.-]/g, '');
+
+                const signoPositivo = valor.indexOf('+');
+                const signoNegativo = valor.indexOf('-');
+                if (signoPositivo !== -1 && signoPositivo !== valor.lastIndexOf('+')) {
+                    valor = valor.slice(0, signoPositivo) + valor.slice(signoPositivo + 1);
+                }
+                if (signoNegativo !== -1 && signoNegativo !== valor.lastIndexOf('-')) {
+                    valor = valor.slice(0, signoNegativo) + valor.slice(signoNegativo + 1);
+                }
+
+                if (valor !== inputPrecio.value) {
+                    inputPrecio.value = valor;
+                    inputPrecio.classList.add('is-invalid');
+                    inputPrecio.classList.remove('is-valid');
+                }else{
+                    inputPrecio.classList.add('is-valid');
+                    inputPrecio.classList.remove('is-invalid');
+                }
+
+                if (tieneSimboloNegativo) {
+                    inputPrecio.classList.add('is-invalid');
+                    inputPrecio.classList.remove('is-valid');
+                } else {
+                    inputPrecio.classList.add('is-valid');
+                    inputPrecio.classList.remove('is-invalid');
+                }
+
+                if(valor === ""){
+                    inputPrecio.classList.add('is-invalid');
+                    inputPrecio.classList.remove('is-valid');
+                }
+
+            });
+
+            var inputImagen = document.getElementById("Imagen");
+            inputImagen.addEventListener('change', function () {
+
+                if (inputImagen.files.length > 0) {
+                    inputImagen.classList.add('is-valid');
+                    inputImagen.classList.remove('is-invalid');
+                } else {
+                    inputImagen.classList.add('is-invalid');
+                    inputImagen.classList.remove('is-valid');
+                }
+            });
+
+            //----------------
+
+            var inputNombre2 = document.getElementById("NombreLugar2");
+            function validarNombre2() {
+
+                var valor = inputNombre2.value.trim();
+                if (valor.length >= 4) {
+                    inputNombre2.classList.add("is-valid");
+                    inputNombre2.classList.remove("is-invalid");
+                } else {
+                    inputNombre2.classList.add("is-invalid");
+                    inputNombre2.classList.remove("is-valid");
+                }
+            }
+
+            var inputNombre2 = document.getElementById("NombreLugar2");
+            function validarNombre2() {
+
+                var valor = inputNombre2.value.trim();
+                if (valor.length >= 4) {
+                    inputNombre2.classList.add("is-valid");
+                    inputNombre2.classList.remove("is-invalid");
+                } else {
+                    inputNombre2.classList.add("is-invalid");
+                    inputNombre2.classList.remove("is-valid");
+                }
+            }
+
+            inputNombre2.addEventListener("keypress", function () {
+                validarNombre2();
+            });
+
+            inputNombre2.addEventListener("keydown", function () {
+                setTimeout(validarNombre2, 0);
+            });
+
+            var inputDescripcion2 = document.getElementById("Descripcion2");
+            function validarDescripcion2() {
+
+                var valor = inputDescripcion2.value.trim();
+                if (valor.length >= 4) {
+                    inputDescripcion2.classList.add("is-valid");
+                    inputDescripcion2.classList.remove("is-invalid");
+                } else {
+                    inputDescripcion2.classList.add("is-invalid");
+                    inputDescripcion2.classList.remove("is-valid");
+                }
+            }
+
+            inputDescripcion2.addEventListener("keypress", function () {
+                validarDescripcion2();
+            });
+
+            inputDescripcion2.addEventListener("keydown", function () {
+                setTimeout(validarDescripcion2, 0);
+            });
+
+            var selectDepto2 = document.getElementById("idDepto2");
+            selectDepto2.addEventListener("change", function () {
+                if (selectDepto2.value !== "") {
+                    selectDepto2.classList.add("is-valid");
+                    selectDepto2.classList.remove("is-invalid");
+                } else {
+                    selectDepto2.classList.add("is-invalid");
+                    selectDepto2.classList.remove("is-valid");
+                }
+            });
+
+            var selectMunicipio2 = document.getElementById("IdMunicipio2");
+            selectMunicipio2.addEventListener("change", function () {
+                if (selectMunicipio2.value !== "") {
+                    selectMunicipio2.classList.add("is-valid");
+                    selectMunicipio2.classList.remove("is-invalid");
+                } else {
+                    selectMunicipio2.classList.add("is-invalid");
+                    selectMunicipio2.classList.remove("is-valid");
+                }
+            });
+
+            var selectCategoria2 = document.getElementById("IdCategoria2");
+            selectCategoria2.addEventListener("change", function () {
+                if (selectCategoria2.value !== "") {
+                    selectCategoria2.classList.add("is-valid");
+                    selectCategoria2.classList.remove("is-invalid");
+                } else {
+                    selectCategoria2.classList.add("is-invalid");
+                    selectCategoria2.classList.remove("is-valid");
+                }
+            });
+
+            const inputPrecio2 = document.getElementById('Precio2');
+
+            inputPrecio2.addEventListener('input', function () {
+                let valor2 = inputPrecio2.value;
+                const tieneSimboloNegativo2 = valor2.includes('-');
+
+                valor2 = valor2.replace(/[^0-9.-]/g, '');
+
+                const signoPositivo2 = valor2.indexOf('+');
+                const signoNegativo2 = valor2.indexOf('-');
+                if (signoPositivo2 !== -1 && signoPositivo2 !== valor2.lastIndexOf('+')) {
+                    valor2 = valor2.slice(0, signoPositivo2) + valor2.slice(signoPositivo2 + 1);
+                }
+                if (signoNegativo2 !== -1 && signoNegativo2 !== valor2.lastIndexOf('-')) {
+                    valor2 = valor2.slice(0, signoNegativo2) + valor2.slice(signoNegativo2 + 1);
+                }
+
+                if (valor2 !== inputPrecio2.value) {
+                    inputPrecio2.value = valor2;
+                    inputPrecio2.classList.add('is-invalid');
+                    inputPrecio2.classList.remove('is-valid');
+                } else {
+                    inputPrecio2.classList.add('is-valid');
+                    inputPrecio2.classList.remove('is-invalid');
+                }
+
+                if (tieneSimboloNegativo2) {
+                    inputPrecio2.classList.add('is-invalid');
+                    inputPrecio2.classList.remove('is-valid');
+                } else {
+                    inputPrecio2.classList.add('is-valid');
+                    inputPrecio2.classList.remove('is-invalid');
+                }
+
+                if (valor2 === "") {
+                    inputPrecio2.classList.add('is-invalid');
+                    inputPrecio2.classList.remove('is-valid');
+                }
+
+            });
+
+            var inputImagen2 = document.getElementById("Imagen2");
+            inputImagen2.addEventListener('change', function () {
+
+                if (inputImagen2.files.length > 0) {
+                    inputImagen2.classList.add('is-valid');
+                    inputImagen2.classList.remove('is-invalid');
+                } else {
+                    inputImagen2.classList.add('is-invalid');
+                    inputImagen2.classList.remove('is-valid');
+                }
+            });
+
+
+            
+        });
+    </script>
+}
+
+

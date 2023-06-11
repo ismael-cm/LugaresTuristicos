@@ -163,13 +163,13 @@
 
         function showData(id){
             $.ajax({
-                url:'/Turista/AllComentarios/',
+                url:'/Emprendedor/AllComentarios/',
                 data: { IdLugar: id },
                 type: 'Post',
                 dataType: 'json',
                 cache: false,
             }).done(function (resp) {
-                 
+                
                 var content = $('#Comentarios');
                 var comment = "";
                 var user=$('#idUsuario').val();
@@ -218,220 +218,6 @@
         };
 
 
-        function getUser() {
-            $.ajax({
-                url: '/Turista/findUser',
-                type: 'post',
-                dataType: 'json',
-                cache: false
-            }).done(function (resp) {
-                console.log(resp);
-                $('#idUsuario').val(resp);
-            }).fail();
-
-        }
-        
-        function cargarDel(idComment) {
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: 'btn btn-success',
-                    cancelButton: 'btn btn-danger me-4'
-                },
-                buttonsStyling: false
-            })
-
-            swalWithBootstrapButtons.fire({
-                title: '¿Estas seguro(a)?',
-                text: "Una vez eliminado ya no podrás recuperar el comentario",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Confirmar',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '@Url.Action("EliminarComentario", "Turista")',
-                        type: 'post',
-                        dataType: 'json',
-                        cache: false,
-                        data: { id: idComment }
-                    }).done(function (resp) {
-                        if (resp) {
-                            swalWithBootstrapButtons.fire(
-                                'Eliminado',
-                                'Tu registro ha sido eliminado.',
-                                'success'
-                            )
-                                showData($('#id').val());
-                        } else {
-                            swalWithBootstrapButtons.fire(
-                                'Cancelado',
-                                'Se han omitido la acción',
-                                'error'
-                            )
-                        }
-                    }).fail();
-                } else if (
-                    result.dismiss === Swal.DismissReason.cancel
-                ) {
-                    swalWithBootstrapButtons.fire(
-                        'Cancelado',
-                        'Se han omitido la acción',
-                        'error'
-                    )
-                }
-            })
-        }
-
-            function cargarUpt(valor) {
-
-                var obj = valor.split(',');
-                var textoModificado = obj[1];
-                var textoOriginal = textoModificado.replace(/-/g, " ");
-
-                document.getElementById("uIdComentario").value = obj[0];
-                document.getElementById("uComentario").value = textoOriginal;
-
-            }
-
-
-            $('#formComment').submit(function (event) {
-                event.preventDefault();
-
-                var formData = new FormData();
-                var inputsInvalidos = $("#formComment .is-invalid").length;
-                var idLugar = $("#IdLugar").val();
-                var comentario = $("#Comentario").val();
-
-
-                if (comentario != "") {
-
-                    var commentObj = {
-                    IdLugar: idLugar,
-                    Comentario: comentario
-                    };
-
-
-                    if (inputsInvalidos === 0) {
-                        $.ajax({
-                            url: '/Turista/CreateComment',
-                            data: commentObj,
-                            type: 'Post',
-                            dataType: 'json',
-                            cache: false,
-                        }).done(function (resp) {
-                        if (resp.respuesta === "En Revisión") {
-                                Swal.fire({
-                                    title: 'Tu comentario infringe las políticas del sitio',
-                                    text: "Un moderador revisará tu comentario y se visualizará hasta que se haya comprobado su contenido.",
-                                    icon: 'warning',
-                                    confirmButtonText: 'Continuar'
-                                })
-                                document.getElementById("Comentario").value = "";
-                                showData($("#IdLugar").val());
-                        } else if (resp.respuesta === "Válido") {
-                            Swal.fire({
-                                title: '¡Gracias por tu comentario!',
-                                icon: 'success',
-                                confirmButtonText: 'Continuar'
-                            })
-                                        document.getElementById("Comentario").value = "";
-                            showData($("#IdLugar").val());
-                            }else {
-                                Swal.fire({
-                                    title: 'Hubo un error al momento de agregar el dato',
-                                    icon: 'error',
-                                    confirmButtonText: 'Continuar'
-                                })
-                            }
-                        }).fail(function () {
-                            Swal.fire({
-                                title: 'Hubo un error al momento de agregar el dato',
-                                icon: 'error',
-                                confirmButtonText: 'Continuar'
-                            })
-                        });;
-
-                    } else {
-                        Swal.fire({
-                            title: 'Verifica los textos marcador en rojo para continuar',
-                            icon: 'error',
-                            confirmButtonText: 'Continuar'
-                        })
-                    }
-                } else {
-                    Swal.fire({
-                        title: 'El campo es obligatorio',
-                        icon: 'warning',
-                        confirmButtonText: 'OK'
-                    })
-                }
-            });
-
-        $("#cls").click(function () { 
-            document.getElementById("Comentario").value = "";
-        });
-        
-            $("#btnActualizar").click(function () {
-                //console.log(1);
-                if ($("#uIdComentario").val() != "" && $("#uComentario").val() != "") {
-
-                    var inputsInvalidos2 = $("#formModificarComentario .is-invalid").length;
-
-                    var obj1 = $("#uIdComentario").val() ;
-                    var obj2 = $("#uComentario").val();
-
-                    if(inputsInvalidos2 === 0){
-                        $.ajax({
-                            url: '@Url.Action("ActualizarComentaro","Turista")',
-                            type: 'post',
-                            cache: false,
-                            dataType: 'json',
-                            data: { id: obj1, valor: obj2 }
-                        }).done(function (resp) {
-                            if (resp) {
-                                Swal.fire({
-                                    title: 'El comentario ha sido modificado correctamente',
-                                    icon: 'success',
-                                    confirmButtonText: 'Continuar'
-                                })
-                                showData($("#IdLugar").val());
-                                $("#btnCerrar2").click();
-                                $("#uComentario").val("");
-                                $("#uIdComentario").val("");
-                            } else {
-                                Swal.fire({
-                                    title: 'Hubo un error al momento de actualizar el dato',
-                                    icon: 'error',
-                                    confirmButtonText: 'Continuar'
-                                })
-                            }
-                        }).fail(function () {
-                            Swal.fire({
-                                title: 'Hubo un error al momento de actualizar el dato',
-                                icon: 'error',
-                                confirmButtonText: 'Continuar'
-                            })
-                        });
-                    }else{
-                        Swal.fire({
-                            title: 'Verifica los textos en rojo para continuar',
-                            icon: 'error',
-                            confirmButtonText: 'Continuar'
-                        })
-                    }
-
-                } else {
-                    Swal.fire({
-                        title: 'Todos los campos son obligatorios',
-                        icon: 'warning',
-                        confirmButtonText: 'OK'
-                    })
-                }
-            });
-
-     
 
     </script>
 }
@@ -469,7 +255,7 @@
                        <input name="IdUsuario" class="form-control" id="idUsuario" hidden />
                 <div class="details">
                             <div>
-                                <a asp-action="Dashboard" asp-controller="Turista">
+                                <a asp-action="Dashboard" asp-controller="Emprendedor">
                                     <svg width="21" height="21" fill="#212121" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M19 11.001H7.14l3.63-4.36a1.001 1.001 0 0 0-1.54-1.28l-5 6a1.184 1.184 0 0 0-.09.15c0 .05 0 .08-.07.13a1 1 0 0 0-.07.36 1 1 0 0 0 .07.36c0 .05 0 .08.07.13.026.052.056.103.09.15l5 6a1 1 0 0 0 1.41.13 1 1 0 0 0 .13-1.41l-3.63-4.36H19a1 1 0 0 0 0-2Z"></path>
                                     </svg> Volver atrás
@@ -531,42 +317,9 @@
                              
                         
                         </div>
-                        <button id="generalAddValorcion" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#myModal">
-                            Agregar mi valoración
-                            <i class="fa fa-solid fa-pen ms-2"></i>
-                        </button>
+                        </div>
 
                         
-                        </div>
-
-                                
-
-                                    
-                        <!-- Modal -->
-                        <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="title-valoracion">Nueva valoración</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <label class="row g-2">Valoración</label>
-                                        <partial name="_ValoracionPartial" model="@item" />
-                                        <div id="valoracionComentario" class="mt-4 mb-1 mt-2" style="display: none">
-                                            <label class="row g-2 mt-2">Deja tu reseña (opcional)</label>
-                                            <textarea id="v-comentario" rows="6" cols="50" class="form-control" placeholder="Escribe tu reseña..."></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                <button type="button" onclick="saveValoracion(@item.IdLugar)" class="btn btn-warning" id="guardarValoracion" data-bs-dismiss="modal" style="display: none">Guardar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
                     </div>
                      <p class="mt-3" id="valoracionesContainer"></p>
                 
@@ -575,24 +328,6 @@
                     <div class="col-12">
                         <p class="comment-description">Comentarios</p>
 
-                    </div>
-                    <div class="col-12 create-comment">
-                                    <form id="formComment">
-                                        <div class="form-group">
-                                            <label asp-for="@item.IdLugar" style="display: none;"></label>
-                                            <input asp-for="@item.IdLugar" id="IdLugar" name="IdLugar" class="form-control" hidden />
-                                        </div>
-                                        <div class="input-group">
-                                            <textarea id="Comentario" rows="6" cols="50" class="form-control" placeholder="Escribe tu comentario" required></textarea>
-                                            
-                                            <button type="submit" class="btn btn-icon" id="enviar">
-                                                <svg width="34" height="34" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M2 12a10 10 0 1 0 20 0 10 10 0 0 0-20 0Zm11.86-3.69 2.86 3a.49.49 0 0 1 .1.15.54.54 0 0 1 .1.16.94.94 0 0 1 0 .76 1 1 0 0 1-.21.33l-3 3a1.004 1.004 0 1 1-1.42-1.42l1.3-1.29H8a1 1 0 0 1 0-2h5.66l-1.25-1.31a1.001 1.001 0 0 1 1.45-1.38Z"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </form>
-                    <br>
                     </div>
 
                     <div class="col-12" id="Comentarios">
@@ -608,31 +343,6 @@
             }
         }
 
-
-@*Modal para editar comentario*@
-<div class="modal fade" id="modificarComment" tabindex="-1" aria-labelledby="modificarCommentLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modificarCommentLabel">Editar comentario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="cls"></button>
-            </div>
-            <form id="formModificarComentario">
-                <div class="modal-body">
-                    <input id="uIdComentario" class="form-control" hidden />
-                    <div class="form-group mb-1">
-                        <label class="control-label">Comentario:</label>
-                        <textarea id="uComentario" rows="6" cols="50" class="form-control" placeholder="Escribe tu comentario" required></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="btnCerrar2" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" id="btnActualizar" class="btn btn-primary">Actualizar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 </div>
 
