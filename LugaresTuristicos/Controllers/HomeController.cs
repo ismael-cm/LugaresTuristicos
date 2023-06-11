@@ -42,6 +42,11 @@ namespace LugaresTuristicos.Controllers
                     return RedirectToAction("Dashboard", "Moderador");
                 }
 
+                if (claimUser.IsInRole("EMPRENDEDOR"))
+                {
+                    return RedirectToAction("Dashboard", "Emprendedor");
+                }
+
                 //return RedirectToAction("Dashboard", "Turista");
             }
 
