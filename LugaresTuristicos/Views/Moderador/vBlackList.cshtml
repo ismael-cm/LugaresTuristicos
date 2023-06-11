@@ -1,4 +1,282 @@
 ﻿
+<head>
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" asp-append-version="true" />
+</head>
+
+<style>
+    :root {
+        --color-dark: hs1(252,30%,17%);
+        --color-light: #f2f5f8;
+        --color-gray: hs1(252,15%,65%);
+        --color-primary: #3cafa3;
+        --border-radius: 2rem;
+        --card-border-radius: 1rem;
+        --card-padding: 1rem;
+        --btn-padding: 0.6rem 2rem;
+        --btn-seemore: #20659d;
+        --btn-find: #f28b31;
+    }
+
+
+    html {
+        font-size: 14px;
+        position: relative;
+        min-height: 100%;
+    }
+
+    body {
+        margin-bottom: 60px;
+        font-family: "Poppins", sans-serif;
+        color: var(--color-dark);
+        background: var(--color-light);
+    }
+
+    .btnOwn {
+        display: inline-block;
+        padding: var(--btn-padding);
+        font-weight: 500;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 300ms ease;
+        font-size: 0.9rem;
+        text-decoration: none;
+        background: var(--color-primary);
+    }
+
+    .btn:hover {
+        opacity: 0.8;
+    }
+
+    .btn-principal {
+        background-color: var(--color-primary);
+        color: white;
+    }
+
+    .profile-photo {
+        width: 2.7rem;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .profile-photo-align {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .profile-photo-primary {
+        width: 7rem;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .profile-photo-primary-profile {
+        width: 14rem;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .data {
+        color: var(--color-dark);
+        padding: var(--card-padding);
+        background-color: white;
+        border-radius: var(--card-border-radius);
+        text-align: center;
+    }
+
+    .profile {
+        color: var(--color-dark);
+        padding: var(--card-padding);
+        background-color: white;
+        border-radius: var(--card-border-radius);
+        text-align: center;
+    }
+
+        .profile a {
+            text-decoration: none;
+            color: var(--color-dark);
+        }
+
+    .sidebar {
+        color: var(--color-dark);
+        padding: var(--card-padding);
+        background-color: white;
+        border-radius: var(--card-border-radius);
+    }
+
+        .sidebar a {
+            text-decoration: none;
+            color: var(--color-dark);
+        }
+
+        .sidebar .menu-item {
+            display: flex;
+            cursor: pointer;
+            transition: all 300ms ease;
+            position: relative;
+            align-content: center;
+            flex-wrap: wrap;
+            height: 2.5rem;
+        }
+
+            .sidebar .menu-item:hover {
+                background: var(--color-light);
+            }
+
+    .menu-item i {
+        font-size: 1.4rem;
+        color: gray;
+        margin-left: 2rem;
+        position: relative;
+    }
+
+    .menu-item h5 {
+        font-weight: 300;
+    }
+
+    img {
+        display: block;
+        width: 100%;
+    }
+
+    .container {
+        background: var(--color-light);
+    }
+
+    main .container .left {
+        height: max-content;
+        position: sticky;
+    }
+
+    .text-muted {
+        color: var(--color-gray);
+    }
+
+    .middle .create-post {
+        width: 100%;
+        background-color: white;
+        border-radius: var(--card-border-radius);
+        padding: var(--card-padding);
+    }
+
+    .middle .feed {
+        width: 100%;
+        background-color: white;
+        border-radius: var(--card-border-radius);
+        padding: var(--card-padding);
+    }
+
+        .middle .feed .feed-photo {
+            border-radius: var(--card-border-radius);
+            overflow: hidden;
+            margin: 0.7rem 0;
+        }
+
+    .feed-location {
+        color: #696969;
+    }
+
+    .feed-button {
+        display: flex;
+        justify-content: center;
+    }
+
+        .feed-button button {
+            background: var(--btn-seemore);
+            border-color: var(--btn-seemore);
+        }
+
+    .find {
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 300ms ease;
+        color: black;
+    }
+
+    .create-post a:hover {
+        color: dimgray;
+    }
+
+    .feed-image {
+        position: relative;
+        overflow: hidden;
+    }
+
+        .feed-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+
+    /*PostDetail*/
+
+    .details {
+        color: var(--color-dark);
+        padding: var(--card-padding);
+        background-color: white;
+        border-radius: var(--card-border-radius);
+        position: sticky;
+    }
+
+        .details a {
+            text-decoration: none;
+            color: var(--color-dark);
+        }
+
+    .left .feed-photo {
+        border-radius: var(--card-border-radius);
+        overflow: hidden;
+        margin: 0.7rem 0;
+    }
+
+    .details-location {
+        color: #696969;
+    }
+
+    .comment-description, .comment-section-stars {
+        font-size: 20px;
+        font-weight: lighter;
+    }
+
+    .v {
+        background-color: #3cafa3;
+        border-radius: 5px;
+        color: white;
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    .imagen-turista {
+        max-width: 14rem !important;
+        max-height: 14rem !important;
+        object-fit: cover;
+    }
+
+    .profile-photo-primary-profile-2 {
+        width: 14rem;
+        height: 14rem;
+        border-radius: 50% !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        border: 1px solid black;
+        aspect-ratio: 1/1;
+        /*width: 64px !important;
+        height: 64px !important;*/
+        /*aspect-ratio: 1/1;*/
+        /*border-radius: 50%;*/
+        /*overflow: hidden;*/
+    }
+</style>
+
 <div class="container">
     <div class="row">
         <div class="left col-md-3 grid gap-0 row-gap-3">
