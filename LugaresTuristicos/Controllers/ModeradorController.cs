@@ -51,7 +51,7 @@ namespace LugaresTuristicos.Controllers
                     return RedirectToAction("Login", "Home");
                 }
 
-                List<Comentario> lista = contexto.Comentarios.Where(x => x.Estado == true)
+                List<Comentario> lista = contexto.Comentarios.Where(x => x.Estado == true && x.Revision == "En Revisión")
                                                        .Include(l => l.IdUsuarioNavigation)
                                                        .Include(l => l.IdLugarNavigation)
                                                        .ToList();
@@ -61,9 +61,11 @@ namespace LugaresTuristicos.Controllers
 
                 CommonProfile allData = new CommonProfile();
                 var currentUser = contexto.Usuarios.FirstOrDefault(s => s.IdUsuario.Equals(int.Parse(user_id)));
-                
+                List<string> bl = contexto.Blacklists.Select(x => x.Palabra).ToList();
+
                 allData.Usuario = currentUser;
                 allData.Comentario = lista;
+                allData.blacklist = bl;
                 return View(allData);
             }
             catch (Exception ex)
@@ -71,6 +73,24 @@ namespace LugaresTuristicos.Controllers
                 Lugare model = new Lugare();
                 return View(model);
             }
+        }
+
+        [HttpPost]
+        public IActionResult cargarComentariosAjax()
+        {
+            var listaComentario = (from com in contexto.Comentarios
+                                   join usu in contexto.Usuarios on com.IdUsuario equals usu.IdUsuario
+                                   where com.Estado == true && com.Revision == "En Revisión"
+                                   select new
+                                   {
+                                       idComentario = com.IdComentario,
+                                       idLugar = com.IdLugar,
+                                       idUsuario = com.IdUsuario,
+                                       NombreCompleto = usu.Nombre + " " + usu.Apellido,
+                                       comentario = com.Comentario1,
+                                       fecha = com.Fecha
+                                   }).ToList();
+            return Json(listaComentario);
         }
 
         public IActionResult obtenerImagenInicio()
@@ -168,6 +188,23 @@ namespace LugaresTuristicos.Controllers
             return Json(lstBlackList);
         }
 
+        [HttpGet]
+        public IActionResult GetModelBlacklistEstado(string palabra)
+        {
+            //var blacklist = (from x in contexto.Blacklists
+            //                where x.Palabra == palabra && x.Estado == true
+            //                select new
+            //                {
+            //                    estado = x.Estado
+            //                }
+            //                ).ToList();
+
+            var blacklist = contexto.Blacklists.Where(x => x.Estado == true).Select(item => item.Palabra).ToList();
+
+            var estado = blacklist.Contains(palabra);
+            return Json(estado);
+        }
+
         [HttpPost]
         public IActionResult EliminarBlackList(int id)
         {
@@ -189,10 +226,52 @@ namespace LugaresTuristicos.Controllers
         }
 
         [HttpPost]
-        public ActionResult guardarBlackList(Blacklist black)
+        public IActionResult RechazarComentario(int id)
+        {
+            try
+            {
+                var objDel = contexto.Comentarios.FirstOrDefault(x => x.IdComentario == id);
+                objDel.Revision = "Rechazado";
+                objDel.Estado = false;
+                //contexto.Blacklists.Remove(objDel);
+                contexto.Comentarios.Update(objDel);
+                contexto.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult AprobarComentario(int id)
+        {
+            try
+            {
+                var objDel = contexto.Comentarios.FirstOrDefault(x => x.IdComentario == id);
+                objDel.Revision = "Válido";
+                //contexto.Blacklists.Remove(objDel);
+                contexto.Comentarios.Update(objDel);
+                contexto.SaveChanges();
+                return Json(true);
+            }
+
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+
+        }
+
+
+        [HttpPost]
+        public ActionResult guardarBlackList(string black)
         {
             Blacklist obj = new Blacklist();
-            obj.Palabra = black.Palabra;
+            obj.Palabra = black;
             obj.Estado = true;
             try
             {

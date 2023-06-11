@@ -1,9 +1,27 @@
-﻿
+﻿@model CommonProfile
+
+<style>
+    .palabras-header p {
+        margin: 0;
+    }
+
+    .palabras-fuertes{
+        color: red;
+        font-size: 14px;
+    }
+
+    .rol-acceso{
+        color: #fff;
+        background-color: #181624;
+        text-align: center;
+    }
+</style>
+
 <div class="container">
     <div class="row">
         <div class="left col-md-3 grid gap-0 row-gap-3">
             <div class="row p-2 g-col-12">
-                <div class="sidebar">
+                <div class="sidebar rol-acceso">
                     <strong>MODERADOR</strong>
                 </div>
             </div>
@@ -55,13 +73,11 @@
         </div>
         <div class="middle col-md-6 grid gap-0 row-gap-3">
             <div class="row p-2 g-col-12">
-                <div class="create-post">
-                    
-                    <br />
+                
+                <div id="contenido-comentario">
+ 
                 </div>
             </div>
-            
-
         </div>
         <div class="right col-md-3 grid gap-0 row-gap-3">
 
@@ -80,6 +96,7 @@
         </div>
 
     </div>
+</div>
 
     @section scripts {
         <script type="text/javascript">
@@ -87,7 +104,257 @@
             $(document).ready(function () {
                 //cargarDatosCategoria();
                 //callAPI();
+                cargarDatos();
             });
+
+            function cargarDatos(){
+
+                $.ajax({
+                url: '@Url.Action("cargarComentariosAjax", "Moderador")',
+                type: 'post',
+                dataType: 'json',
+                cache: false,
+                    beforeSend: function () {
+                        var div = $("#contenido-comentario");
+                        var div2 = "<div class='feed mb-3'><div class='d-flex align-items-center'>";
+                        div2 += "<p>Cargando ... </p>";
+                        div2 += "<div class='spinner-border ms-auto spinner-border-sm' role='status' id='cargandoSpinner' aria-hidden='true'></div></div></div>";
+
+                        div.empty();
+                        div.append(div2);
+                    }
+            }).done(function (resp) {
+                console.log(resp);
+                var div = $("#contenido-comentario");
+                var div2 = "";
+
+                if (resp.length > 0) {
+                    $.each(resp, function (index, respuesta) {
+
+                        var fechaPublicacion = new Date(respuesta.fecha);
+                        var diferencia = new Date() - fechaPublicacion;
+
+                        var formatoFecha;
+
+                        if (diferencia / (1000 * 60 * 60 * 24) >= 2) {
+                            formatoFecha = Math.floor(diferencia / (1000 * 60 * 60 * 24)) + " días atrás";
+                        } else if (diferencia / (1000 * 60 * 60 * 24) >= 1) {
+                            formatoFecha = "1 día";
+                        } else {
+                            var segundos = Math.floor(diferencia / 1000);
+                            var minutos = Math.floor(diferencia / (1000 * 60));
+                            var horas = Math.floor(diferencia / (1000 * 60 * 60));
+                            var bandera = true;
+                            formatoFecha = "";
+
+                            if (bandera && segundos >= 0 && segundos < 60) {
+                                formatoFecha = "Hace " + segundos + " segundos";
+                                bandera = false;
+                            }
+
+                            if (bandera && minutos >= 0 && minutos < 60) {
+                                formatoFecha = "Hace " + minutos + " minutos";
+                                bandera = false;
+                            }
+
+                            if (bandera && horas >= 0 && horas < 60) {
+                                formatoFecha = "Hace " + horas + " horas";
+                                bandera = false;
+                            }
+                        }
+
+                        div2 += `<div class="feed mb-3">
+                                    <div class="palabras-header">
+                                        <p class="h4">ID Comentario: ` + respuesta.idComentario + `</p>
+                                                <p>Usuario: ` + respuesta.nombreCompleto + `</p>
+                                        <p>Fecha: ` + fechaPublicacion + `</p>
+                                        <p>Tiempo en espera: <strong>` + formatoFecha + `</strong></p >
+                                    </div>
+                                    <br />`;
+
+                        var comentario = respuesta.comentario;
+                        var palabrasComentario = comentario.split(' ');
+
+                        //var palabrasEncontradas = $.grep(palabrasComentario, function (palabra) {
+                        //    return $.inArray(palabra, @Html.Raw(Json.Serialize(Model.blacklist))) !== -1;
+                        //});
+
+                        var palabrasEncontradas = $.grep(palabrasComentario, function (palabra) {
+                            var palabraEnListaNegra = $.inArray(palabra, @Html.Raw(Json.Serialize(Model.blacklist))) !== -1;
+                            var estadoPalabra = getModelBlacklistEstado(palabra); // Suponiendo que existe una función getModelBlacklistEstado para obtener el estado de la palabra en Model.blacklist
+                            return palabraEnListaNegra && estadoPalabra;
+                        });
+
+                        console.log(palabrasEncontradas);
+
+                        var acumulativas = palabrasEncontradas.join(', ');
+
+                        var palabrasFiltradas = acumulativas.split(', ');
+                        var nuevaCadena = comentario;
+                        $.each(palabrasFiltradas, function (index, item2) {
+                            nuevaCadena = nuevaCadena.replace(item2, "<strong class='palabras-fuertes'>" + item2 + "</strong>");
+                        });
+
+                        div2 += `<p>Palabras en BlackList Encontradas: <strong> ` + acumulativas + `</strong></p><br />`;
+                        div2 += `<p><strong>Comentario: </strong>` + nuevaCadena + `</p>`;
+                        div2 += `<strong>Accion: </strong>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <svg width="20" height="20" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M15.964 3.793a3 3 0 0 1 4.243 4.242l-7.122 7.123a3 3 0 0 1-1.533.82l-2.942.588a1 1 0 0 1-1.176-1.176l.588-2.942a3 3 0 0 1 .82-1.533l7.122-7.122Zm2.829 1.414a1 1 0 0 0-1.414 0L17 5.586 18.414 7l.379-.379a1 1 0 0 0 0-1.414ZM17 8.414 15.586 7l-5.33 5.33a1 1 0 0 0-.273.51l-.294 1.47 1.47-.293a1 1 0 0 0 .512-.274L17 8.414ZM6 5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-6a1 1 0 1 1 2 0v6a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h6a1 1 0 1 1 0 2H6Z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                           <li><a class="dropdown-item" onclick=aprobarComentario(` + respuesta.idComentario + `)>Aprobar</a></li>
+                                           <li><a class="dropdown-item" onclick="rechazarComentario(` + respuesta.idComentario + `)">Rechazar</a></li>
+                                        </ul>
+                                    </div>
+                                </div>`;
+
+
+                    });
+                } else {
+                    div2 += `<div class="feed mb-3"><p class="fs-5">Sin publicaciones ...</p></div>`;
+                }
+          
+                div.empty();
+                div.append(div2);
+
+            }).fail();
+
+            }
+
+        function getModelBlacklistEstado(palabra) {
+            var estado;
+            $.ajax({
+                url: '@Url.Action("getModelBlacklistEstado", "Moderador")',
+                type: 'GET',
+                data: { palabra: palabra },
+                async: false,
+                success: function (response) {
+                    estado = response;
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+            return estado;
+        }
+
+
+
+        function rechazarComentario(idComentario) {
+
+            console.log(idComentario);
+
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger me-4'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: '¿Estás seguro?',
+                text: "Si consideras que el comentario infringe nuestras políticas del uso del sistema, elimina su comentario",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Eliminar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("RechazarComentario", "Moderador")',
+                        type: 'post',
+                        dataType: 'json',
+                        cache: false,
+                        data: { id: idComentario }
+                    }).done(function (resp) {
+                        if (resp) {
+                            swalWithBootstrapButtons.fire(
+                                'Rechazado!',
+                                'El comentario ha sido rechazado exitosamente.',
+                                'success'
+                            )
+                            cargarDatos();
+                        } else {
+                            swalWithBootstrapButtons.fire(
+                                'Cancelado',
+                                'La acción se ha omitido en este momento',
+                                'error'
+                            )
+                        }
+                    }).fail();
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelado',
+                        'La acción se ha omitido en este momento',
+                        'error'
+                    )
+                }
+            })
+        }
+
+        function aprobarComentario(idComentario) {
+
+            console.log(idComentario);
+
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger me-4'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: '¿Estás seguro?',
+                text: "Una vez aprobado se mostrará el comentario a todas las personas que revisen el lugar turístico, si consideras que el comentario no infringe nuestras políticas puedes aprobarlo",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Aprobar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("AprobarComentario", "Moderador")',
+                        type: 'post',
+                        dataType: 'json',
+                        cache: false,
+                        data: { id: idComentario }
+                    }).done(function (resp) {
+                        if (resp) {
+                            swalWithBootstrapButtons.fire(
+                                'Aprobado!',
+                                'El comentario ha sido aprobado exitosamente.',
+                                'success'
+                            )
+                            cargarDatos();
+                        } else {
+                            swalWithBootstrapButtons.fire(
+                                'Cancelado',
+                                'La acción se ha omitido en este momento',
+                                'error'
+                            )
+                        }
+                    }).fail();
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelado',
+                        'La acción se ha omitido en este momento',
+                        'error'
+                    )
+                }
+            })
+        }
+
 
             $('#formUbicacion').submit(function (event) {
                 event.preventDefault();

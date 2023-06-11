@@ -6,5 +6,7 @@
         public Usuario Usuario { get; set; }
 
         public List<Comentario> Comentario { get; set; }
+
+        public List<string> blacklist { get; set; }
     }
 }
