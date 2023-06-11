@@ -4,5 +4,7 @@
     {
         public List<Lugare> Lugares { get; set; }   
         public Usuario Usuario { get; set; }
+
+        public List<Comentario> Comentario { get; set; }
     }
 }
