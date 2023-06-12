@@ -287,3 +287,18 @@ main .container .left {
     /*border-radius: 50%;*/
     /*overflow: hidden;*/
 }
+
+.palabras-header p {
+    margin: 0;
+}
+
+.palabras-fuertes {
+    color: red;
+    font-size: 14px;
+}
+
+.rol-acceso {
+    color: #fff;
+    background-color: #181624;
+    text-align: center;
+}
