@@ -21,7 +21,7 @@
         </div>
         <div class="col-lg-4 col-md-5 col-sm-12 login-content">
             <div class="login">
-                <form asp-action="Login" method="post">
+                <form id="formulario" method="post">
                     <p class="text-center titulo">Inicia sesión</p>
                     <br>
                     <div class="form-group mb-1">
@@ -31,11 +31,7 @@
                             </path>
                         </svg>
                         <label class="form-label" for="Correo">Correo electrónico:</label>
-                        <input class="form-control" autocomplete="username" aria-required="true" type="email"
-                               data-val="true" data-val-email="The Email field is not a valid e-mail address."
-                               data-val-required="The Email field is required." id="Correo" name="Correo" value="" />
-                        <span class="text-danger field-validation-valid" data-valmsg-for="Correo"
-                              data-valmsg-replace="true"></span>
+                        <input class="form-control" type="email" id="Correo" name="Correo" />
                     </div>
                     <br />
                     <div class="form-group mb-1">
@@ -46,15 +42,17 @@
                             <path d="M12 12a3 3 0 1 0 0 5.999A3 3 0 0 0 12 12Zm0 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
                         </svg>
                         <label class="form-label" for="Password">Contraseña:</label>
-                        <input class="form-control" autocomplete="current-password" aria-required="true" type="password"
-                               data-val="true" data-val-required="The Password field is required." id="Password"
-                               name="Password" />
-                        <span class="text-danger field-validation-valid" data-valmsg-for="Password"
-                              data-valmsg-replace="true"></span>
+                        <input class="form-control" type="password" id="Password" name="Password" />
                     </div>
                     <br>
                     <div class="col-12">
-                        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Entrar</button>
+                        <button id="login-submit" type="button" class="w-100 btn btn-lg btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z" />
+                                <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+                            </svg>&nbsp;Entrar
+                            
+                            </button>
                     </div>
                 </form>
                 <br>
@@ -68,22 +66,81 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            if ('@TempData["ErrorMessage"]' !== '') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: '@TempData["ErrorMessage"]',
-                    confirmButtonText: 'Cerrar'
-                });
-            }
-            if ('@ViewBag.MessageCorrect' !== '') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Usuario Registrado',
-                    text: '@ViewBag.MessageCorrect',
-                    confirmButtonText: 'Cerrar'
-                });
-            }
+            $("#login-submit").click(function () {
+                if ($("#Correo").val() != "" && $("#Password").val() != "") {
+
+                    var inputsInvalidos = $("#formulario .is-invalid").length;
+
+                    var corr = $("#Correo").val();
+                    var pas = $("#Password").val();
+                    //console.log(rol);
+
+                    $.ajax({
+                        url: '@Url.Action("IsValidCredentials","Home")',
+                        type: 'post',
+                        cache: false,
+                        dataType: 'json',
+                        data: { correo: corr, password: pas },
+                        beforeSend: function () {
+                            var div = $("#login-submit");
+                            var div2 = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Cargando ...`;
+                            div.empty();
+                            div.append(div2);
+                        }
+                    }).done(function (resp) {
+                        if(resp){
+                            var div = $("#login-submit");
+                            var div2 = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Iniciando sesion ...`;
+                            div.empty();
+                            div.append(div2);
+
+                            $.ajax({
+                                url: '@Url.Action("Login","Home")',
+                                method: 'post',
+                                data: {
+                                    correo: corr,
+                                    pass: pas
+                                },
+                                success: function (response) {
+                                    location.reload();
+                                },
+                                error: function (xhr, status, error) {
+                                    Swal.fire({
+                                        position: 'top-end',
+                                        icon: 'warning',
+                                        title: 'Las credenciales son inválidas',
+                                        showConfirmButton: false,
+                                        timer: 1300
+                                    })
+                                }
+                            });
+
+                        }else{
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'warning',
+                                title: 'Las credenciales son inválidas',
+                                showConfirmButton: false,
+                                timer: 1300
+                            })
+                        }
+                    }).fail();
+
+                } else {
+                    Swal.fire({
+                        title: 'Todos los campos son obligatorios',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                }
+                var div = $("#login-submit");
+                var div2 = `<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z" />
+                                        <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+                                    </svg>&nbsp;Entrar`;
+                div.empty();
+                div.append(div2);
+            });
         });
     </script>
 }

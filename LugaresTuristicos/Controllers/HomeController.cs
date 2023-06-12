@@ -10,6 +10,10 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 
 namespace LugaresTuristicos.Controllers
 {
@@ -27,7 +31,7 @@ namespace LugaresTuristicos.Controllers
             ClaimsPrincipal claimUser = HttpContext.User;
             if (claimUser.Identity.IsAuthenticated)
             {
-                if(claimUser.IsInRole("ADMINISTRADOR"))
+                if (claimUser.IsInRole("ADMINISTRADOR"))
                 {
                     return RedirectToAction("Dashboard", "Home", new { area = "Admin" });
                 }
@@ -55,10 +59,6 @@ namespace LugaresTuristicos.Controllers
 
         public IActionResult Register()
         {
-            ClaimsPrincipal claimUser = HttpContext.User;
-            bool isdws = claimUser.Identity.IsAuthenticated;
-            string name = claimUser.Identity.Name;
-           
             return View();
         }
 
@@ -82,65 +82,47 @@ namespace LugaresTuristicos.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             TempData["error"] = "";
             HttpContext.Session.Clear();
-            
+
             return RedirectToAction("Login", "Home");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(Usuario usuario)
+        public ActionResult Login(string correo, string pass)
         {
             try
             {
-                if (usuario.Correo != "" && usuario.Password != "")
-                {
-                    // Lógica de autenticación y validación del usuario
-                    if (IsValidCredentials(usuario.Correo, usuario.Password))
-                    {
-                        // Iniciar sesión exitosamente
-                        // Guardar información del usuario en la sesión, establecer cookies, etc.
-                        var user = _dbContext.Usuarios
-                            .Include(u => u.Rol)
-                            .FirstOrDefault(s => s.Correo.Equals(usuario.Correo));
 
-                        List<Claim> claims = new List<Claim>()
+                // Iniciar sesión exitosamente
+                // Guardar información del usuario en la sesión, establecer cookies, etc.
+                var user = _dbContext.Usuarios
+                    .Include(u => u.Rol)
+                    .FirstOrDefault(s => s.Correo.Equals(correo));
+
+                List<Claim> claims = new List<Claim>()
                         {
                             new Claim(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
                             new Claim(ClaimTypes.Name, user.Nombre),
-                            new Claim("Correo", usuario.Correo),
+                            new Claim("Correo", correo),
                             //Agregar Roles.
                             new Claim(ClaimTypes.Role, user.Rol.NombreRol)
                         };
+                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
+                    CookieAuthenticationDefaults.AuthenticationScheme);
 
-                        
+                AuthenticationProperties properties = new AuthenticationProperties()
+                {
+                    AllowRefresh = true,
+                    IsPersistent = false
+                };
 
-
-                        ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
-                            CookieAuthenticationDefaults.AuthenticationScheme);
-
-                        AuthenticationProperties properties = new AuthenticationProperties()
-                        {
-                            AllowRefresh = true,
-                            IsPersistent = false
-                        };
-
-                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                            new ClaimsPrincipal(claimsIdentity), properties);
-                        return RedirectToAction("Login", "Home");
-                    }
-                    else
-                    {
-                        // Credenciales inválidas
-                        TempData["ErrorMessage"] = "Credenciales invalidas. Por favor, intenta de nuevo.";
-                    }
-                }
+                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity), properties);
+                return Json(true);
             }
-            catch (Exception exe)
+            catch (Exception e)
             {
-                // Credenciales inválidas
-                TempData["ErrorMessage"] = "Credenciales invalidas. Por favor, intenta de nuevo.  ";
+                return Json(false);
             }
-
-            return RedirectToAction("Login");
         }
 
         [HttpPost]
@@ -226,15 +208,16 @@ namespace LugaresTuristicos.Controllers
             return View(model);
         }
 
-        private bool IsValidCredentials(string correo, string password)
+        [HttpPost]
+        public IActionResult IsValidCredentials(string correo, string password)
         {
             try
             {
                 // Buscar un usuario en la base de datos con el correo especificado
-                var usuario = _dbContext.Usuarios.FirstOrDefault(u => u.Correo == correo);
+                var usuario = _dbContext.Usuarios.FirstOrDefault(u => u.Correo == correo && u.Estado == true);
 
                 if (usuario == null)
-                    return false;
+                    return Json(false);
 
                 /***********************Decryption**********************************************/
                 // Get the bytes of the string
@@ -250,16 +233,16 @@ namespace LugaresTuristicos.Controllers
                 if (usuario != null && password.Equals(decryptedResult))
                 {
                     // Credenciales válidas
-                    return true;
+                    return Json(true);
                 }
 
                 // Credenciales inválidas
-                return false;
+                return Json(false);
             }
             catch (Exception ex)
             {
                 // Credenciales inválidas
-                return false;
+                return Json(false);
             }
         }
 
@@ -290,11 +273,78 @@ namespace LugaresTuristicos.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        
+
 
         public IActionResult Privacity()
         {
             return View();
         }
+
+
+        //Nuevo Formulario
+        [HttpPost]
+        public IActionResult getCorreo(string correo)
+        {
+            List<Usuario> lstUsuario = _dbContext.Usuarios.Where(x => x.Correo == correo).ToList();
+            return Json(lstUsuario);
+        }
+
+        [HttpPost]
+        public ActionResult guardarUsuario(int id_Rol, string nombre, string apellido, int edad, string correo, string pass)
+        {
+            try
+            {
+                string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "DefaultUser.png");
+
+                byte[] imageBytes;
+                using (FileStream fileStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        fileStream.CopyTo(memoryStream);
+                        imageBytes = memoryStream.ToArray();
+                    }
+                }
+
+                /***********************Encryption**********************************************/
+                // Get the bytes of the string
+                byte[] bytesToBeEncrypted = Encoding.UTF8.GetBytes(pass);
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(pass);
+
+                // Hash the password with SHA256
+                passwordBytes = SHA256.Create().ComputeHash(passwordBytes);
+
+                byte[] bytesEncrypted = validationClass.AES_Encrypt(bytesToBeEncrypted, passwordBytes);
+
+                string encryptedResult = Convert.ToBase64String(bytesEncrypted);
+                /***********************End*Encryption******************************************/
+
+                // Preparacion del usuario que se guardara a la base de datos
+                var user = new Usuario
+                {
+                    Nombre = nombre,
+                    Apellido = apellido,
+                    Estado = true,
+                    Edad = edad,
+                    Correo = correo,
+                    Password = encryptedResult,
+                    IdRol = id_Rol,
+                    Imagen = imageBytes,
+                    FechaCreacion = DateTime.Now,
+                };
+
+                _dbContext.Usuarios.Add(user);
+                _dbContext.SaveChanges();
+                return Json(true);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+            return Json(false);
+        }
+
+
     }
 }

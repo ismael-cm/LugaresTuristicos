@@ -6,106 +6,401 @@
 <body>
     <div class="container">
         <div class="row justify-content-md-center" style="height: 100%;margin: 0;">
-            <div class="col-7">
+            <div class="col-md-7 col-sm-12 col-xs-12">
                 <div class="register">
-                    <form asp-action="Register" method="post">
+
+
+                    <form id="formulario">
                         <h2 class="text-center">Crea tu cuenta</h2>
                         <p class="text-center">
                             ¡Bienvenido a nuestra página de registro de usuario! Aquí podrás crear
                             una cuenta personal para acceder a todo el contenido.
                         </p>
                         <br />
-                        <div class="form-group mb-1">
-                            <label class="form-label" for="Nombre">Nombre:</label>
-                            <input class="form-control" autocomplete="off" aria-required="true" type="text"
-                                   data-val="true" data-val-required="The First Name field is required." id="Nombre"
-                                   name="Nombre" />
-                            <span class="text-danger field-validation-valid" data-valmsg-for="Nombre"
-                                  data-valmsg-replace="true"></span>
+
+                        <div class="form-floating mb-3">
+                            <input class="form-control form-control-sm" type="text" id="Nombre" name="Nombre" placeholder="Nombre" />
+                            <label class="form-label" for="Nombre">Nombre</label>
                         </div>
-                        <div class="form-group mb-1">
-                            <label class="form-label" for="Apellido">Apellido:</label>
-                            <input class="form-control" autocomplete="off" aria-required="true" type="text"
-                                   data-val="true" data-val-required="The Last Name field is required." id="Apellido"
-                                   name="Apellido" />
-                            <span class="text-danger field-validation-valid" data-valmsg-for="Apellido"
-                                  data-valmsg-replace="true"></span>
+                        <div class="form-floating mb-3">
+                            <input class="form-control form-control-sm" type="text" id="Apellido" name="Apellido" placeholder="Apellido" />
+                            <label class="form-label" for="Apellido">Apellido</label>
                         </div>
-                        <div class="form-group mb-1">
-                            <label class="form-label" for="Edad">Edad:</label>
-                            <input class="form-control" autocomplete="off" aria-required="true" type="number"
-                                   data-val="true" data-val-required="The Last Name field is required." id="Edad"
-                                   name="Edad" />
-                            <span class="text-danger field-validation-valid" data-valmsg-for="Edad"
-                                  data-valmsg-replace="true"></span>
+                        <div class="form-floating mb-3">
+                            <input class="form-control form-control-sm" type="text" id="Edad" name="Edad" placeholder="Edad" />
+                            <label class="form-label" for="Apellido">Edad</label>
                         </div>
-                        <div class="form-group mb-1">
-                            <label class="form-label" for="Correo">Correo Electrónico:</label>
-                            <input class="form-control" autocomplete="username" aria-required="true" type="email"
-                                   data-val="true" data-val-email="The Email field is not a valid e-mail address."
-                                   data-val-required="The Email field is required." id="Correo" name="Correo" value="" />
-                            <span class="text-danger field-validation-valid" data-valmsg-for="Correo"
-                                  data-valmsg-replace="true"></span>
+                        <div class="form-floating mb-3">
+                            <input class="form-control form-control-sm" type="text" id="Correo" name="Correo" placeholder="Correo electrónico" />
+                            <label class="form-label" for="Correo">Correo electrónico</label>
                         </div>
-                        <div class="form-group mb-1">
-                            <label class="form-label" for="Password">Contraseña:</label>
-                            <input class="form-control" autocomplete="current-password" aria-required="true"
-                                   type="password" data-val="true" data-val-required="The Password field is required."
-                                   id="Password" name="Password" />
-                            <span class="text-danger field-validation-valid" data-valmsg-for="Password"
-                                  data-valmsg-replace="true"></span>
+                        <div class="form-floating mb-3">
+                            <input class="form-control form-control-sm" type="password" id="Password" name="Password" placeholder="Contraseña" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-title="Requisitos" data-bs-content="Agrega más de 4 caracteres y al menos un número" />
+                            <label class="form-label" for="Password">Contraseña</label>
+                            <div id="feed-1" class="valid-feedback" hidden>
+                                Requisitos correctos!
+                            </div>
                         </div>
-                        <div class="form-group mb-1">
-                            <label class="form-label" for="ConfirmPassword">Confirma tu contraseña:</label>
-                            <input class="form-control" autocomplete="current-password" aria-required="true"
-                                   type="password" data-val="true"
-                                   data-val-required="The Confirm Password field is required." id="ConfirmPassword"
-                                   name="ConfirmPassword" />
-                            <span class="text-danger field-validation-valid" data-valmsg-for="ConfirmPassword"
-                                  data-valmsg-replace="true"></span>
+                        <div class="form-floating mb-3">
+                            <input class="form-control form-control-sm" type="password" id="ConfirmPassword" name="ConfirmPassword" placeholder="Confirma tu contraseña" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-title="Requisitos" data-bs-content="Agrega más de 4 caracteres y al menos un número" />
+                            <label class="form-label" for="ConfirmPassword">Confirma tu contraseña</label>
+                            <div id="feed-2" class="valid-feedback" hidden>
+                                Requisitos correctos!
+                            </div>
+                            <div id="feed-3" class="invalid-feedback" hidden>
+                                Las credenciales no son iguales
+                            </div>
                         </div>
-                        <div id="error-message" style="display:none" class="alert alert-danger">
-                            Passwords do not match.
+                        <div class="form-group mb-3">
+                            <label class="form-label h5">Modo de acceso</label>
+                            <select id="IdRol" class="form-control">
+                                <option value="3">Turista (Por defecto)</option>
+                                <option value="4">Emprendedor</option>
+                            </select>
+                            <br />
+
+                            <div class="d-flex justify-content-end">
+                                <a data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample" class="text-align">Guía de acceso</a>
+                            </div>
+
+                            
+                            <br />
+                            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-info-circle me-2" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                </svg>
+                                <div>
+                                    Ten en cuenta el modo de acceso, debido a que no se puede actualizar una vez ingresado
+                                </div>
+                            </div>
                         </div>
+
                         <br>
                         <br />
                         <div class="col-12">
-                            <button id="register-submit" type="submit"
-                                    class="w-100 btn btn-lg btn-primary">
+
+                            <button id="btnGuardar" class="w-100 btn btn-lg btn-primary" type="button">
                                 Registrarse
                             </button>
+
                         </div>
                         <br />
                         <div class="col-12 text-center">
                             <a asp-area="" asp-controller="Home" asp-action="Login"> Iniciar Sesión </a>
                         </div>
                     </form>
+
+
                 </div>
             </div>
 
         </div>
     </div>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Introducción a los perfiles</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" id="cerrar"></button>
+        </div>
+            <div class="offcanvas-body">
+                <div>
+                Los roles en un sistema asignan responsabilidades y privilegios a los usuarios. 
+                Definen qué acciones pueden realizar y qué información pueden acceder, garantizando la seguridad y eficiencia en el uso del sistema
+                </div>
+                <br />
+                <div>
+                <p>
+                    <strong>Turista: </strong>Está diseñado para cualquier persona que utilice la aplicación, para buscar
+                    información sobre lugares turísticos, leer comentarios y calificaciones de otros usuarios, y
+                    planificar su propia experiencia turística. Podría hacer comentarios y colocar calificaciones
+                    de los lugares visitados
+                </p>
+                <p>
+                    <strong>Emprendedor: </strong>Está diseñado para aquellos usuarios que deseen agregar sus
+                    propios lugares turísticos a la aplicación. Tendrá permisos para agregar, editar y eliminar
+                    información sobre su lugar turístico
+                </p>
+                </div>
+            </div>
+    </div>
+
 </body>
 
 @section Scripts {
     <script>
         $(document).ready(function () {
-            if ('@ViewBag.ErrorMessage' !== '') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: '@ViewBag.ErrorMessage',
-                    confirmButtonText: 'Cerrar'
-                });
+
+            const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+            const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+            var inputNombre = document.getElementById("Nombre");
+            function validarNombre() {
+
+                var valor = inputNombre.value.trim();
+                if (valor.length >= 4) {
+                    inputNombre.classList.add("is-valid");
+                    inputNombre.classList.remove("is-invalid");
+                } else {
+                    inputNombre.classList.add("is-invalid");
+                    inputNombre.classList.remove("is-valid");
+                }
             }
-            if ('@ViewBag.ErrorMessagePassword' !== '') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: '@ViewBag.ErrorMessagePassword',
-                    confirmButtonText: 'Cerrar'
-                });
+
+            inputNombre.addEventListener("keypress", function () {
+                validarNombre();
+            });
+
+            inputNombre.addEventListener("keydown", function () {
+                setTimeout(validarNombre, 0);
+            });
+
+            var inputApellido = document.getElementById("Apellido");
+            function validarApellido() {
+
+                var valor = inputApellido.value.trim();
+                if (valor.length >= 4) {
+                    inputApellido.classList.add("is-valid");
+                    inputApellido.classList.remove("is-invalid");
+                } else {
+                    inputApellido.classList.add("is-invalid");
+                    inputApellido.classList.remove("is-valid");
+                }
             }
+
+            inputApellido.addEventListener("keypress", function () {
+                validarApellido();
+            });
+
+            inputApellido.addEventListener("keydown", function () {
+                setTimeout(validarApellido, 0);
+            });
+
+            var inputEdad = document.getElementById("Edad");
+            inputEdad.addEventListener("keypress", function (event) {
+                var keyCode = event.keyCode || event.which;
+
+                if (keyCode < 48 || keyCode > 57) {
+                    event.preventDefault();
+                    inputEdad.classList.add("is-invalid");
+                    inputEdad.classList.remove("is-valid");
+                } else {
+                    inputEdad.classList.add("is-valid");
+                    inputEdad.classList.remove("is-invalid");
+
+                }
+            });
+
+            var inputEmail = document.getElementById("Correo");
+            var correo = inputEmail.value;
+            inputEmail.addEventListener("keypress", function (event) {
+
+                var char = String.fromCharCode(event.keyCode);
+                var pattern = /[a-zA-Z0-9@@._-]/;
+
+                if (!pattern.test(char)) {
+                    if (correo.includes("@@") && correo.includes(".")) {
+                        event.preventDefault();
+                        inputEmail.classList.add("is-invalid");
+                        inputEmail.classList.remove("is-valid");
+                    } else {
+                        inputEmail.classList.add("is-valid");
+                        inputEmail.classList.remove("is-invalid");
+                    }
+                } else {
+                    inputEmail.classList.add("is-valid");
+                    inputEmail.classList.remove("is-invalid");
+                }
+            });
+
+            var inputPassword = document.getElementById("Password");
+            function validarPassword() {
+
+                var valor = inputPassword.value.trim();
+                if (valor.length > 4 && /\d/.test(valor)) {
+                    inputPassword.classList.add("is-valid");
+                    inputPassword.classList.remove("is-invalid");
+                    document.getElementById("feed-1").removeAttribute("hidden");
+                } else {
+                    inputPassword.classList.add("is-invalid");
+                    inputPassword.classList.remove("is-valid");
+                    document.getElementById("feed-1").setAttribute("hidden", "");
+                }
+            }
+
+            inputPassword.addEventListener("keypress", function () {
+                validarPassword();
+            });
+
+            inputPassword.addEventListener("keydown", function () {
+                setTimeout(validarPassword, 0);
+            });
+
+            var inputPassword2 = document.getElementById("ConfirmPassword");
+            function validarPassword2() {
+
+                var valor = inputPassword2.value.trim();
+                if (valor.length > 4 && /\d/.test(valor)) {
+                    inputPassword2.classList.add("is-valid");
+                    inputPassword2.classList.remove("is-invalid");
+                    document.getElementById("feed-2").removeAttribute("hidden");
+                } else {
+                    inputPassword2.classList.add("is-invalid");
+                    inputPassword2.classList.remove("is-valid");
+                    document.getElementById("feed-2").setAttribute("hidden", "");
+                }
+
+
+
+                if ($("#Password").val() != $("#ConfirmPassword").val()) {
+                    inputPassword2.classList.add("is-invalid");
+                    inputPassword2.classList.remove("is-valid");
+                    document.getElementById("feed-2").setAttribute("hidden", "");
+                    document.getElementById("feed-3").removeAttribute("hidden");
+
+                }else{
+                    inputPassword2.classList.add("is-valid");
+                    inputPassword2.classList.remove("is-invalid");
+                    document.getElementById("feed-2").removeAttribute("hidden");
+                    document.getElementById("feed-3").setAttribute("hidden", "");
+                }
+
+            }
+
+            inputPassword2.addEventListener("keypress", function () {
+                validarPassword2();
+            });
+
+            inputPassword2.addEventListener("keydown", function () {
+                setTimeout(validarPassword2, 0);
+            });
+
+
+
+
+            function limpiarCajas() {
+                $("#Nombre").val("");
+                $("#Apellido").val("");
+                $("#Edad").val("");
+                $("#Correo").val("");
+                $("#Password").val("");
+                $("#ConfirmPassword").val("");
+                $('select option[value="3"]').prop('selected', true);
+            }
+
+            function limpiarClases() {
+                document.getElementById("Nombre").classList.remove("is-valid");
+                document.getElementById("Apellido").classList.remove("is-valid");
+                document.getElementById("Edad").classList.remove("is-valid");
+                document.getElementById("Correo").classList.remove("is-valid");
+                document.getElementById("Password").classList.remove("is-valid");
+                document.getElementById("ConfirmPassword").classList.remove("is-valid");
+                document.getElementById("IdRol").classList.remove("is-valid");
+            }
+
+            $("#btnGuardar").click(function () {
+                if ($("#Nombre").val() != "" && $("#Apellido").val() != "" &&
+                    $("#Edad").val() != "" && $("#Correo").val() != "" &&
+                    $("#Password").val() != "" && $("#IdRol").val() != "") {
+
+                    var inputsInvalidos = $("#formulario .is-invalid").length;
+
+                    var nom = $("#Nombre").val();
+                    var ape = $("#Apellido").val();
+                    var eda = $("#Edad").val();
+                    var corr = $("#Correo").val();
+                    var rol = $("#IdRol").val();
+                    var pas = $("#Password").val();
+                    //console.log(rol);
+
+                    $.ajax({
+                        url: '@Url.Action("getCorreo","Home")',
+                        type: 'post',
+                        cache: false,
+                        dataType: 'json',
+                        data: { correo: corr },
+                        beforeSend: function () {
+                            var div = $("#btnGuardar");
+                            var div2 = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Cargando ...`;
+                            div.empty();
+                            div.append(div2);
+                        }
+                    }).done(function (resp) {
+                        //console.log(resp);
+                        if (resp.length > 0) {
+                            Swal.fire({
+                                title: 'El correo electronico ya existe',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+
+                            var div = $("#btnGuardar");
+                            var div2 = "Registrarse";
+                            div.empty();
+                            div.append(div2);
+
+                        } else {
+                            if (inputsInvalidos === 0) {
+                                $.ajax({
+                                    url: '@Url.Action("guardarUsuario","Home")',
+                                    type: 'post',
+                                    cache: false,
+                                    dataType: 'json',
+                                    data: { id_Rol: rol, nombre: nom, apellido: ape, edad: eda, correo: corr, pass: pas },
+                                    beforeSend: function () {
+                                        var div = $("#btnGuardar");
+                                        var div2 = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Cargando ...`;
+                                        div.empty();
+                                        div.append(div2);
+                                    }
+                                }).done(function (respuesta) {
+                                    //console.log(respuesta);
+                                    if (respuesta) {
+                                        Swal.fire({
+                                            title: 'El registro ha sido agregado correctamente',
+                                            icon: 'success',
+                                            confirmButtonText: 'Continuar'
+                                        })
+                                        limpiarCajas();
+                                        limpiarClases();
+                                        var div = $("#btnGuardar");
+                                        var div2 = "Registrarse";
+                                        div.empty();
+                                        div.append(div2);
+
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Hubo un error al momento de agregar el dato',
+                                            icon: 'error',
+                                            confirmButtonText: 'Continuar'
+                                        })
+                                    }
+                                }).fail(function () {
+                                    Swal.fire({
+                                        title: 'Hubo un error al momento de agregar el dato',
+                                        icon: 'error',
+                                        confirmButtonText: 'Continuar'
+                                    })
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Verifica los textos en rojo para continuar',
+                                    icon: 'error',
+                                    confirmButtonText: 'Continuar'
+                                })
+                            }
+                        }
+                    }).fail();
+
+                } else {
+                    Swal.fire({
+                        title: 'Todos los campos son obligatorios',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                }
+                //document.getElementById("Municipio1").value = "";
+            });
         });
     </script>
 }
