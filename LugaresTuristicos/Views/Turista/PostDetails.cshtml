@@ -191,7 +191,11 @@
                     
                     var img = 'data:image;base64,' + comentario.imagen;
                     comment += "<div class='row g-2 feed-header'> <div class='col-auto'><div class='profile-photo'><img src='"+ img +"' alt='Foto de perfil' class='profile-picture'></div></div><div class='col-auto'><b>"+comentario.nombre + " " + comentario.apellido + "</b> <p class='text-muted'>" + formatoFechaComentario + "</p> </div>";
-                    
+
+                    var texto = comentario.comentario;
+                    var textoModificado = texto.replace(/\s/g, '&&');
+
+
                     if(user==comentario.idUsuario){
                         comment += `<div class="col-auto" >
                                     <div class="btn-group">
@@ -201,7 +205,7 @@
                                               </svg>
                                         </button>
                                         <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modificarComment" onclick=cargarUpt('${comentario.idComentario},${comentario.comentario}') >Editar</a></li>
+                                                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modificarComment" onclick=cargarUpt('${comentario.idComentario},${textoModificado}') >Editar</a></li>
                                             <li><a class="dropdown-item" href="javascript:cargarDel(${comentario.idComentario})">Eliminar</a></li>                                        </ul>
                                       </div>
                                                 </div> </div>`
@@ -288,7 +292,7 @@
 
                 var obj = valor.split(',');
                 var textoModificado = obj[1];
-                var textoOriginal = textoModificado.replace(/-/g, " ");
+            var textoOriginal = textoModificado.replace(/&&/g, ' ');
 
                 document.getElementById("uIdComentario").value = obj[0];
                 document.getElementById("uComentario").value = textoOriginal;
