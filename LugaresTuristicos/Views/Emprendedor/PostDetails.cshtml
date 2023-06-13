@@ -27,12 +27,12 @@
                 dataType: 'json',
                 cache: false,
             }).done(function (resp) {
-                
 
-                getValoracion(id)
-               
-                getValoracionUsusario(id)
-                getValoraciones(id)
+
+                getValoracion(@TempData["d"])
+
+                getValoracionUsusario(@TempData["d"])
+                getValoraciones(@TempData["d"])
 
                 swal2Btns.fire(
                     'Valoracion enviada',
