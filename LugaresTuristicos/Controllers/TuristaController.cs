@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Identity;
 using System.Xml.Linq;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LugaresTuristicos.Controllers
 {
+    [Authorize]
     public class TuristaController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -21,16 +23,9 @@ namespace LugaresTuristicos.Controllers
             return View();
         }
 
+
         public IActionResult Profile()
         {
-            ClaimsPrincipal claimUser = HttpContext.User;
-            // Verificar si el usuario ha iniciado sesión
-            if (!claimUser.Identity.IsAuthenticated)
-            {
-                // Si no ha iniciado sesión, redirigir al inicio de sesión
-                return RedirectToAction("Login", "Home");
-            }
-
             var user_id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var usuario = _dbContext.Usuarios.Include(l => l.Rol).FirstOrDefault(s => s.IdUsuario.Equals(int.Parse(user_id)));
 
@@ -39,6 +34,7 @@ namespace LugaresTuristicos.Controllers
 
             return View(allData);
         }
+
 
         [HttpPost]
         public IActionResult ActualizarPerfilSinImagen(int id_usuario, string nombre, string apellido, int edad)
@@ -60,6 +56,7 @@ namespace LugaresTuristicos.Controllers
             }
 
         }
+
 
         [HttpPost]
         public async Task<IActionResult> UploadImageUpdate(IFormFile imageFile, int idUser)
@@ -95,6 +92,7 @@ namespace LugaresTuristicos.Controllers
             }
         }
 
+        [AllowAnonymous]
         private bool IsValidImage(IFormFile file)
         {
             if (file.ContentType.ToLower() != "image/jpeg" &&
@@ -107,18 +105,16 @@ namespace LugaresTuristicos.Controllers
             return true;
         }
 
+        [AllowAnonymous]
         public IActionResult Dashboard()
         {
+            ClaimsPrincipal claimUser = HttpContext.User;
+
+
+
+
             try
             {
-                ClaimsPrincipal claimUser = HttpContext.User;
-                // Verificar si el usuario ha iniciado sesión
-                if (!claimUser.Identity.IsAuthenticated)
-                {
-                    // Si no ha iniciado sesión, redirigir al inicio de sesión
-                    return RedirectToAction("Login", "Home");
-                }
-
                 List<Lugare> lista = _dbContext.Lugares.Where(x => x.Estado == true).OrderByDescending(x => x.FechaPublicacion).Include(l => l.Comentarios)
                                                        .Include(l => l.IdMunicipioNavigation)
                                                        .Include(l => l.IdMunicipioNavigation.IdDeptoNavigation)
@@ -126,13 +122,18 @@ namespace LugaresTuristicos.Controllers
                                                        .Include(l => l.IdUsuarioNavigation)
                                                        .ToList();
 
-                //Para obtener el user id del usuario autenticado
-                var user_id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-                var currentUser = _dbContext.Usuarios.FirstOrDefault(s => s.IdUsuario.Equals(int.Parse(user_id)));
+                int user_id = 0;
+                Usuario currentUser = new Usuario();
                 CommonProfile allData = new CommonProfile();
-                allData.Usuario = currentUser;
+                if (claimUser.Identity.IsAuthenticated)
+                {
+                    user_id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                    currentUser = _dbContext.Usuarios.FirstOrDefault(s => s.IdUsuario.Equals(user_id));
+
+                    allData.Usuario = currentUser;
+                }
                 allData.Lugares = lista;
+
                 return View(allData);
             }
             catch (Exception ex)
@@ -142,6 +143,7 @@ namespace LugaresTuristicos.Controllers
             }
         }
 
+        [Authorize]
         public IActionResult obtenerImagenInicio()
         {
             try
@@ -162,20 +164,12 @@ namespace LugaresTuristicos.Controllers
                 return Json(new { respuesta = "Error al consultar la imagen" });
             }
         }
-
+        [AllowAnonymous]
         public IActionResult PostDetails(int? id)
         {
-
-            ClaimsPrincipal claimUser = HttpContext.User;
-
             try
             {
                 TempData["d"] = id;
-                if (!claimUser.Identity.IsAuthenticated)
-                {
-                    // Si no ha iniciado sesión, redirigir al inicio de sesión
-                    return RedirectToAction("Login", "Home"); // Reemplaza "Account" con el controlador y acción de inicio de sesión en tu aplicación
-                }
 
                 if (TempData["IsLoggedIn"] != null && (bool)TempData["IsLoggedIn"])
                     TempData["NameUser"] = TempData["IsLoggedInNameUser"];
@@ -198,13 +192,14 @@ namespace LugaresTuristicos.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         public JsonResult CreateComment(int IdLugar, string Comentario)
         {
             ClaimsPrincipal claimUser = HttpContext.User;
             try
             {
-                List<string> bl = _dbContext.Blacklists.Select(x=>x.Palabra).ToList();
+                List<string> bl = _dbContext.Blacklists.Select(x => x.Palabra).ToList();
                 string[] palabrasComentario = Comentario.Split(' ');
                 Comentario addComentario = new Comentario();
                 addComentario.IdLugar = Convert.ToInt32(IdLugar);
@@ -228,16 +223,17 @@ namespace LugaresTuristicos.Controllers
                     _dbContext.SaveChanges();
                     return Json(new { respuesta = "Válido" });
                 }
-                
-                
+
+
             }
             catch (Exception ex)
             {
                 return Json(new { respuesta = "Error" });
             }
-            
+
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public JsonResult AllComentarios(int idLugar)
         {
@@ -261,6 +257,7 @@ namespace LugaresTuristicos.Controllers
             return Json(comments);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public JsonResult findByMunicipio(string sValor, string sTipo)
         {
@@ -286,6 +283,7 @@ namespace LugaresTuristicos.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public JsonResult findByCategorias(int sValor)
         {
@@ -316,6 +314,7 @@ namespace LugaresTuristicos.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public JsonResult findByDescripcion(string sValor)
         {
@@ -342,6 +341,7 @@ namespace LugaresTuristicos.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public JsonResult findByNombre(string sValor)
         {
@@ -368,6 +368,7 @@ namespace LugaresTuristicos.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public JsonResult getCategorias()
         {

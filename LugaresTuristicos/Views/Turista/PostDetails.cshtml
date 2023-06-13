@@ -1,4 +1,5 @@
-﻿@model List<Lugare>
+﻿@using Microsoft.AspNetCore.Identity
+@model List<Lugare>
 
 @section scripts {
     <script type="text/javascript">
@@ -31,7 +32,7 @@
 
                 getValoracion(id)
                
-                getValoracionUsusario(id)
+                getValoracionUsusarioLugar(id)
                 getValoraciones(id)
 
                 swal2Btns.fire(
@@ -50,11 +51,13 @@
                 dataType: 'json',
                 cache: false,
             }).done(function (resp) {
-                valoracionGlobal = resp
-                valoracionNumber = document.getElementById('valoracionNumber');
-                valoracionNumber.innerHTML = valoracionGlobal.toFixed(1)
+                if(resp) {
+                    valoracionGlobal = resp
+                    valoracionNumber = document.getElementById('valoracionNumber');
+                    valoracionNumber.innerHTML = valoracionGlobal.toFixed(1)
 
-                setValoracion(valoracionGlobal)
+                    setValoracion(valoracionGlobal)
+                }
             })
         }
 
@@ -125,7 +128,7 @@
             })
         }
 
-        function getValoracionUsusario(lugar_id) {
+        function getValoracionUsusarioLugar(lugar_id) {
              $.ajax({
                 url:'/Valoracion/ValoracionUsusarioLugar/',
                 data: {IdLugar: lugar_id},
@@ -153,12 +156,25 @@
     
 
         $(document).ready(function () {
-            showData($('#id').val());
-            getUser();
-            getValoracion($('#id').val())
+            var isAutenticated = '@(@User.Identity.IsAuthenticated.ToString().ToLower())';
 
-            getValoracionUsusario($('#id').val())
-            getValoraciones($('#id').val())
+            console.log(`Is Autenticated ${isAutenticated}`)
+
+            showData(@TempData["d"]);
+
+            //Valoracion general del sitio
+            getValoracion(@TempData["d"])
+
+            //Autenticated
+            if(isAutenticated == 'true'){
+                getUser();
+                
+                getValoracionUsusarioLugar(@TempData["d"])
+            }
+            //Valoracion de todo los usuarios
+            getValoraciones(@TempData["d"])
+
+            $('#idUsuario').val(@TempData["d"]);
         });
 
         function showData(id){
@@ -316,8 +332,8 @@
                     Comentario: comentario
                     };
 
-
-                    if (inputsInvalidos === 0) {
+                    var isAutenticated = '@(@User.Identity.IsAuthenticated.ToString().ToLower())';
+                    if (inputsInvalidos === 0 && isAutenticated == 'true') {
                         $.ajax({
                             url: '/Turista/CreateComment',
                             data: commentObj,
@@ -358,11 +374,19 @@
                         });;
 
                     } else {
-                        Swal.fire({
-                            title: 'Verifica los textos marcador en rojo para continuar',
-                            icon: 'error',
-                            confirmButtonText: 'Continuar'
-                        })
+
+                        if(isAutenticated == 'false') {
+                            let contCom = document.getElementById('comments-alert');
+                            contCom.style.display = 'block';
+
+                        }else{
+                            Swal.fire({
+                                title: 'Verifica los textos marcador en rojo para continuar',
+                                icon: 'error',
+                                confirmButtonText: 'Continuar'
+                            })
+                        }
+                        
                     }
                 } else {
                     Swal.fire({
@@ -485,7 +509,15 @@
                 <div class="row g-2 details-header">
                     <div class="col-auto">
                         <div class="profile-photo">
-                            <img src="data:image;base64,@Convert.ToBase64String(item.IdUsuarioNavigation.Imagen)" alt="Foto de perfil" class="profile-picture">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <img src="data:image;base64,@Convert.ToBase64String(item.IdUsuarioNavigation.Imagen)" alt="Foto de perfil" class="profile-picture">
+
+                            } else
+                            {
+                               <img src="~/Images/DefaultUser.png" alt="Foto de perfil" class="profile-picture">
+
+                            }
                         </div>
                     </div>
                     <div class="col-auto">
@@ -535,10 +567,13 @@
                              
                         
                         </div>
-                        <button id="generalAddValorcion" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#myModal">
-                            Agregar mi valoración
-                            <i class="fa fa-solid fa-pen ms-2"></i>
-                        </button>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <button id="generalAddValorcion" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#myModal">
+                                Agregar mi valoración
+                                <i class="fa fa-solid fa-pen ms-2"></i>
+                            </button>
+                        }
 
                         
                         </div>
@@ -576,27 +611,29 @@
                 
                 <br>
                 <div class="row comment-section-comments" id="contenido">
-                    <div class="col-12">
+                    <div class="col-12">                                  
                         <p class="comment-description">Comentarios</p>
-
+                        <div id="comments-alert" class="alert alert-danger" role="alert" style="display: none">
+                                      Usuarios anónimos no pueden comentar, <a href="/Home/Login">Inicia Sesión</a> o <a href="/Home/Register">Registrate</a>
+                        </div>
                     </div>
-                    <div class="col-12 create-comment">
-                                    <form id="formComment">
-                                        <div class="form-group">
-                                            <label asp-for="@item.IdLugar" style="display: none;"></label>
-                                            <input asp-for="@item.IdLugar" id="IdLugar" name="IdLugar" class="form-control" hidden />
-                                        </div>
-                                        <div class="input-group">
-                                            <textarea id="Comentario" rows="6" cols="50" class="form-control" placeholder="Escribe tu comentario" required></textarea>
+                    <div class="col-12 create-comment">                        
+                        <form id="formComment">
+                            <div class="form-group">
+                                <label asp-for="@item.IdLugar" style="display: none;"></label>
+                                <input asp-for="@item.IdLugar" id="IdLugar" name="IdLugar" class="form-control" hidden />
+                            </div>
+                            <div class="input-group">
+                                <textarea id="Comentario" rows="6" cols="50" class="form-control" placeholder="Escribe tu comentario" required></textarea>
                                             
-                                            <button type="submit" class="btn btn-icon" id="enviar">
-                                                <svg width="34" height="34" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M2 12a10 10 0 1 0 20 0 10 10 0 0 0-20 0Zm11.86-3.69 2.86 3a.49.49 0 0 1 .1.15.54.54 0 0 1 .1.16.94.94 0 0 1 0 .76 1 1 0 0 1-.21.33l-3 3a1.004 1.004 0 1 1-1.42-1.42l1.3-1.29H8a1 1 0 0 1 0-2h5.66l-1.25-1.31a1.001 1.001 0 0 1 1.45-1.38Z"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </form>
-                    <br>
+                                <button type="submit" class="btn btn-icon" id="enviar">
+                                    <svg width="34" height="34" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M2 12a10 10 0 1 0 20 0 10 10 0 0 0-20 0Zm11.86-3.69 2.86 3a.49.49 0 0 1 .1.15.54.54 0 0 1 .1.16.94.94 0 0 1 0 .76 1 1 0 0 1-.21.33l-3 3a1.004 1.004 0 1 1-1.42-1.42l1.3-1.29H8a1 1 0 0 1 0-2h5.66l-1.25-1.31a1.001 1.001 0 0 1 1.45-1.38Z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                        <br />
                     </div>
 
                     <div class="col-12" id="Comentarios">

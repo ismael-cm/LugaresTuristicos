@@ -153,12 +153,12 @@
     
 
         $(document).ready(function () {
-            showData($('#id').val());
+            showData(@TempData["d"]);
             getUser();
-            getValoracion($('#id').val())
+            getValoracion(@TempData["d"])
 
-            getValoracionUsusario($('#id').val())
-            getValoraciones($('#id').val())
+            getValoracionUsusario(@TempData["d"])
+            getValoraciones(@TempData["d"])
         });
 
         function showData(id){

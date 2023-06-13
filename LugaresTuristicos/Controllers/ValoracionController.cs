@@ -4,12 +4,16 @@ using System.Security.Claims;
 using System.Xml.Linq;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LugaresTuristicos.Controllers
 {
+    [Authorize]
     public class ValoracionController : Controller
     {
         SitesContext _context = new SitesContext();
+
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
@@ -53,7 +57,7 @@ namespace LugaresTuristicos.Controllers
             return RedirectToAction("Show", new { IdValoracion = IdValoracion });
         }
 
-        
+        [AllowAnonymous]
         public JsonResult Show(string IdValoracion)
         {
            LugaresValoracione ValoracionLugar = _context.LugaresValoraciones
@@ -62,6 +66,7 @@ namespace LugaresTuristicos.Controllers
             return Json(ValoracionLugar);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public JsonResult ShowValoracionesLugar(string IdLugar)
         {
@@ -71,6 +76,7 @@ namespace LugaresTuristicos.Controllers
             return Json(ValoracionLugar);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public JsonResult GetValoraciones(string IdLugar)
         {
