@@ -59,7 +59,6 @@ namespace LugaresTuristicos.Models
             float[] columnWidths = { 5f, 35f, 15f, 15f, 15f, 15f }; 
             table.SetWidths(columnWidths);
             table.WidthPercentage = 100;
-            //var data = _dbContext.Lugares.Where(l => l.).ToList();
 
             var data = (from l in _dbContext.Lugares
                         join m in _dbContext.Municipios on l.IdMunicipio equals m.IdMunicipio
@@ -87,12 +86,16 @@ namespace LugaresTuristicos.Models
 
             foreach (var row in data)
             {
+                double average = row.LugaresValoraciones.Count() > 0 ?
+                    ((double)row.LugaresValoraciones.Average(x => x.IdValoracion)) : 0.00;
+
+                double precio = row.Precio != null ? ((double)row.Precio) : 0.00;
 
                 table.AddCell(row.IdLugar.ToString());
                 table.AddCell(row.NombreLugar.ToString());
                 table.AddCell(row.NombreCategoria.ToString());
-                table.AddCell(((double)row.LugaresValoraciones.Average(x => x.IdValoracion)).ToString("0.00"));
-                table.AddCell("$" + ((double)row.Precio).ToString("0.00"));
+                table.AddCell(average.ToString("0.00"));
+                table.AddCell("$" + precio.ToString("0.00"));
                 table.AddCell(row.Municipio1.ToString());
 
             }
@@ -139,12 +142,16 @@ namespace LugaresTuristicos.Models
 
             foreach (var row in data)
             {
+                double average = row.LugaresValoraciones.Count() > 0 ?
+                    ((double)row.LugaresValoraciones.Average(x => x.IdValoracion)) : 0.00;
+
+                double precio = row.Precio != null ? ((double)row.Precio) : 0.00;
 
                 table.AddCell(row.IdLugar.ToString());
                 table.AddCell(row.NombreLugar.ToString());
                 table.AddCell(row.IdCategoriaNavigation.NombreCategoria.ToString());
-                table.AddCell(((double)row.LugaresValoraciones.Average(x => x.IdValoracion)).ToString("0.00"));
-                table.AddCell("$" + ((double)row.Precio).ToString("0.00"));
+                table.AddCell(average.ToString("0.00"));
+                table.AddCell("$" + precio.ToString("0.00"));
                 table.AddCell(row.IdMunicipioNavigation.Municipio1.ToString());
 
             }
@@ -191,12 +198,15 @@ namespace LugaresTuristicos.Models
 
             foreach (var row in data)
             {
+                double average = row.LugaresValoraciones.Count() > 0 ? 
+                    ((double)row.LugaresValoraciones.Average(x => x.IdValoracion)) : 0.00;
+                double precio = row.Precio != null ? ((double)row.Precio) : 0.00;
 
                 table.AddCell(row.IdLugar.ToString());
                 table.AddCell(row.NombreLugar.ToString());
                 table.AddCell(row.IdCategoriaNavigation.NombreCategoria.ToString());
-                table.AddCell(((double)row.LugaresValoraciones.Average(x => x.IdValoracion)).ToString("0.00"));
-                table.AddCell("$" + ((double)row.Precio).ToString("0.00"));
+                table.AddCell(average.ToString("0.00"));
+                table.AddCell("$" + precio.ToString("0.00"));
                 table.AddCell(row.IdMunicipioNavigation.Municipio1.ToString());
 
             }
@@ -289,12 +299,16 @@ namespace LugaresTuristicos.Models
 
             foreach (var row in data)
             {
+                double average = row.LugaresValoraciones.Count() > 0 ?
+                    ((double)row.LugaresValoraciones.Average(x => x.IdValoracion)) : 0.00;
+
+                double precio =  row.Precio != null ? (double)row.Precio : 0.00;
 
                 table.AddCell(row.IdLugar.ToString());
                 table.AddCell(row.NombreLugar.ToString());
                 table.AddCell(row.IdCategoriaNavigation.NombreCategoria.ToString());
-                table.AddCell(((double)row.LugaresValoraciones.Average(x => x.IdValoracion)).ToString("0.00"));
-                table.AddCell("$" + ((double)row.Precio).ToString("0.00"));
+                table.AddCell(average.ToString("0.00"));
+                table.AddCell("$" + precio.ToString("0.00"));
                 table.AddCell(row.IdMunicipioNavigation.Municipio1.ToString());
 
             }
