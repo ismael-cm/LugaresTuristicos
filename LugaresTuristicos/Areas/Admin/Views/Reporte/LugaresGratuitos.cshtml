@@ -1,0 +1,26 @@
+﻿
+@model List<Departamento>
+
+<h1 class="display-4">Reporte de Lugares Gratuitos</h1>
+<p action="text-mutted">
+    Para generar el reporte de lugares, seleccione un departamento y click en generar.
+</p>
+
+<form action="@Url.Action("LugaresGratuitos","Reporte", new { area = "Admin"})" method="post" class="needs-validation">
+    <div class="d-flex align-items-center">
+     <label class="">Departamento</label>
+    </div>
+    <select class="form-control" name="idDepartamento">
+        <option value="">Seleccione un departamento</option>
+        @foreach (var departamento in Model)
+        {
+            <option value="@departamento.IdDepto">@departamento.Departamento1</option>
+        }
+    </select>
+    <br />
+    <button type="submit" class="btn btn-primary" id="enviar">
+        <i class="fas fa-duotone fa-file-pdf me-2 fs-6"></i>
+        Generar
+    </button>
+
+</form>

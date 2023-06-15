@@ -31,6 +31,8 @@
         //    }
         //};
     </script>
+    <!-- Font Awesome icons -->
+    <link href="https://use.fontawesome.com/releases/v6.0.0/css/all.css" rel="stylesheet" />
 
 </head>
 <body>
@@ -62,9 +64,26 @@
                                     <li><a class="dropdown-item" asp-area="admin" asp-controller="Home" asp-action="vBlackList">Lista negra</a></li>
                                 </ul>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" style="text-decoration: none; color: black" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Reportes
+                                </a>
+                                <ul class="dropdown-menu">
+                                    
+                                    <li><a class="dropdown-item" asp-area="admin" asp-controller="Reporte" asp-action="LugaresMejorPuntuados">Lugares Mejor Puntuados</a></li>
+                                    <li><a class="dropdown-item" asp-area="admin" asp-controller="Reporte" asp-action="LugaresPorCategoria">Lugares Por Categoría</a></li>
+                                    <li><a class="dropdown-item" asp-area="admin" asp-controller="Reporte" asp-action="LugaresPorMunicipio">Lugares Por Municipio</a></li>
+                                    <li><a class="dropdown-item" asp-area="admin" asp-controller="Reporte" asp-action="Emprendedores">Emprendedores</a></li>
+                                    <li><a class="dropdown-item" asp-area="admin" asp-controller="Reporte" asp-action="LugaresGratuitos">Lugares Gratuitos</a></li>
+                                    
+                                </ul>
+                            </li>
+
                             <li class="nav-item">
                                 <a class="nav-link active" asp-area="admin" asp-controller="Home" asp-action="vChangePass">Cambiar contraseña</a>
                             </li>
+
+              
                         </ul>
                     </div>
                 }

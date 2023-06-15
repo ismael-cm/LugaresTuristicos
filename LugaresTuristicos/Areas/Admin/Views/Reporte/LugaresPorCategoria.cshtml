@@ -1,0 +1,25 @@
+﻿@model List<Categoria>
+
+<h1 class="display-4">Reporte de Lugares Por Categoria</h1>
+<p action="text-mutted">
+    Para generar el reporte de lugares, seleccione una categoría y click en generar.
+</p>
+
+<form action="@Url.Action("LugaresPorCategoria","Reporte", new { area = "Admin"})" method="post" class="needs-validation">
+    <div class="d-flex align-items-center">
+        <label class="">Categoría</label>
+    </div>
+    <select required class="form-control" name="idCategoria">
+        <option value="">Seleccione una categoría</option>
+        @foreach (var categoria in Model)
+        {
+            <option value="@categoria.IdCategoria">@categoria.NombreCategoria</option>
+        }
+    </select>
+    <br />
+    <button type="submit" class="btn btn-primary" id="enviar">
+        <i class="fas fa-duotone fa-file-pdf me-2 fs-6"></i>
+        Generar
+    </button>
+    LugaresPorMunicipio
+</form>

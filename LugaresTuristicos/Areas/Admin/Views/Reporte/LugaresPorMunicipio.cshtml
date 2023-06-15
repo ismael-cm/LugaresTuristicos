@@ -1,0 +1,25 @@
+﻿@model List<Municipio>
+
+<h1 class="display-4">Reporte de Lugares Por Municipio</h1>
+<p action="text-mutted">
+    Para generar el reporte de lugares, seleccione una municipio y click en generar.
+</p>
+
+<form action="@Url.Action("LugaresPorMunicipio","Reporte", new { area = "Admin"})" method="post" class="needs-validation">
+    <div class="d-flex align-items-center">
+        <label class="">Municipio</label>
+    </div>
+    <select required class="form-control" name="idMunicipio">
+        <option value="">Seleccione una municipio</option>
+        @foreach (var municipio in Model)
+        {
+            <option value="@municipio.IdMunicipio">@municipio.Municipio1</option>
+        }
+    </select>
+    <br />
+    <button type="submit" class="btn btn-primary" id="enviar">
+        <i class="fas fa-duotone fa-file-pdf me-2 fs-6"></i>
+        Generar
+    </button>
+
+</form>
