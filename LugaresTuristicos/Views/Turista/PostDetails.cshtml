@@ -95,7 +95,7 @@
                     comment += `<div class='row g-2 feed-header'> 
                                     <div class='col-auto'>
                                         <div class='profile-photo'>
-                                            <img src='${img}' alt='Foto de perfil' class='profile-picture'>
+                                           <img src='${img}' alt='Foto de perfil' width='37.8' height='37.8' class='imagen-turista'>
                                         </div>
                                     </div>
                                     <div class='col-auto'>
@@ -206,7 +206,7 @@
                     }
                     
                     var img = 'data:image;base64,' + comentario.imagen;
-                    comment += "<div class='row g-2 feed-header'> <div class='col-auto'><div class='profile-photo'><img src='"+ img +"' alt='Foto de perfil' class='profile-picture'></div></div><div class='col-auto'><b>"+comentario.nombre + " " + comentario.apellido + "</b> <p class='text-muted'>" + formatoFechaComentario + "</p> </div>";
+                    comment += "<div class='row g-2 feed-header'> <div class='col-auto'><div class='profile-photo'><img src='" + img + "' alt='Foto de perfil' width='37.8' height='37.8' class='imagen-turista'></div></div><div class='col-auto'><b>" + comentario.nombre + " " + comentario.apellido + "</b> <p class='text-muted'>" + formatoFechaComentario + "</p> </div>";
 
                     var texto = comentario.comentario;
                     var textoModificado = texto.replace(/\s/g, '&&');
@@ -511,7 +511,7 @@
                         <div class="profile-photo">
                             @if (User.Identity.IsAuthenticated)
                             {
-                                <img src="data:image;base64,@Convert.ToBase64String(item.IdUsuarioNavigation.Imagen)" alt="Foto de perfil" class="profile-picture">
+                                <img src="data:image;base64,@Convert.ToBase64String(item.IdUsuarioNavigation.Imagen)" alt="Foto de perfil" width='37.8' height='37.8' class='imagen-turista'>
 
                             } else
                             {

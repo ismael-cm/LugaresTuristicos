@@ -29,7 +29,7 @@
                 <div class="profile">
                     <div class="profile-photo-align">
                         <div class="profile-photo-primary">
-                            <img src="data:image;base64,@Convert.ToBase64String(Model.Usuario.Imagen)" alt="Foto de perfil" class="profile-picture">
+                            <img src="data:image;base64,@Convert.ToBase64String(Model.Usuario.Imagen)" width='98' height='98' alt="Foto de perfil" class="imagen-turista">
                         </div>
                     </div>
                     <div class="handle">
@@ -103,7 +103,7 @@
 
             $(document).ready(function () {
                 //cargarDatosCategoria();
-                //callAPI();
+                callAPI();
                 cargarDatos();
             });
 

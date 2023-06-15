@@ -305,7 +305,7 @@
                 <div class="profile">
                     <div class="profile-photo-align">
                         <div class="profile-photo-primary">
-                            <img src="data:image;base64,@Convert.ToBase64String(Model.Usuario.Imagen)" alt="Foto de perfil" class="profile-picture">
+                            <img src="data:image;base64,@Convert.ToBase64String(Model.Usuario.Imagen)" alt="Foto de perfil" class="imagen-turista" width="98" height="98">
                         </div>
                     </div>
                     <div class="handle">
@@ -457,6 +457,41 @@
 
 @section Scripts{
     <script>
+
+            function callAPI() {
+                const url = 'https://newsdata.io/api/1/news?apikey=pub_24023d24caea9400184d5f62d4dbd77f52c41&q=el%20salvador&country=sv&language=es&category=entertainment,tourism';
+
+                fetch(url)
+                    .then(data => {
+                        return data.json();
+                    })
+                    .then(dataJSON => {
+                        var content = $("#news");
+                        var res = "";
+                        if (dataJSON.cod === '404') {
+                            showError('datos no encontrados');
+                        } else {
+                            dataJSON.results.forEach(function (result) {
+                                res += `
+                                                            <div class="card">
+                                                              <div class="card-body">
+                                                                <p class="card-text">${result.title}</p>
+                                                                <a href="${result.link}" target="_blank" class="card-link text-center">Ver noticia</a>
+                                                              </div>
+                                                            </div>
+                                                            <br/>
+                                                        `;
+                            });
+                        }
+                        content.empty();
+                        content.append(res);
+                        console.log(dataJSON);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+            }
+
         function cargarTabla() {
             $.ajax({
                 url: '@Url.Action("getTablaBlackList", "Moderador")',
@@ -579,7 +614,11 @@
             document.getElementById("Palabra2").classList.remove("is-invalid");
         }
 
+
+
         $(document).ready(function () {
+
+                callAPI();
 
             var inputPalabra = document.getElementById("Palabra");
             function validarPalabra() {
