@@ -188,3 +188,27 @@ main .container .left {
         background: var(--btn-seemore);
         border-color: var(--btn-seemore);
     }
+
+@keyframes shake-animation {
+    0% {
+        -webkit-transform: translateX(-10px);
+        -ms-transform: translateX(-10px);
+        transform: translateX(-10px);
+    }
+
+    50% {
+        -webkit-transform: translateX(10px);
+        -ms-transform: translateX(10px);
+        transform: translateX(10px);
+    }
+
+    100% {
+        -webkit-transform: translateX(-10px);
+        -ms-transform: translateX(-10px);
+        transform: translateX(-10px);
+    }
+}
+
+.select-animation {
+    animation: shake-animation 0.25s infinite;
+}

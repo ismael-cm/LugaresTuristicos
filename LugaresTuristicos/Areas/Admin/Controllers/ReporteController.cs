@@ -35,14 +35,12 @@ namespace LugaresTuristicos.Areas.Admin.Controllers
 
         public IActionResult LugaresMejorPuntuados()
         {
-            List<Departamento> deptos = new List<Departamento>();
-            deptos = _dbContext.Departamentos.ToList();
 
-            return View(deptos);
+            return View();
         }
 
-        [HttpPost]
-        public IActionResult LugaresMejorPuntuados(string idDepartamento)
+        [HttpGet]
+        public IActionResult LugaresMejorPuntuado(string idDepartamento)
         {
             if (idDepartamento.IsNullOrEmpty() && !(idDepartamento is int))
             {
@@ -61,20 +59,12 @@ namespace LugaresTuristicos.Areas.Admin.Controllers
 
         public IActionResult LugaresPorCategoria()
         {
-            List<Categoria> categorias = new List<Categoria>();
-            categorias = _dbContext.Categorias.ToList();
-
-            return View(categorias);
+            return View();
         }
 
-        [HttpPost]
-        public IActionResult LugaresPorCategoria(string idCategoria)
+        [HttpGet]
+        public IActionResult LugaresPorCategori(string idCategoria)
         {
-            if (idCategoria.IsNullOrEmpty() && !(idCategoria is int))
-            {
-                return RedirectToAction("LugaresPorCategoria");
-            }
-
             var reportGenerator = new Reports();
             var filePath = "archivo.pdf";
 
@@ -87,20 +77,13 @@ namespace LugaresTuristicos.Areas.Admin.Controllers
 
         public IActionResult LugaresPorMunicipio()
         {
-            List<Municipio> municipios = new List<Municipio>();
-            municipios = _dbContext.Municipios.ToList();
 
-            return View(municipios);
+            return View();
         }
 
-        [HttpPost]
-        public IActionResult LugaresPorMunicipio(string idMunicipio)
+        [HttpGet]
+        public IActionResult LugaresPorMunicipi(string idMunicipio)
         {
-            if (idMunicipio.IsNullOrEmpty() && !(idMunicipio is int))
-            {
-                return RedirectToAction("LugaresPorMunicipio");
-            }
-
             var reportGenerator = new Reports();
             var filePath = "archivo.pdf";
 
@@ -126,20 +109,12 @@ namespace LugaresTuristicos.Areas.Admin.Controllers
 
         public IActionResult LugaresGratuitos()
         {
-            List<Departamento> deptos = new List<Departamento>();
-            deptos = _dbContext.Departamentos.ToList();
-
-            return View(deptos);
+            return View();
         }
 
-        [HttpPost]
-        public IActionResult LugaresGratuitos(string idDepartamento)
+        [HttpGet]
+        public IActionResult LugaresGratuito(string idDepartamento)
         {
-            if (idDepartamento.IsNullOrEmpty() && !(idDepartamento is int))
-            {
-                return RedirectToAction("LugaresGratuitos");
-            }
-
             var reportGenerator = new Reports();
             var filePath = "archivo.pdf";
 
@@ -149,5 +124,50 @@ namespace LugaresTuristicos.Areas.Admin.Controllers
             byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
             return File(fileBytes, "application/pdf", "Lugares_gratuitos.pdf");
         }
+
+        [HttpPost]
+        public JsonResult getDepto()
+        {
+            try
+            {
+                List<Departamento> lstdepto = _dbContext.Departamentos.ToList();
+                return Json(lstdepto);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { respuesta = "Error" });
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult getCategoria()
+        {
+            try
+            {
+                List<Categoria> lstCat = _dbContext.Categorias.ToList();
+                return Json(lstCat);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { respuesta = "Error" });
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult getTablaMunicipioByIdDepto(int id)
+        {
+            var muni = (from municipi in _dbContext.Municipios
+                        where municipi.IdDepto == id && municipi.Estado == true
+                        select new
+                        {
+                            id_muni = municipi.IdMunicipio,
+                            municipio = municipi.Municipio1
+                        }).ToList();
+
+            return Json(muni);
+        }
+
     }
 }
