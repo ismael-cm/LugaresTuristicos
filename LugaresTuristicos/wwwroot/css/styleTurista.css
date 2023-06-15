@@ -315,11 +315,11 @@ main .container .left {
     color: #f0f9ff;
     margin-top: 20px;
     position: relative !important;
-    margin-top: -50px; /* Altura estimada del footer */
+    margin-top: 10px; /* Altura estimada del footer */
     padding: 20px;
     clear: both;
     width: 100%;
-    bottom: 100%;
+    bottom: 0;
     left: 0;
 }
 
