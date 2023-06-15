@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="~/css/styleTurista.css" asp-append-version="true" />
 
 </head>
-<body class="h-100">
+<body class="mb-0 pb-0">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" >
             <div class="container-fluid">
@@ -48,15 +48,22 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="container" id="primary-content">
+        <main role="main" class="">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - WebApplication2 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="footer-dark text-muted">
+        <div class="container footer-2">
+            <div class="row footer-3">
+                <div class="col-md-6">
+                    <p class="text-start texto-footer">&copy; 2023 - Proyecto Final ASP.NET Core</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-end">&copy; SivarBook Inc</p>
+                </div>
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
