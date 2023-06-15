@@ -15,7 +15,7 @@
       "applicationUrl": "https://localhost:7189;http://localhost:5278",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "CONNECTION_STRING": "Server=DESKTOP-AQATJPM;Database=sites;Trusted_Connection=True;Encrypt=False;"
+        "CONNECTION_STRING": "Server=LAPTOP-5BDBPGVN;Database=sites;Trusted_Connection=True;Encrypt=False;"
       }
     },
     "IIS Express": {

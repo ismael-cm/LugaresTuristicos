@@ -139,12 +139,15 @@ namespace LugaresTuristicos.Controllers
         [HttpPost]
         public IActionResult getTablaLugares()
         {
+            ClaimsPrincipal claimUser = HttpContext.User;
+            var user_id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
             var lstLugares = (from lugares in _dbContext.Lugares
                               join usuarios in _dbContext.Usuarios on lugares.IdUsuario equals usuarios.IdUsuario
                               join categorias in _dbContext.Categorias on lugares.IdCategoria equals categorias.IdCategoria
                               join municipio in _dbContext.Municipios on lugares.IdMunicipio equals municipio.IdMunicipio
                               join departamento in _dbContext.Departamentos on municipio.IdDepto equals departamento.IdDepto
-                              where usuarios.Estado == true && categorias.Estado == true && municipio.Estado == true && lugares.Estado == true
+                              where lugares.IdUsuario == int.Parse(user_id) && usuarios.Estado == true && categorias.Estado == true && municipio.Estado == true && lugares.Estado == true
                               orderby lugares.FechaPublicacion descending
                               select new
                               {
@@ -211,8 +214,9 @@ namespace LugaresTuristicos.Controllers
                     // Si no ha iniciado sesión, redirigir al inicio de sesión
                     return RedirectToAction("Login", "Home");
                 }
+                var user_id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                List<Lugare> lista = _dbContext.Lugares.Where(x => x.Estado == true).Include(l => l.Comentarios)
+                List<Lugare> lista = _dbContext.Lugares.Where(x => x.Estado == true).Where(x=>x.IdUsuario==int.Parse(user_id)).Include(l => l.Comentarios)
                                                        .Include(l => l.IdMunicipioNavigation)
                                                        .Include(l => l.IdMunicipioNavigation.IdDeptoNavigation)
                                                        .Include(l => l.IdCategoriaNavigation)
@@ -220,7 +224,7 @@ namespace LugaresTuristicos.Controllers
                                                        .ToList();
 
                 //Para obtener el user id del usuario autenticado
-                var user_id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                
                 ViewBag.Categoria = _dbContext.Categorias.Where(x => x.Estado == true).ToList();
                 ViewBag.Departamento = _dbContext.Departamentos.Where(x => x.Estado == true).ToList();
                 ViewBag.Municipio = _dbContext.Municipios.Where(x => x.Estado == true).ToList();
