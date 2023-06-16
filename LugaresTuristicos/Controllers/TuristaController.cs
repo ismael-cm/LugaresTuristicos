@@ -111,6 +111,20 @@ namespace LugaresTuristicos.Controllers
             ClaimsPrincipal claimUser = HttpContext.User;
 
 
+            if (claimUser.IsInRole("ADMINISTRADOR"))
+            {
+                return RedirectToAction("Dashboard", "Home", new { area = "Admin" });
+            }
+
+            if (claimUser.IsInRole("MODERADOR"))
+            {
+                return RedirectToAction("Dashboard", "Moderador");
+            }
+
+            if (claimUser.IsInRole("EMPRENDEDOR"))
+            {
+                return RedirectToAction("Dashboard", "Emprendedor");
+            }
 
 
             try
