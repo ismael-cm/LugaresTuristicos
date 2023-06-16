@@ -36,7 +36,7 @@ namespace LugaresTuristicos.Controllers
                 ValoracionLugar.IdLugar = int.Parse(IdLugar);
                 ValoracionLugar.IdValoracion = int.Parse(puntuacion);
                 ValoracionLugar.IdUsuario = IdUsuario;
-                ValoracionLugar.Descripcion = comentario;
+                ValoracionLugar.Descripcion = string.IsNullOrEmpty(comentario) ? "" : comentario;
                 ValoracionLugar.Fecha = DateTime.Now;
 
                 _context.LugaresValoraciones.Add(ValoracionLugar);
@@ -94,7 +94,7 @@ namespace LugaresTuristicos.Controllers
                                 imagen = usuario.Imagen,
                                 nombre = usuario.Nombre,
                                 apellido = usuario.Apellido,
-                                comentario = lugaresValoraciones.Descripcion,
+                                comentario = string.IsNullOrEmpty(lugaresValoraciones.Descripcion) ? "" : lugaresValoraciones.Descripcion,
                                 idUsuario=usuario.IdUsuario,
                                 idComentario= lugaresValoraciones.IdLValoracion,
                                 puntuacion = lugaresValoraciones.IdValoracion
