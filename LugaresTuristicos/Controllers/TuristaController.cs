@@ -279,13 +279,13 @@ namespace LugaresTuristicos.Controllers
             {
                 if (sTipo.Equals("Dpto"))
                 {
-                    int idDpto = _dbContext.Departamentos.Where(x => x.Departamento1.Equals(sValor)).Select(x => x.IdDepto).FirstOrDefault();
+                    int idDpto = _dbContext.Departamentos.Where(x => x.Departamento1.Contains(sValor)).Select(x => x.IdDepto).FirstOrDefault();
                     List<Lugare> lugares = _dbContext.Lugares.Where(x => x.Estado == true && x.IdMunicipioNavigation.IdDepto==idDpto).ToList();
                     return Json(lugares);
                 }
                 else
                 {
-                    int idMunicipio = _dbContext.Municipios.Where(x => x.Municipio1.Equals(sValor)).Select(x => x.IdMunicipio).FirstOrDefault();
+                    int idMunicipio = _dbContext.Municipios.Where(x => x.Municipio1.Contains(sValor)).Select(x => x.IdMunicipio).FirstOrDefault();
                     List<Lugare> lugares = _dbContext.Lugares.Where(x => x.Estado == true && x.IdMunicipio == idMunicipio).ToList();
                     return Json(lugares);
                 }
