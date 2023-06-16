@@ -213,8 +213,8 @@ namespace LugaresTuristicos.Controllers
             ClaimsPrincipal claimUser = HttpContext.User;
             try
             {
-                List<string> bl = _dbContext.Blacklists.Select(x => x.Palabra).ToList();
-                string[] palabrasComentario = Comentario.Split(' ');
+                List<string> bl = _dbContext.Blacklists.Select(x => x.Palabra.ToLower()).ToList();
+                string[] palabrasComentario = Comentario.ToLower().Split(' ');
                 Comentario addComentario = new Comentario();
                 addComentario.IdLugar = Convert.ToInt32(IdLugar);
                 addComentario.Comentario1 = Comentario;
