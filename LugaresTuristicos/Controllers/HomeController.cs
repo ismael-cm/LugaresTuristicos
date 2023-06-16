@@ -246,6 +246,7 @@ namespace LugaresTuristicos.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateComentario(string IdLugar, string Comentario)
@@ -289,6 +290,7 @@ namespace LugaresTuristicos.Controllers
             return Json(lstUsuario);
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult guardarUsuario(int id_Rol, string nombre, string apellido, int edad, string correo, string pass)
         {

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace LugaresTuristicos.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "USUARIO")]
     public class TuristaController : Controller
     {
         private readonly ILogger<HomeController> _logger;

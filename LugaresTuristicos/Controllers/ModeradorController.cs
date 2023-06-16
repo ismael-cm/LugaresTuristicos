@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Identity;
 using System.Xml.Linq;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace LugaresTuristicos.Controllers
 {
+    [Authorize(Roles = "MODERADOR")]
     public class ModeradorController : Controller
     {
         private readonly ILogger<HomeController> _logger;
