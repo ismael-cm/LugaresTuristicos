@@ -332,7 +332,7 @@ namespace LugaresTuristicos.Controllers
                                                        .Include(l => l.IdMunicipioNavigation.IdDeptoNavigation)
                                                        .Include(l => l.IdCategoriaNavigation)
                                                        .Include(l => l.IdUsuarioNavigation)
-                                                       .Where(x => x.IdLugar.Equals(id) && x.IdUsuario==idU)
+                                                       .Where(x => x.IdLugar.Equals(id))
                                                        .ToList();
 
 
