@@ -61,7 +61,7 @@ namespace LugaresTuristicos.Controllers
 
                 CommonProfile allData = new CommonProfile();
                 var currentUser = contexto.Usuarios.FirstOrDefault(s => s.IdUsuario.Equals(int.Parse(user_id)));
-                List<string> bl = contexto.Blacklists.Select(x => x.Palabra.ToLower()).ToList();
+                List<string> bl = contexto.Blacklists.Select(x => x.Palabra).ToList();
 
                 allData.Usuario = currentUser;
                 allData.Comentario = lista;
