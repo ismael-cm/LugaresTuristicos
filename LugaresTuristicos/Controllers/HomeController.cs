@@ -290,7 +290,7 @@ namespace LugaresTuristicos.Controllers
             return Json(lstUsuario);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost]
         public ActionResult guardarUsuario(int id_Rol, string nombre, string apellido, int edad, string correo, string pass)
         {
