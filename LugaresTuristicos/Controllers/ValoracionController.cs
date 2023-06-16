@@ -19,6 +19,7 @@ namespace LugaresTuristicos.Controllers
             return View();
         }
 
+        [Authorize(Roles = "USUARIO")]
         [HttpPost]
         public IActionResult Store(string comentario, string puntuacion, string IdLugar)
         {

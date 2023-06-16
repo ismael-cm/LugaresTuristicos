@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Identity;
 using System.Xml.Linq;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace LugaresTuristicos.Controllers
 {
+    [Authorize(Roles = "EMPRENDEDOR")]
     public class EmprendedorController : Controller
     {
         private readonly ILogger<HomeController> _logger;
