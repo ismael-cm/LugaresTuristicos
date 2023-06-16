@@ -310,6 +310,12 @@ namespace LugaresTuristicos.Areas.Admin.Controllers.Controllers
                     objUpdate.Imagen = memoryStream.ToArray();
                     objUpdate.FechaPublicacion = DateTime.Now;
 
+                    string dato = "";
+                    foreach (var item in objUpdate.Imagen)
+                    {
+                        dato += item;
+                    }
+
                     contexto.Lugares.Update(objUpdate);
                     await contexto.SaveChangesAsync();
                 }

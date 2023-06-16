@@ -157,7 +157,7 @@
 
         function cargarImagenInicio() {
             $.ajax({
-                url: '@Url.Action("obtenerImagenInicio","Turista")',
+                url: '@Url.Action("obtenerImagenInicio","Moderador")',
                 type: 'post',
                 dataType: 'json',
                 cache: false
@@ -204,7 +204,7 @@
                         formData.append('idUser', id);
 
                         $.ajax({
-                            url: '@Url.Action("UploadImageUpdate","Turista")',
+                            url: '@Url.Action("UploadImageUpdate","Moderador")',
                             type: 'POST',
                             data: formData,
                             processData: false,
@@ -269,7 +269,7 @@
 
                     if (inputsInvalidos === 0) {
                         $.ajax({
-                            url: '@Url.Action("ActualizarPerfilSinImagen","Turista")',
+                            url: '@Url.Action("ActualizarPerfilSinImagen","Moderador")',
                             type: 'post',
                             cache: false,
                             dataType: 'json',
